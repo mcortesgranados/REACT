@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>React - Conditional Rendering</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .question {
+      background: #fff;
+      border-left: 5px solid #3498db;
+      padding: 20px;
+      margin: 20px auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 900px;
+      border-radius: 8px;
+    }
+    .question h2 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>React Topic 01_06: Conditional Rendering</h1>
+
+  <div class="question">
+    <h2>1. What is conditional rendering in React?</h2>
+    <p><strong>Answer:</strong> Conditional rendering in React means showing or hiding parts of the UI based on conditions using JavaScript logic.</p>
+    <pre><code>function Greeting(props) {
+  if (props.isLoggedIn) {
+    return &lt;h1&gt;Welcome back!&lt;/h1&gt;;
+  }
+  return &lt;h1&gt;Please sign up.&lt;/h1&gt;;
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>2. How do you use the ternary operator for conditional rendering?</h2>
+    <p><strong>Answer:</strong> The ternary operator is a concise way to conditionally render elements inline.</p>
+    <pre><code>function Status(props) {
+  return (
+    &lt;p&gt;
+      &#123;props.online ? 'User is online' : 'User is offline'&#125;
+    &lt;/p&gt;
+  );
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>3. How can you conditionally render nothing?</h2>
+    <p><strong>Answer:</strong> Return <code>null</code> from the component or conditionally skip rendering by short-circuit evaluation.</p>
+    <pre><code>function OptionalMessage(props) {
+  if (!props.show) return null;
+  return &lt;p&gt;This is a secret message.&lt;/p&gt;;
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>4. What is short-circuit evaluation in React rendering?</h2>
+    <p><strong>Answer:</strong> It's using logical operators like <code>&amp;&amp;</code> to render elements only if a condition is true.</p>
+    <pre><code>function Notification(props) {
+  return (
+    &lt;div&gt;
+      &#123;props.hasMessage &amp;&amp; &lt;p&gt;You have a new message!&lt;/p&gt;&#125;
+    &lt;/div&gt;
+  );
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>5. How do you toggle content based on component state?</h2>
+    <p><strong>Answer:</strong> You can toggle content by using <code>useState</code> to manage the condition.</p>
+    <pre><code>import React, &#123; useState &#125; from 'react';
+
+function ToggleText() {
+  const [visible, setVisible] = useState(true);
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; setVisible(!visible)}&gt;Toggle&lt;/button&gt;
+      &#123;visible &amp;&amp; &lt;p&gt;This text is visible&lt;/p&gt;&#125;
+    &lt;/div&gt;
+  );
+}</code></pre>
+  </div>
+  
+  <div class="question">
+  <h2>6. Can you use if-else statements directly in JSX?</h2>
+  <p><strong>Answer:</strong> No, you can't use traditional if-else statements inside JSX. Use them outside the return statement or convert the logic into ternary operators or logical operators.</p>
+  <pre><code>function Message(props) {
+  let content;
+  if (props.type === 'success') {
+    content = &lt;p&gt;Success!&lt;/p&gt;;
+  } else {
+    content = &lt;p&gt;Something went wrong.&lt;/p&gt;;
+  }
+
+  return &lt;div&gt;&#123;content&#125;&lt;/div&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>7. How do you use an IIFE (Immediately Invoked Function Expression) inside JSX?</h2>
+  <p><strong>Answer:</strong> You can use an IIFE to execute more complex conditional logic within JSX expressions.</p>
+  <pre><code>function Alert(props) {
+  return (
+    &lt;div&gt;
+      &#123;(() =&gt; {
+        if (props.type === 'error') return &lt;p&gt;Error!&lt;/p&gt;;
+        if (props.type === 'warning') return &lt;p&gt;Warning!&lt;/p&gt;;
+        return &lt;p&gt;All good!&lt;/p&gt;;
+      })()&#125;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>8. Can you use switch statements for conditional rendering?</h2>
+  <p><strong>Answer:</strong> Yes, but you have to use them outside JSX since JSX doesn’t support switch directly. Use it to assign a variable and return that variable in JSX.</p>
+  <pre><code>function StatusIcon(props) {
+  let icon;
+  switch (props.status) {
+    case 'loading':
+      icon = &lt;p&gt;Loading...&lt;/p&gt;;
+      break;
+    case 'success':
+      icon = &lt;p&gt;Done!&lt;/p&gt;;
+      break;
+    default:
+      icon = &lt;p&gt;Idle&lt;/p&gt;;
+  }
+
+  return &lt;div&gt;&#123;icon&#125;&lt;/div&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>9. What is the best way to conditionally apply styles?</h2>
+  <p><strong>Answer:</strong> You can use ternary operators or conditionals to assign a className or inline style dynamically based on props or state.</p>
+  <pre><code>function Button(props) {
+  return (
+    &lt;button
+      className=&#123;props.primary ? 'btn-primary' : 'btn-secondary'&#125;
+    &gt;
+      Click me
+    &lt;/button&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>10. How do you conditionally render children components?</h2>
+  <p><strong>Answer:</strong> You can conditionally include or exclude child components in JSX using any JavaScript conditional expression.</p>
+  <pre><code>function Parent(props) {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Parent&lt;/h1&gt;
+      &#123;props.showChild &amp;&amp; &lt;Child /&gt;&#125;
+    &lt;/div&gt;
+  );
+}
+
+function Child() {
+  return &lt;p&gt;I am the child component&lt;/p&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>11. How can you conditionally render based on multiple conditions?</h2>
+  <p><strong>Answer:</strong> You can combine multiple logical or ternary expressions to handle complex conditionals.</p>
+  <pre><code>function StatusMessage(props) {
+  return (
+    &lt;div&gt;
+      &#123;
+        props.loggedIn
+          ? (props.isAdmin ? &lt;p&gt;Welcome Admin&lt;/p&gt; : &lt;p&gt;Welcome User&lt;/p&gt;)
+          : &lt;p&gt;Please log in&lt;/p&gt;
+      &#125;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>12. Can a component return null?</h2>
+  <p><strong>Answer:</strong> Yes, a component can return <code>null</code> to prevent rendering anything to the DOM. This is useful for conditional rendering.</p>
+  <pre><code>function HiddenMessage(props) {
+  if (!props.show) {
+    return null;
+  }
+
+  return &lt;p&gt;This message is visible&lt;/p&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>13. How do you render different components conditionally?</h2>
+  <p><strong>Answer:</strong> You can render entirely different components based on props or state.</p>
+  <pre><code>function App(props) {
+  const Page = props.isLoggedIn ? Dashboard : Login;
+
+  return &lt;Page /&gt;;
+}
+
+function Login() {
+  return &lt;p&gt;Please log in&lt;/p&gt;;
+}
+
+function Dashboard() {
+  return &lt;p&gt;Welcome to your dashboard&lt;/p&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>14. Can you use enums or constants to simplify conditional rendering?</h2>
+  <p><strong>Answer:</strong> Yes, using constants makes conditionals more readable and manageable, especially with switch statements.</p>
+  <pre><code>const STATUS = &#123;
+  IDLE: 'idle',
+  LOADING: 'loading',
+  SUCCESS: 'success'
+&#125;;
+
+function Status(props) {
+  switch (props.status) {
+    case STATUS.LOADING:
+      return &lt;p&gt;Loading...&lt;/p&gt;;
+    case STATUS.SUCCESS:
+      return &lt;p&gt;Success!&lt;/p&gt;;
+    default:
+      return &lt;p&gt;Idle&lt;/p&gt;;
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>15. How does short-circuit evaluation help in conditional rendering?</h2>
+  <p><strong>Answer:</strong> Short-circuit evaluation with <code>&amp;&amp;</code> allows you to render components only when a condition is true, skipping evaluation if false.</p>
+  <pre><code>function Notifications(props) {
+  return (
+    &lt;div&gt;
+      &#123;props.unread &gt; 0 &amp;&amp; &lt;p&gt;You have &#123;props.unread&#125; unread messages&lt;/p&gt;&#125;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>16. How do you conditionally disable a button in React?</h2>
+  <p><strong>Answer:</strong> You can control the <code>disabled</code> attribute by evaluating a condition with state or props.</p>
+  <pre><code>function SubmitButton(props) {
+  return (
+    &lt;button disabled=&#123;!props.canSubmit&#125;&gt;
+      Submit
+    &lt;/button&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>17. What are fragments and can they be conditionally rendered?</h2>
+  <p><strong>Answer:</strong> Yes, you can conditionally render fragments just like any other JSX block.</p>
+  <pre><code>function InfoBlock(props) {
+  return (
+    &lt;div&gt;
+      &#123;props.showInfo &amp;&amp; (
+        &lt;&gt;
+          &lt;h2&gt;Important Info&lt;/h2&gt;
+          &lt;p&gt;Details about the info&lt;/p&gt;
+        &lt;/&gt;
+      )&#125;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>18. Can you render a fallback UI when a component fails to render?</h2>
+  <p><strong>Answer:</strong> Yes, using error boundaries (class components only) you can display fallback UI on errors.</p>
+  <pre><code>class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = &#123; hasError: false &#125;;
+  }
+
+  static getDerivedStateFromError(error) {
+    return &#123; hasError: true &#125;;
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return &lt;h1&gt;Something went wrong.&lt;/h1&gt;;
+    }
+    return this.props.children;
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>19. How do you conditionally render JSX based on API response?</h2>
+  <p><strong>Answer:</strong> You manage loading and error states and render content based on the status of your fetch request.</p>
+  <pre><code>function DataDisplay() {
+  const [data, setData] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    fetch('/api/data')
+      .then(res => res.json())
+      .then(json => &#123;
+        setData(json);
+        setLoading(false);
+      &#125;);
+  }, []);
+
+  if (loading) return &lt;p&gt;Loading...&lt;/p&gt;;
+  return &lt;div&gt;&#123;data.message&#125;&lt;/div&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>20. How to display one layout when authenticated and another when not?</h2>
+  <p><strong>Answer:</strong> Check authentication state and return different components accordingly.</p>
+  <pre><code>function Layout(props) {
+  return (
+    &lt;div&gt;
+      &#123;props.isAuthenticated ? &lt;Dashboard /&gt; : &lt;Login /&gt;&#125;
+    &lt;/div&gt;
+  );
+}
+
+function Login() {
+  return &lt;p&gt;Please log in.&lt;/p&gt;;
+}
+
+function Dashboard() {
+  return &lt;p&gt;Welcome back!&lt;/p&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>21. Can you use conditional rendering with inline styles?</h2>
+  <p><strong>Answer:</strong> Yes, you can conditionally apply inline styles by using JavaScript logic inside the style attribute.</p>
+  <pre><code>function Box(props) {
+  const boxStyle = &#123;
+    width: '100px',
+    height: '100px',
+    backgroundColor: props.isActive ? 'green' : 'red'
+  &#125;;
+
+  return &lt;div style=&#123;boxStyle&#125;&gt;&lt;/div&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>22. How can you conditionally display multiple elements in a list?</h2>
+  <p><strong>Answer:</strong> You can map through an array and conditionally render each item based on a certain condition.</p>
+  <pre><code>function ItemList(props) {
+  return (
+    &lt;ul&gt;
+      &#123;props.items.map(item =&gt; (
+        item.visible &amp;&amp; &lt;li key=&#123;item.id&#125;&gt;&#123;item.name&#125;&lt;/li&gt;
+      ))&#125;
+    &lt;/ul&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>23. Can you conditionally render routes using React Router?</h2>
+  <p><strong>Answer:</strong> Yes, you can use conditional logic inside the <code>&lt;Route&gt;</code> component to display different routes based on user authentication or other criteria.</p>
+  <pre><code>function App(props) {
+  return (
+    &lt;div&gt;
+      &#123;props.isAuthenticated ? (
+        &lt;Route path="/dashboard" component={Dashboard} /&gt;
+      ) : (
+        &lt;Route path="/login" component={Login} /&gt;
+      )&#125;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>24. How do you handle conditional rendering with forms in React?</h2>
+  <p><strong>Answer:</strong> Conditional rendering can be used in forms to display validation messages, error feedback, or different form layouts based on the state or input values.</p>
+  <pre><code>function LoginForm(props) {
+  const [email, setEmail] = React.useState('');
+  const [error, setError] = React.useState('');
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    if (!email) {
+      setError('Email is required');
+    } else {
+      setError('');
+      // Submit logic here
+    }
+  }
+
+  return (
+    &lt;form onSubmit=&#123;handleSubmit&#125;&gt;
+      &lt;input
+        type="email"
+        value=&#123;email&#125;
+        onChange=&#123;(e) =&gt; setEmail(e.target.value)&#125;
+      /&gt;
+      &#123;error &amp;&amp; &lt;p style=&#123;color: 'red'&#125;&gt;&#123;error&#125;&lt;/p&gt;&#125;
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>25. How can you conditionally render a component based on screen size?</h2>
+  <p><strong>Answer:</strong> You can use the <code>window.innerWidth</code> or a library like <code>react-responsive</code> to conditionally render components based on screen size.</p>
+  <pre><code>import React, { useState, useEffect } from 'react';
+
+function ResponsiveComponent() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkSize = () => {
+      setIsMobile(window.innerWidth &lt; 768);
+    };
+
+    window.addEventListener('resize', checkSize);
+    checkSize(); // Initial check
+
+    return () => {
+      window.removeEventListener('resize', checkSize);
+    };
+  }, []);
+
+  return (
+    &#123;isMobile ? (
+      &lt;p&gt;You are on a mobile device&lt;/p&gt;
+    ) : (
+      &lt;p&gt;You are on a desktop device&lt;/p&gt;
+    )&#125;
+  );
+}</code></pre>
+</div>
+
+
+</body>
+</html>
