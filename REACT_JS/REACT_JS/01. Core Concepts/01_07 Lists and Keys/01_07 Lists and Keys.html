@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>React Lists and Keys - Q&A Set 1</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .question {
+      background: #fff;
+      border-left: 5px solid #3498db;
+      padding: 20px;
+      margin: 20px auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 900px;
+      border-radius: 8px;
+    }
+    .question h2 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>React Lists and Keys - Q&A Set 1</h1>
+
+  <div class="question">
+    <h2>1. What is the purpose of keys in React lists?</h2>
+    <p>Keys help React identify which items have changed, are added, or are removed. They must be unique among siblings to allow efficient re-rendering.</p>
+    <pre><code>// Example
+const numbers = [1, 2, 3, 4, 5];
+const List = () => (
+  &lt;ul&gt;
+    {numbers.map(num =&gt; (
+      &lt;li key={num}&gt;{num}&lt;/li&gt;
+    ))}
+  &lt;/ul&gt;
+);
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>2. What happens if keys are not used correctly?</h2>
+    <p>Improper keys can lead to performance issues and incorrect DOM manipulation. React may reuse components incorrectly, leading to bugs.</p>
+    <pre><code>// Bad Practice - Using index as key
+const items = ['apple', 'banana', 'cherry'];
+const List = () => (
+  &lt;ul&gt;
+    {items.map((item, index) =&gt; (
+      &lt;li key={index}&gt;{item}&lt;/li&gt;
+    ))}
+  &lt;/ul&gt;
+);
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>3. How can we render a list of components using map?</h2>
+    <p>You can use the <code>Array.map()</code> method to iterate and render components dynamically.</p>
+    <pre><code>const users = ['Alice', 'Bob', 'Charlie'];
+const UserList = () => (
+  &lt;div&gt;
+    {users.map((user, idx) =&gt; (
+      &lt;p key={user}&gt;Hello, {user}!&lt;/p&gt;
+    ))}
+  &lt;/div&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>4. How to use keys in nested lists?</h2>
+    <p>Ensure that each nested element has a unique key within its level to avoid warnings and bugs.</p>
+    <pre><code>const categories = [
+  { name: 'Fruits', items: ['Apple', 'Banana'] },
+  { name: 'Vegetables', items: ['Carrot', 'Spinach'] }
+];
+
+const NestedList = () =&gt; (
+  &lt;div&gt;
+    {categories.map(cat =&gt; (
+      &lt;div key={cat.name}&gt;
+        &lt;h3&gt;{cat.name}&lt;/h3&gt;
+        &lt;ul&gt;
+          {cat.items.map(item =&gt; (
+            &lt;li key={item}&gt;{item}&lt;/li&gt;
+          ))}
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    ))}
+  &lt;/div&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>5. Can we use objects as keys in React?</h2>
+    <p>No, keys must be stable, serializable, and primitive values (like strings or numbers). Objects are not valid because they don't have consistent identity.</p>
+    <pre><code>// Invalid usage
+const data = [{ id: 1 }, { id: 2 }];
+const Component = () =&gt; (
+  &lt;ul&gt;
+    {data.map(obj =&gt; (
+      &lt;li key={obj}&gt;Item {obj.id}&lt;/li&gt;
+    ))}
+  &lt;/ul&gt;
+);
+// Use obj.id instead
+</code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>6. Why should keys be stable across renders?</h2>
+    <p>Stable keys ensure that React preserves component state between renders. Changing keys forces React to treat components as new, causing remounts.</p>
+    <pre><code>// Bad: Using random key each render
+{items.map(item =&gt; (
+  &lt;li key={Math.random()}&gt;{item}&lt;/li&gt;
+))}
+
+// Good: Stable and consistent keys
+{items.map(item =&gt; (
+  &lt;li key={item.id}&gt;{item.name}&lt;/li&gt;
+))}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>7. Can two sibling elements have the same key?</h2>
+    <p>No. Sibling elements must have unique keys. Repeating keys causes unpredictable behavior and warnings.</p>
+    <pre><code>// Problematic
+const list = ['A', 'B', 'A'];
+&lt;ul&gt;
+  {list.map(letter =&gt; (
+    &lt;li key={letter}&gt;{letter}&lt;/li&gt;
+  ))}
+&lt;/ul&gt;
+
+// Fix: Use index or unique identifiers
+&lt;ul&gt;
+  {list.map((letter, idx) =&gt; (
+    &lt;li key={idx}&gt;{letter}&lt;/li&gt;
+  ))}
+&lt;/ul&gt;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>8. How to extract a list item into a component?</h2>
+    <p>You can modularize list items into separate components and pass props as needed, including the <code>key</code> when rendering the component.</p>
+    <pre><code>const Item = ({ value }) =&gt; &lt;li&gt;{value}&lt;/li&gt;;
+
+const List = () =&gt; {
+  const fruits = ['Mango', 'Peach', 'Grapes'];
+  return (
+    &lt;ul&gt;
+      {fruits.map(fruit =&gt; (
+        &lt;Item key={fruit} value={fruit} /&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>9. What is the best practice for key selection?</h2>
+    <p>Use a unique and stable identifier from the data (like <code>id</code>). Avoid using array indexes unless there’s no better option.</p>
+    <pre><code>const users = [
+  { id: 101, name: 'Tom' },
+  { id: 102, name: 'Jerry' }
+];
+
+const UserList = () =&gt; (
+  &lt;ul&gt;
+    {users.map(user =&gt; (
+      &lt;li key={user.id}&gt;{user.name}&lt;/li&gt;
+    ))}
+  &lt;/ul&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>10. What happens if you use non-unique keys?</h2>
+    <p>React may confuse components, leading to incorrect updates or lost state. You’ll also see warnings in the console.</p>
+    <pre><code>// Wrong: Duplicate keys
+const pets = ['Dog', 'Cat', 'Dog'];
+&lt;ul&gt;
+  {pets.map(pet =&gt; (
+    &lt;li key={pet}&gt;{pet}&lt;/li&gt;
+  ))}
+&lt;/ul&gt;
+
+// Right: Use index as fallback
+&lt;ul&gt;
+  {pets.map((pet, index) =&gt; (
+    &lt;li key={index}&gt;{pet}&lt;/li&gt;
+  ))}
+&lt;/ul&gt;
+</code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>13. Can keys be reused across different arrays?</h2>
+    <p>Yes, as long as the keys are unique within each sibling group. Keys are scoped to the current rendering list.</p>
+    <pre><code>const ListA = ['X', 'Y'];
+const ListB = ['X', 'Y'];
+
+const DualList = () =&gt; (
+  &lt;div&gt;
+    &lt;h4&gt;List A&lt;/h4&gt;
+    &lt;ul&gt;{ListA.map(item =&gt; &lt;li key={item}&gt;{item}&lt;/li&gt;)}&lt;/ul&gt;
+
+    &lt;h4&gt;List B&lt;/h4&gt;
+    &lt;ul&gt;{ListB.map(item =&gt; &lt;li key={item}&gt;{item}&lt;/li&gt;)}&lt;/ul&gt;
+  &lt;/div&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>14. Should I use UUIDs for keys?</h2>
+    <p>Using UUIDs as keys is acceptable if they are stable, but generating new UUIDs on every render (e.g., in <code>map()</code>) is a bad practice.</p>
+    <pre><code>// ❌ Bad: Random UUID per render
+items.map(item =&gt; (
+  &lt;li key={uuidv4()}&gt;{item.name}&lt;/li&gt;
+));
+
+// ✅ Good: Predefined UUIDs in data
+items.map(item =&gt; (
+  &lt;li key={item.id}&gt;{item.name}&lt;/li&gt;
+));</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>15. How to dynamically delete list items with proper keys?</h2>
+    <p>Use unique IDs to track items. Filter the array to remove the item and React will update the list based on keys.</p>
+    <pre><code>const initial = [
+  { id: 1, label: 'First' },
+  { id: 2, label: 'Second' }
+];
+
+const ListWithDelete = () =&gt; {
+  const [items, setItems] = React.useState(initial);
+
+  const removeItem = (id) =&gt; {
+    setItems(items.filter(item =&gt; item.id !== id));
+  };
+
+  return (
+    &lt;ul&gt;
+      {items.map(item =&gt; (
+        &lt;li key={item.id}&gt;
+          {item.label}
+          &lt;button onClick={() =&gt; removeItem(item.id)}&gt;Remove&lt;/button&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>16. How to animate list items with keys using React Transition Group?</h2>
+    <p>Use <code>CSSTransition</code> or <code>TransitionGroup</code> with stable keys to animate item additions/removals.</p>
+    <pre><code>import { CSSTransition, TransitionGroup } from 'react-transition-group';
+
+const items = [
+  { id: 1, name: 'Apple' },
+  { id: 2, name: 'Banana' }
+];
+
+const AnimatedList = () =&gt; {
+  const [list, setList] = React.useState(items);
+
+  const remove = (id) =&gt; setList(list.filter(item =&gt; item.id !== id));
+
+  return (
+    &lt;TransitionGroup component="ul"&gt;
+      {list.map(item =&gt; (
+        &lt;CSSTransition key={item.id} timeout={300} classNames="fade"&gt;
+          &lt;li&gt;
+            {item.name}
+            &lt;button onClick={() =&gt; remove(item.id)}&gt;Remove&lt;/button&gt;
+          &lt;/li&gt;
+        &lt;/CSSTransition&gt;
+      ))}
+    &lt;/TransitionGroup&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>17. How do keys affect performance?</h2>
+    <p>Correct keys help React minimize DOM manipulations by identifying which elements changed. Incorrect or unstable keys degrade performance and cause unnecessary re-renders.</p>
+    <pre><code>// Better performance with stable keys
+data.map(item =&gt; &lt;Component key={item.id} ... /&gt;)</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>18. How to insert new list items dynamically?</h2>
+    <p>Use the spread operator to insert a new item into state and provide a unique key for each entry.</p>
+    <pre><code>const App = () =&gt; {
+  const [items, setItems] = React.useState([]);
+
+  const addItem = () =&gt; {
+    const id = Date.now();
+    setItems([...items, { id, label: `Item ${id}` }]);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={addItem}&gt;Add Item&lt;/button&gt;
+      &lt;ul&gt;
+        {items.map(item =&gt; (
+          &lt;li key={item.id}&gt;{item.label}&lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>19. Can you use strings as keys?</h2>
+    <p>Yes, string keys are valid. In fact, using meaningful strings (like usernames or slugs) is often better than numeric indexes.</p>
+    <pre><code>const users = ['alice', 'bob', 'charlie'];
+
+const UserList = () =&gt; (
+  &lt;ul&gt;
+    {users.map(username =&gt; (
+      &lt;li key={username}&gt;{username}&lt;/li&gt;
+    ))}
+  &lt;/ul&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>20. What are Fragment keys and when to use them?</h2>
+    <p>Use keys on <code>&lt;React.Fragment&gt;</code> when rendering a list of fragments. They behave like regular keys for lists that return multiple sibling elements without extra DOM nodes.</p>
+    <pre><code>const list = ['A', 'B'];
+
+const FragmentList = () =&gt; (
+  &lt;div&gt;
+    {list.map(letter =&gt; (
+      &lt;React.Fragment key={letter}&gt;
+        &lt;h3&gt;Title {letter}&lt;/h3&gt;
+        &lt;p&gt;Content for {letter}&lt;/p&gt;
+      &lt;/React.Fragment&gt;
+    ))}
+  &lt;/div&gt;
+);</code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>21. What happens if two elements share the same key?</h2>
+    <p>React may mix up the components or their states, resulting in rendering bugs. Keys must be unique within a list.</p>
+    <pre><code>const items = ['a', 'b', 'a']; // ❌ Duplicate key
+
+const List = () =&gt; (
+  &lt;ul&gt;
+    {items.map((item, index) =&gt; (
+      &lt;li key={item}&gt;{item}&lt;/li&gt;
+    ))}
+  &lt;/ul&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>22. How can you avoid key collisions in nested lists?</h2>
+    <p>Combine identifiers from parent and child elements to generate composite keys.</p>
+    <pre><code>const groups = [
+  { name: 'Group1', items: ['A', 'B'] },
+  { name: 'Group2', items: ['C', 'D'] }
+];
+
+const NestedList = () =&gt; (
+  &lt;div&gt;
+    {groups.map(group =&gt; (
+      &lt;ul key={group.name}&gt;
+        {group.items.map(item =&gt; (
+          &lt;li key={`${group.name}-${item}`}&gt;{item}&lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    ))}
+  &lt;/div&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>23. Can you extract key logic into a function?</h2>
+    <p>Yes, it helps with readability and consistency, especially in complex structures.</p>
+    <pre><code>const getKey = (group, item) =&gt; `${group}_${item}`;
+
+const KeyedList = () =&gt; {
+  const groups = [
+    { group: 'fruits', items: ['apple', 'banana'] }
+  ];
+  return (
+    &lt;div&gt;
+      {groups.map(g =&gt; (
+        &lt;ul key={g.group}&gt;
+          {g.items.map(item =&gt; (
+            &lt;li key={getKey(g.group, item)}&gt;{item}&lt;/li&gt;
+          ))}
+        &lt;/ul&gt;
+      ))}
+    &lt;/div&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>24. How to reorder a list using keys?</h2>
+    <p>Use a drag-and-drop library or reorder the array manually, making sure the keys stay consistent for the items.</p>
+    <pre><code>const initialItems = [
+  { id: 'a', label: 'Alpha' },
+  { id: 'b', label: 'Beta' },
+];
+
+const ReorderList = () =&gt; {
+  const [items, setItems] = React.useState(initialItems);
+
+  const swap = () =&gt; {
+    setItems([items[1], items[0]]);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={swap}&gt;Swap Order&lt;/button&gt;
+      &lt;ul&gt;
+        {items.map(i =&gt; (
+          &lt;li key={i.id}&gt;{i.label}&lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>25. How to combine dynamic filtering with list keys?</h2>
+    <p>Use the same keys even after filtering to ensure minimal component unmounting and re-rendering.</p>
+    <pre><code>const allItems = [
+  { id: 1, name: 'Anna' },
+  { id: 2, name: 'Bella' },
+  { id: 3, name: 'Cara' }
+];
+
+const FilteredList = () =&gt; {
+  const [search, setSearch] = React.useState('');
+
+  const filtered = allItems.filter(i =&gt; i.name.includes(search));
+
+  return (
+    &lt;div&gt;
+      &lt;input value={search} onChange={e =&gt; setSearch(e.target.value)} /&gt;
+      &lt;ul&gt;
+        {filtered.map(item =&gt; (
+          &lt;li key={item.id}&gt;{item.name}&lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>26. How can you reverse a list in React while preserving keys?</h2>
+    <p>Use the <code>reverse()</code> method, but apply it on a copy of the array to avoid mutating the original state directly.</p>
+    <pre><code>const ReversedList = () =&gt; {
+  const items = [
+    { id: 1, name: 'One' },
+    { id: 2, name: 'Two' },
+    { id: 3, name: 'Three' }
+  ];
+
+  const reversed = [...items].reverse();
+
+  return (
+    &lt;ul&gt;
+      {reversed.map(item =&gt; (
+        &lt;li key={item.id}&gt;{item.name}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>27. Why should keys be consistent between renders?</h2>
+    <p>Inconsistent keys cause React to unmount and remount components unnecessarily, losing state and degrading performance.</p>
+    <pre><code>// BAD: key changes every render
+&lt;li key={Math.random()}&gt;Item&lt;/li&gt;
+
+// GOOD: key is stable
+&lt;li key={item.id}&gt;{item.label}&lt;/li&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>28. How to use UUIDs for keys?</h2>
+    <p>Use libraries like <code>uuid</code> to generate unique keys only once when data is first created, not on every render.</p>
+    <pre><code>import { v4 as uuidv4 } from 'uuid';
+
+const initialItems = [
+  { id: uuidv4(), name: 'X' },
+  { id: uuidv4(), name: 'Y' }
+];
+
+const UUIDList = () =&gt; (
+  &lt;ul&gt;
+    {initialItems.map(item =&gt; (
+      &lt;li key={item.id}&gt;{item.name}&lt;/li&gt;
+    ))}
+  &lt;/ul&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>29. How do keys affect child component lifecycle?</h2>
+    <p>Changing keys forces React to unmount and remount a component, restarting its state and lifecycle.</p>
+    <pre><code>const Child = () =&gt; {
+  React.useEffect(() =&gt; {
+    console.log('Mounted');
+    return () =&gt; console.log('Unmounted');
+  }, []);
+  return &lt;div&gt;I am a child&lt;/div&gt;;
+};
+
+const Parent = () =&gt; {
+  const [id, setId] = React.useState(1);
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; setId(id + 1)}&gt;Change Key&lt;/button&gt;
+      &lt;Child key={id} /&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>30. Can keys be numbers?</h2>
+    <p>Yes, but it’s recommended to use strings for consistency and safety across JavaScript environments.</p>
+    <pre><code>const items = [
+  { id: 100, name: 'First' },
+  { id: 200, name: 'Second' }
+];
+
+const NumberKeyList = () =&gt; (
+  &lt;ul&gt;
+    {items.map(item =&gt; (
+      &lt;li key={item.id}&gt;{item.name}&lt;/li&gt;
+    ))}
+  &lt;/ul&gt;
+);</code></pre>
+  </div>
+    <div class="question">
+    <h2>31. How to track selection state with keys?</h2>
+    <p>Use the unique key (like an <code>id</code>) to toggle selection in state.</p>
+    <pre><code>const items = [
+  { id: 1, name: 'Apple' },
+  { id: 2, name: 'Banana' },
+];
+
+const SelectableList = () =&gt; {
+  const [selectedId, setSelectedId] = React.useState(null);
+
+  return (
+    &lt;ul&gt;
+      {items.map(item =&gt; (
+        &lt;li
+          key={item.id}
+          onClick={() =&gt; setSelectedId(item.id)}
+          style={{ fontWeight: selectedId === item.id ? 'bold' : 'normal' }}
+        &gt;
+          {item.name}
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>32. Should keys be unique across the entire app?</h2>
+    <p>No, keys only need to be unique among siblings in the same list context.</p>
+    <pre><code>// ✅ This is fine
+const ListA = () =&gt; &lt;li key="1"&gt;Item A1&lt;/li&gt;;
+const ListB = () =&gt; &lt;li key="1"&gt;Item B1&lt;/li&gt;;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>33. Can you use object keys for rendering maps?</h2>
+    <p>Yes, you can iterate over object keys and use them as unique keys when rendering.</p>
+    <pre><code>const data = {
+  a: 'Alpha',
+  b: 'Beta'
+};
+
+const ObjectMapList = () =&gt; (
+  &lt;ul&gt;
+    {Object.keys(data).map(key =&gt; (
+      &lt;li key={key}&gt;{key}: {data[key]}&lt;/li&gt;
+    ))}
+  &lt;/ul&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>34. How to group list items by a category using keys?</h2>
+    <p>Use a two-level mapping structure: first for groups, then for items, assigning keys accordingly.</p>
+    <pre><code>const grouped = {
+  Fruits: ['Apple', 'Banana'],
+  Vegetables: ['Carrot', 'Lettuce']
+};
+
+const GroupedList = () =&gt; (
+  &lt;div&gt;
+    {Object.entries(grouped).map(([category, items]) =&gt; (
+      &lt;div key={category}&gt;
+        &lt;h3&gt;{category}&lt;/h3&gt;
+        &lt;ul&gt;
+          {items.map(item =&gt; (
+            &lt;li key={`${category}-${item}`}&gt;{item}&lt;/li&gt;
+          ))}
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    ))}
+  &lt;/div&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>35. How to animate list reordering with keys?</h2>
+    <p>Use libraries like <code>react-transition-group</code> and maintain consistent keys during animation.</p>
+    <pre><code>import { CSSTransition, TransitionGroup } from 'react-transition-group';
+
+const items = [
+  { id: 1, text: 'First' },
+  { id: 2, text: 'Second' }
+];
+
+const AnimatedList = () =&gt; {
+  const [list, setList] = React.useState(items);
+
+  const swap = () =&gt; {
+    setList([...list].reverse());
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={swap}&gt;Swap Order&lt;/button&gt;
+      &lt;TransitionGroup component="ul"&gt;
+        {list.map(item =&gt; (
+          &lt;CSSTransition key={item.id} timeout={500} classNames="fade"&gt;
+            &lt;li&gt;{item.text}&lt;/li&gt;
+          &lt;/CSSTransition&gt;
+        ))}
+      &lt;/TransitionGroup&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>36. How to implement a dynamic checklist with keys?</h2>
+    <p>Use unique keys for each item to manage checkbox states individually.</p>
+    <pre><code>const items = [
+  { id: 'a', label: 'Item A' },
+  { id: 'b', label: 'Item B' }
+];
+
+const Checklist = () =&gt; {
+  const [checkedItems, setCheckedItems] = React.useState({});
+
+  const toggle = (id) =&gt; {
+    setCheckedItems(prev =&gt; ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
+
+  return (
+    &lt;ul&gt;
+      {items.map(item =&gt; (
+        &lt;li key={item.id}&gt;
+          &lt;label&gt;
+            &lt;input
+              type="checkbox"
+              checked={!!checkedItems[item.id]}
+              onChange={() =&gt; toggle(item.id)}
+            /&gt;
+            {item.label}
+          &lt;/label&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>37. How to prevent re-rendering using keys in a component?</h2>
+    <p>Keep keys stable and use <code>React.memo</code> to prevent re-renders if props haven’t changed.</p>
+    <pre><code>const Item = React.memo(({ name }) =&gt; {
+  console.log('Rendering', name);
+  return &lt;li&gt;{name}&lt;/li&gt;;
+});
+
+const List = () =&gt; {
+  const items = ['One', 'Two', 'Three'];
+  return (
+    &lt;ul&gt;
+      {items.map((item, index) =&gt; (
+        &lt;Item key={index} name={item} /&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>38. How to sort a list alphabetically in React with keys?</h2>
+    <p>Use <code>sort()</code> and render using unique keys from the sorted array.</p>
+    <pre><code>const names = ['Charlie', 'Alice', 'Bob'];
+
+const SortedList = () =&gt; {
+  const sorted = [...names].sort();
+
+  return (
+    &lt;ul&gt;
+      {sorted.map((name, idx) =&gt; (
+        &lt;li key={name}&gt;{name}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>39. What happens if key values change on every render?</h2>
+    <p>React will treat each component as new and re-render them fully, losing state and causing performance issues.</p>
+    <pre><code>// BAD PRACTICE
+const items = ['A', 'B', 'C'];
+
+const BadList = () =&gt; (
+  &lt;ul&gt;
+    {items.map(item =&gt; (
+      &lt;li key={Math.random()}&gt;{item}&lt;/li&gt;
+    ))}
+  &lt;/ul&gt;
+);
+
+// GOOD PRACTICE
+const GoodList = () =&gt; (
+  &lt;ul&gt;
+    {items.map(item =&gt; (
+      &lt;li key={item}&gt;{item}&lt;/li&gt;
+    ))}
+  &lt;/ul&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>40. How to update a specific item in a list using keys?</h2>
+    <p>Use the key to identify and update the correct item in the list state.</p>
+    <pre><code>const EditableList = () =&gt; {
+  const [items, setItems] = React.useState([
+    { id: 1, name: 'Alpha' },
+    { id: 2, name: 'Beta' }
+  ]);
+
+  const updateItem = (id, newName) =&gt; {
+    setItems(prev =&gt;
+      prev.map(item =&gt;
+        item.id === id ? { ...item, name: newName } : item
+      )
+    );
+  };
+
+  return (
+    &lt;ul&gt;
+      {items.map(item =&gt; (
+        &lt;li key={item.id}&gt;
+          {item.name}
+          &lt;button onClick={() =&gt; updateItem(item.id, item.name + '!')}&gt;Update&lt;/button&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+  </div>
+  
+  <div class="question">
+    <h2>41. How to add an item to a list and keep keys consistent?</h2>
+    <p>Use a unique ID generator or timestamp to assign a key to each new item.</p>
+    <pre><code>const AddItemList = () =&gt; {
+  const [items, setItems] = React.useState([
+    { id: 1, value: 'First' }
+  ]);
+
+  const addItem = () =&gt; {
+    const newItem = { id: Date.now(), value: 'New Item' };
+    setItems([...items, newItem]);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={addItem}&gt;Add Item&lt;/button&gt;
+      &lt;ul&gt;
+        {items.map(item =&gt; (
+          &lt;li key={item.id}&gt;{item.value}&lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>42. What’s the effect of reordering list items with stable keys?</h2>
+    <p>React preserves the component instances and just moves them in the DOM efficiently without re-mounting.</p>
+    <pre><code>const ReorderList = () =&gt; {
+  const [items, setItems] = React.useState([
+    { id: 1, label: 'A' },
+    { id: 2, label: 'B' }
+  ]);
+
+  const swap = () =&gt; {
+    setItems([...items].reverse());
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={swap}&gt;Swap&lt;/button&gt;
+      &lt;ul&gt;
+        {items.map(item =&gt; (
+          &lt;li key={item.id}&gt;{item.label}&lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>43. Can you use UUIDs as React keys?</h2>
+    <p>Yes, UUIDs are fine as long as they’re stable. Avoid regenerating them on each render.</p>
+    <pre><code>import { v4 as uuidv4 } from 'uuid';
+
+const StaticList = () =&gt; {
+  const items = React.useMemo(() =&gt; [
+    { id: uuidv4(), name: 'Item A' },
+    { id: uuidv4(), name: 'Item B' }
+  ], []);
+
+  return (
+    &lt;ul&gt;
+      {items.map(item =&gt; (
+        &lt;li key={item.id}&gt;{item.name}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>44. How to create a keyed list with editable content?</h2>
+    <p>Track changes by item ID and update the corresponding object in the list.</p>
+    <pre><code>const EditableFields = () =&gt; {
+  const [items, setItems] = React.useState([
+    { id: 1, name: 'John' },
+    { id: 2, name: 'Jane' }
+  ]);
+
+  const handleChange = (id, value) =&gt; {
+    setItems(items.map(item =&gt;
+      item.id === id ? { ...item, name: value } : item
+    ));
+  };
+
+  return (
+    &lt;ul&gt;
+      {items.map(item =&gt; (
+        &lt;li key={item.id}&gt;
+          &lt;input
+            value={item.name}
+            onChange={e =&gt; handleChange(item.id, e.target.value)}
+          /&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>45. What is the performance impact of incorrect keys?</h2>
+    <p>Using incorrect or unstable keys can cause full re-renders, loss of component state, and degraded performance.</p>
+    <pre><code>// Unstable key (bad)
+{list.map(item =&gt; &lt;li key={Math.random()}&gt;{item}&lt;/li&gt;)}
+
+// Stable key (good)
+{list.map(item =&gt; &lt;li key={item.id}&gt;{item.name}&lt;/li&gt;)}</code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>46. How to implement pagination with lists and keys?</h2>
+    <p>Slice the data based on current page and render with stable keys.</p>
+    <pre><code>const PaginationList = () =&gt; {
+  const allItems = Array.from({ length: 50 }, (_, i) =&gt; ({ id: i + 1, name: `Item ${i + 1}` }));
+  const [page, setPage] = React.useState(1);
+  const pageSize = 10;
+  const start = (page - 1) * pageSize;
+  const paginatedItems = allItems.slice(start, start + pageSize);
+
+  return (
+    &lt;div&gt;
+      &lt;ul&gt;
+        {paginatedItems.map(item =&gt; (
+          &lt;li key={item.id}&gt;{item.name}&lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+      &lt;button disabled={page === 1} onClick={() =&gt; setPage(p =&gt; p - 1)}&gt;Previous&lt;/button&gt;
+      &lt;button disabled={start + pageSize &gt;= allItems.length} onClick={() =&gt; setPage(p =&gt; p + 1)}&gt;Next&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>47. Can I use composite keys in React?</h2>
+    <p>Yes, by concatenating multiple fields, you can create a composite key string.</p>
+    <pre><code>const items = [
+  { userId: 1, postId: 101, content: 'Hello' },
+  { userId: 2, postId: 102, content: 'World' }
+];
+
+const CompositeKeyList = () =&gt; (
+  &lt;ul&gt;
+    {items.map(item =&gt; (
+      &lt;li key={`${item.userId}-${item.postId}`}&gt;{item.content}&lt;/li&gt;
+    ))}
+  &lt;/ul&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>48. How do you prevent list flickering when changing items?</h2>
+    <p>Ensure keys are stable so React doesn't remount elements unnecessarily.</p>
+    <pre><code>const FlickerFreeList = ({ items }) =&gt; (
+  &lt;ul&gt;
+    {items.map(item =&gt; (
+      &lt;li key={item.id}&gt;{item.name}&lt;/li&gt;
+    ))}
+  &lt;/ul&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>49. How can you animate list items with keys?</h2>
+    <p>Use libraries like Framer Motion, which rely on React keys for animations.</p>
+    <pre><code>import { motion, AnimatePresence } from 'framer-motion';
+
+const AnimatedList = ({ items }) =&gt; (
+  &lt;ul&gt;
+    &lt;AnimatePresence&gt;
+      {items.map(item =&gt; (
+        &lt;motion.li
+          key={item.id}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        &gt;
+          {item.name}
+        &lt;/motion.li&gt;
+      ))}
+    &lt;/AnimatePresence&gt;
+  &lt;/ul&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>50. What best practices should I follow with keys in React?</h2>
+    <ul>
+      <li>Use stable, unique keys (preferably IDs).</li>
+      <li>Never use array index unless the list is static.</li>
+      <li>Avoid random values as keys.</li>
+      <li>Keys should be consistent between renders.</li>
+    </ul>
+    <pre><code>// Best practice
+{data.map(item =&gt; (
+  &lt;Component key={item.id} {...item} /&gt;
+))}</code></pre>
+  </div>
+
+
+</body>
+</html>
