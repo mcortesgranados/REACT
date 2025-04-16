@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>React 03_04 useMemo & useCallback Questions</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .question {
+      background: #fff;
+      border-left: 5px solid #3498db;
+      padding: 20px;
+      margin: 20px auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 900px;
+      border-radius: 8px;
+    }
+    .question h2 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>React 03_04 useMemo & useCallback Questions</h1>
+
+  <div class="question">
+    <h2>1. What is the purpose of `useMemo` in React?</h2>
+    <p><strong>Answer:</strong> `useMemo` is a React hook used to memoize a computed value, which means it caches the result of a function so that the function is only re-run when its dependencies change. This helps in optimizing performance by avoiding unnecessary recalculations.</p>
+    <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = ({ number }) =&gt; {
+  const expensiveComputation = (num) =&gt; {
+    console.log('Computing...');
+    return num * 2;
+  };
+
+  const memoizedValue = useMemo(() =&gt; expensiveComputation(number), [number]);
+
+  return &lt;div&gt;{memoizedValue}&lt;/div&gt;;
+};
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>2. How does `useMemo` improve performance?</h2>
+    <p><strong>Answer:</strong> By memoizing the result of an expensive calculation, `useMemo` prevents the function from being called on every render, reducing unnecessary re-computations. This is especially useful when the computation is costly and doesn't need to be recalculated unless certain dependencies change.</p>
+    <pre><code>
+import { useMemo } from 'react';
+
+const ExpensiveComponent = ({ data }) =&gt; {
+  const processedData = useMemo(() =&gt; processData(data), [data]);
+  
+  return &lt;div&gt;{processedData}&lt;/div&gt;;
+};
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>3. When should you avoid using `useMemo`?</h2>
+    <p><strong>Answer:</strong> You should avoid using `useMemo` when the computation is not expensive or when the value being calculated is simple. Adding `useMemo` unnecessarily may add more complexity than performance benefits. It's best to use `useMemo` when the performance optimization is noticeable.</p>
+    <pre><code>
+const SimpleComponent = ({ count }) =&gt; {
+  // No need for useMemo if the computation is simple
+  return &lt;div&gt;{count * 2}&lt;/div&gt;;
+};
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>4. What is the difference between `useMemo` and `useCallback`?</h2>
+    <p><strong>Answer:</strong> `useMemo` is used to memoize computed values, while `useCallback` is used to memoize functions. The goal of both is to avoid unnecessary recalculations or re-creations, respectively. `useMemo` is typically used for values that are the result of an expensive calculation, and `useCallback` is used when a function is passed as a prop and you want to avoid its recreation on each render.</p>
+    <pre><code>
+import { useMemo, useCallback } from 'react';
+
+const MyComponent = ({ data }) =&gt; {
+  const expensiveValue = useMemo(() =&gt; expensiveComputation(data), [data]);
+  const handleClick = useCallback(() =&gt; { console.log('Clicked!'); }, []);
+
+  return &lt;button onClick={handleClick}&gt;{expensiveValue}&lt;/button&gt;;
+};
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>5. How does `useCallback` work?</h2>
+    <p><strong>Answer:</strong> `useCallback` returns a memoized version of a callback function that only changes if one of its dependencies has changed. This is useful when passing functions as props to child components, as it prevents unnecessary re-renders of the child components.</p>
+    <pre><code>
+import { useCallback } from 'react';
+
+const ParentComponent = () =&gt; {
+  const handleClick = useCallback(() =&gt; {
+    console.log('Button clicked');
+  }, []);
+
+  return &lt;ChildComponent onClick={handleClick} /&gt;;
+};
+
+const ChildComponent = ({ onClick }) =&gt; {
+  return &lt;button onClick={onClick}&gt;Click Me&lt;/button&gt;;
+};
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>6. How does `useCallback` prevent unnecessary re-renders?</h2>
+    <p><strong>Answer:</strong> `useCallback` memoizes the function, so React will only recreate the function when one of its dependencies changes. If the function is passed down to child components as a prop, the child components will not re-render unless the function itself has changed, helping to avoid unnecessary renders.</p>
+    <pre><code>
+const Parent = () =&gt; {
+  const [count, setCount] = useState(0);
+
+  const increment = useCallback(() =&gt; setCount((prev) =&gt; prev + 1), []);
+
+  return &lt;Child onClick={increment} /&gt;;
+};
+
+const Child = React.memo(({ onClick }) =&gt; {
+  console.log('Child re-rendered');
+  return &lt;button onClick={onClick}&gt;Increment&lt;/button&gt;;
+});
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>7. Can `useMemo` be used to memoize a function?</h2>
+    <p><strong>Answer:</strong> No, `useMemo` is used to memoize computed values (results of a function). If you need to memoize a function itself, you should use `useCallback`. `useMemo` only caches the return value of a function, not the function itself.</p>
+    <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = () =&gt; {
+  const memoizedValue = useMemo(() =&gt; computeValue(), []);
+
+  return &lt;div&gt;{memoizedValue}&lt;/div&gt;;
+};
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>8. When is it appropriate to use `useMemo` with `useCallback`?</h2>
+    <p><strong>Answer:</strong> It is appropriate to use `useMemo` with `useCallback` when you need to optimize the performance of both computed values and functions. For instance, you may have an expensive calculation in the component and a function that is passed to a child component. By using both hooks, you avoid unnecessary recalculations and re-creations of both the value and the function.</p>
+    <pre><code>
+import { useMemo, useCallback } from 'react';
+
+const ParentComponent = ({ data }) =&gt; {
+  const expensiveValue = useMemo(() =&gt; expensiveComputation(data), [data]);
+  const handleClick = useCallback(() =&gt; console.log(expensiveValue), [expensiveValue]);
+
+  return &lt;button onClick={handleClick}&gt;Click Me&lt;/button&gt;;
+};
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>9. How do you memoize an array with `useMemo`?</h2>
+    <p><strong>Answer:</strong> You can memoize an array by wrapping the array creation logic inside `useMemo` to prevent re-creation of the array on every render. This is particularly useful if the array is the result of an expensive calculation.</p>
+    <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = ({ data }) =&gt; {
+  const filteredData = useMemo(() =&gt; data.filter(item =&gt; item.isActive), [data]);
+
+  return &lt;div&gt;{filteredData}&lt;/div&gt;;
+};
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>10. How does `useMemo` work with objects?</h2>
+    <p><strong>Answer:</strong> `useMemo` can also be used to memoize objects. However, you must be cautious when memoizing objects, as objects are reference types and React compares them by reference. If the object reference changes, the memoized value will be recalculated.</p>
+    <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = ({ user }) =&gt; {
+  const userDetails = useMemo(() =&gt; ({ name: user.name, age: user.age }), [user]);
+
+  return &lt;div&gt;{userDetails.name} - {userDetails.age}&lt;/div&gt;;
+};
+    </code></pre>
+  </div>
+  
+  <div class="question">
+  <h2>11. What are the dependencies of `useMemo`?</h2>
+  <p><strong>Answer:</strong> The dependencies of `useMemo` are the values that, when changed, will trigger the recalculation of the memoized value. If any dependency changes, the function inside `useMemo` will re-run. If no dependencies are provided, the memoized value will never change.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = ({ number, multiplier }) =&gt; {
+  const memoizedValue = useMemo(() =&gt; number * multiplier, [number, multiplier]);
+
+  return &lt;div&gt;{memoizedValue}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>12. Can you use `useMemo` with non-primitive values like arrays and objects?</h2>
+  <p><strong>Answer:</strong> Yes, `useMemo` can be used with non-primitive values like arrays and objects. However, you need to be cautious, as React compares these by reference. If the reference changes, even if the contents are the same, the memoized value will be recalculated.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = ({ data }) =&gt; {
+  const memoizedData = useMemo(() =&gt; data.map(item =&gt; item * 2), [data]);
+
+  return &lt;div&gt;{memoizedData.join(', ')}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>13. What happens if no dependencies are provided to `useMemo`?</h2>
+  <p><strong>Answer:</strong> If no dependencies are provided, `useMemo` will only calculate the value once when the component mounts, and the value will remain the same for the entire lifecycle of the component. This is equivalent to `componentDidMount` behavior.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = () =&gt; {
+  const constantValue = useMemo(() =&gt; 100, []);
+
+  return &lt;div&gt;{constantValue}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>14. How do you prevent unnecessary renders using `useMemo`?</h2>
+  <p><strong>Answer:</strong> `useMemo` prevents unnecessary renders by caching the computed value and ensuring that it is only recomputed when its dependencies change. This is especially useful in cases where the computation is expensive and you want to avoid recalculating it on every render.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const ExpensiveComponent = ({ items }) =&gt; {
+  const filteredItems = useMemo(() =&gt; items.filter(item =&gt; item.isActive), [items]);
+
+  return &lt;div&gt;{filteredItems.length} items&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>15. Can `useMemo` be used with callback functions?</h2>
+  <p><strong>Answer:</strong> No, `useMemo` is intended for memoizing values, not functions. For memoizing callback functions, you should use `useCallback`. `useMemo` will only cache the return value of a function, not the function itself.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = ({ number }) =&gt; {
+  const computedValue = useMemo(() =&gt; number * 10, [number]);
+
+  return &lt;div&gt;{computedValue}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>16. How does `useMemo` affect the component lifecycle?</h2>
+  <p><strong>Answer:</strong> `useMemo` does not affect the component lifecycle directly. It only controls when a specific value is recalculated. If a value is memoized, it will not be recomputed unless its dependencies change, but it still follows the regular React component lifecycle, including mounting, updating, and unmounting.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = ({ data }) =&gt; {
+  const memoizedValue = useMemo(() =&gt; computeValue(data), [data]);
+
+  return &lt;div&gt;{memoizedValue}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>17. How do you memoize an expensive computation with `useMemo`?</h2>
+  <p><strong>Answer:</strong> To memoize an expensive computation with `useMemo`, simply pass the computation function and its dependencies as arguments to `useMemo`. The computed result will be cached, and the function will only re-run if the dependencies change.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const ExpensiveComputationComponent = ({ number }) =&gt; {
+  const result = useMemo(() =&gt; {
+    console.log('Expensive computation...');
+    return number * 100;
+  }, [number]);
+
+  return &lt;div&gt;{result}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>18. What is the syntax for using `useMemo`?</h2>
+  <p><strong>Answer:</strong> The syntax for using `useMemo` is:</p>
+  <pre><code>
+const memoizedValue = useMemo(() =&gt; { /* computation */ }, [dependencies]);
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>19. Can `useMemo` be used to cache components?</h2>
+  <p><strong>Answer:</strong> `useMemo` does not cache components themselves, but it can be used to memoize the values passed into the component. For memoizing entire components, you can use `React.memo` which is a higher-order component that memoizes a component based on its props.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = ({ number }) =&gt; {
+  const memoizedValue = useMemo(() =&gt; number * 2, [number]);
+
+  return &lt;div&gt;{memoizedValue}&lt;/div&gt;;
+};
+
+export default React.memo(MyComponent);
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>20. How do you memoize the result of an API call using `useMemo`?</h2>
+  <p><strong>Answer:</strong> You can memoize the result of an API call by passing the API call result into `useMemo` and setting the dependencies to the values that change when a new request is needed, such as query parameters.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = ({ query }) =&gt; {
+  const fetchData = async () =&gt; {
+    const response = await fetch(`https://api.example.com/data?q=${query}`);
+    return response.json();
+  };
+
+  const memoizedData = useMemo(() =&gt; fetchData(), [query]);
+
+  return &lt;div&gt;{memoizedData}</div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>21. What is the difference between `useMemo` and `useCallback`?</h2>
+  <p><strong>Answer:</strong> `useMemo` is used to memoize computed values, while `useCallback` is used to memoize callback functions. `useMemo` returns a memoized value, whereas `useCallback` returns a memoized function.</p>
+  <pre><code>
+import { useCallback, useMemo } from 'react';
+
+const MyComponent = ({ items }) =&gt; {
+  const computeTotal = useCallback(() =&gt; {
+    return items.reduce((acc, item) =&gt; acc + item.price, 0);
+  }, [items]);
+
+  const total = useMemo(() =&gt; computeTotal(), [computeTotal]);
+
+  return &lt;div&gt;Total: {total}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>22. When should you use `useMemo` versus `useCallback`?</h2>
+  <p><strong>Answer:</strong> Use `useMemo` when you want to memoize the result of a computation, and use `useCallback` when you want to memoize a function. `useMemo` is useful for expensive computations, while `useCallback` is useful for ensuring the stability of callback functions that are passed to child components or dependencies of other hooks.</p>
+  <pre><code>
+import { useMemo, useCallback } from 'react';
+
+const MyComponent = ({ items }) =&gt; {
+  const computeTotal = useCallback(() =&gt; {
+    return items.reduce((acc, item) =&gt; acc + item.price, 0);
+  }, [items]);
+
+  const total = useMemo(() =&gt; computeTotal(), [computeTotal]);
+
+  return &lt;div&gt;Total: {total}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>23. How do you handle `useMemo` and `useCallback` when dealing with complex objects?</h2>
+  <p><strong>Answer:</strong> When dealing with complex objects, ensure that you are providing the correct dependencies. If the object reference changes on every render, `useMemo` and `useCallback` will recalculate the value or function. You may want to use techniques like `useRef` to persist the object across renders or optimize your object structure to avoid unnecessary recalculations.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = ({ complexObject }) =&gt; {
+  const memoizedValue = useMemo(() =&gt; {
+    return complexObject.property * 2;
+  }, [complexObject.property]);
+
+  return &lt;div&gt;{memoizedValue}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>24. Can `useMemo` be used to optimize rendering in lists?</h2>
+  <p><strong>Answer:</strong> Yes, `useMemo` can be used to optimize rendering in lists, especially when rendering large datasets or performing expensive computations for each item. By memoizing the result of the list rendering or calculations, you can avoid unnecessary re-renders and improve performance.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = ({ items }) =&gt; {
+  const renderedItems = useMemo(() =&gt; {
+    return items.map(item =&gt; &lt;div key={item.id}&gt;{item.name}&lt;/div&gt;);
+  }, [items]);
+
+  return &lt;div&gt;{renderedItems}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>25. Can you memoize a value inside a callback function with `useMemo`?</h2>
+  <p><strong>Answer:</strong> Yes, you can memoize a value inside a callback function with `useMemo`, but it's more common to use `useCallback` for this scenario. `useMemo` is typically used to memoize values, not functions.</p>
+  <pre><code>
+import { useMemo, useCallback } from 'react';
+
+const MyComponent = ({ items }) =&gt; {
+  const computeTotal = useCallback(() =&gt; {
+    return items.reduce((acc, item) =&gt; acc + item.price, 0);
+  }, [items]);
+
+  const memoizedTotal = useMemo(() =&gt; computeTotal(), [computeTotal]);
+
+  return &lt;div&gt;Total: {memoizedTotal}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>26. Is `useMemo` useful for avoiding unnecessary re-renders in React functional components?</h2>
+  <p><strong>Answer:</strong> `useMemo` can be useful for avoiding unnecessary recalculations of memoized values, but it does not directly prevent re-renders. React’s re-rendering behavior is determined by state or props changes, and `useMemo` only prevents recomputations of values. To avoid unnecessary re-renders, consider using `React.memo` or `useCallback` for memoizing functions passed as props.</p>
+  <pre><code>
+import { useMemo, useCallback } from 'react';
+
+const ExpensiveComputation = React.memo(({ number }) =&gt; {
+  const memoizedValue = useMemo(() =&gt; number * 100, [number]);
+
+  return &lt;div&gt;{memoizedValue}&lt;/div&gt;;
+});
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>27. How does `useMemo` help with performance in large data sets?</h2>
+  <p><strong>Answer:</strong> `useMemo` helps with performance in large data sets by memoizing the result of expensive computations. If a computation is expensive and depends on specific variables, `useMemo` will only re-run the computation when those dependencies change, reducing unnecessary calculations and improving performance, especially in lists or large data-driven components.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const LargeList = ({ data }) =&gt; {
+  const sortedData = useMemo(() =&gt; {
+    return data.sort((a, b) =&gt; a.value - b.value);
+  }, [data]);
+
+  return &lt;div&gt;{sortedData.map(item =&gt; &lt;div key={item.id}&gt;{item.name}&lt;/div&gt;)}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>28. What happens if you pass an empty dependency array to `useMemo`?</h2>
+  <p><strong>Answer:</strong> Passing an empty dependency array to `useMemo` ensures that the memoized value is calculated only once when the component is mounted, and it will remain the same for the entire lifecycle of the component. It will not recompute even if the component re-renders unless its dependencies change.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = () =&gt; {
+  const memoizedValue = useMemo(() =&gt; 100, []);
+
+  return &lt;div&gt;{memoizedValue}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>29. How do you memoize a function using `useCallback`?</h2>
+  <p><strong>Answer:</strong> You can memoize a function using `useCallback` by passing the function and its dependencies. This ensures the function is not recreated on every render unless one of its dependencies changes.</p>
+  <pre><code>
+import { useCallback } from 'react';
+
+const MyComponent = ({ onClick }) =&gt; {
+  const memoizedClick = useCallback(() =&gt; {
+    console.log('Button clicked');
+  }, []);
+
+  return &lt;button onClick={memoizedClick}&gt;Click Me&lt;/button&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>30. Can `useMemo` be used to avoid unnecessary re-renders when passing props to child components?</h2>
+  <p><strong>Answer:</strong> Yes, `useMemo` can help avoid unnecessary re-renders when passing props to child components. By memoizing the props before passing them to the child, you ensure that they only change when necessary, preventing re-renders of the child components when the props have not changed.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const ParentComponent = ({ data }) =&gt; {
+  const memoizedData = useMemo(() =&gt; data, [data]);
+
+  return &lt;ChildComponent data={memoizedData} /&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>31. How can `useMemo` be used for caching API results in React?</h2>
+  <p><strong>Answer:</strong> `useMemo` can be used to cache API results by storing the data in a memoized value, ensuring that it only re-fetches when the dependencies (such as search query or filters) change. This helps prevent redundant API calls and improves performance.</p>
+  <pre><code>
+import { useState, useEffect, useMemo } from 'react';
+
+const MyComponent = ({ query }) =&gt; {
+  const [data, setData] = useState(null);
+
+  const fetchData = async () =&gt; {
+    const response = await fetch(`https://api.example.com/search?q=${query}`);
+    const result = await response.json();
+    setData(result);
+  };
+
+  const memoizedData = useMemo(() =&gt; data, [data, query]);
+
+  useEffect(() =&gt; {
+    fetchData();
+  }, [query]);
+
+  return &lt;div&gt;{memoizedData ? memoizedData.results.map(item =&gt; &lt;p key={item.id}&gt;{item.name}&lt;/p&gt;) : 'Loading...'}</div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>32. How do you optimize a large list rendering with `useMemo`?</h2>
+  <p><strong>Answer:</strong> You can optimize a large list rendering by memoizing the list's items or any expensive computation related to the rendering. This ensures that the list is re-rendered only when its data or dependencies change, thus avoiding unnecessary rendering of unchanged items.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const LargeList = ({ items }) =&gt; {
+  const sortedItems = useMemo(() =&gt; items.sort((a, b) =&gt; a.name.localeCompare(b.name)), [items]);
+
+  return &lt;ul&gt;
+    {sortedItems.map(item =&gt; &lt;li key={item.id}&gt;{item.name}&lt;/li&gt;)}
+  &lt;/ul&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>33. How does `useMemo` work with arrays?</h2>
+  <p><strong>Answer:</strong> When working with arrays, `useMemo` helps to avoid recomputing derived values, like sorted or filtered arrays, on every render. It ensures that the array is only recomputed when the dependencies of the array change, improving performance for large or complex data structures.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = ({ data }) =&gt; {
+  const filteredData = useMemo(() =&gt; data.filter(item =&gt; item.isActive), [data]);
+
+  return &lt;div&gt;{filteredData.map(item =&gt; &lt;p key={item.id}&gt;{item.name}&lt;/p&gt;)}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>34. Can `useMemo` be used to memoize the results of array methods?</h2>
+  <p><strong>Answer:</strong> Yes, `useMemo` can be used to memoize the results of array methods, such as `map`, `filter`, and `reduce`. This is useful when dealing with large arrays and complex transformations that do not need to be recomputed unless the array itself changes.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = ({ numbers }) =&gt; {
+  const sum = useMemo(() =&gt; numbers.reduce((acc, num) =&gt; acc + num, 0), [numbers]);
+
+  return &lt;div&gt;Sum: {sum}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>35. How does `useMemo` compare to memoization libraries like `lodash.memoize`?</h2>
+  <p><strong>Answer:</strong> `useMemo` is a built-in React hook for memoizing values within a component. It is optimized for React's render cycle and works with state and props. On the other hand, libraries like `lodash.memoize` provide more general-purpose memoization outside of React, such as memoizing pure functions. `useMemo` is ideal for React-specific optimizations, while `lodash.memoize` is useful for memoizing arbitrary functions.</p>
+  <pre><code>
+import { useMemo } from 'react';
+import memoize from 'lodash.memoize';
+
+const MyComponent = ({ number }) =&gt; {
+  const calculateValue = memoize((num) =&gt; num * 2);
+
+  const memoizedValue = useMemo(() =&gt; calculateValue(number), [number]);
+
+  return &lt;div&gt;{memoizedValue}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>36. When should you use `useMemo` for function arguments?</h2>
+  <p><strong>Answer:</strong> `useMemo` is useful for function arguments when the function is passed to a child component or another hook, and you want to prevent unnecessary recalculations. However, in most cases, `useCallback` is better suited for memoizing functions. `useMemo` should only be used when you want to memoize the result of an expensive computation or transformation based on the function's input.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = ({ data }) =&gt; {
+  const transformedData = useMemo(() =&gt; data.map(item =&gt; item * 2), [data]);
+
+  return &lt;div&gt;{transformedData.join(', ')}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>37. How can you use `useMemo` to optimize an expensive API request?</h2>
+  <p><strong>Answer:</strong> You can use `useMemo` to memoize the result of an expensive API request by ensuring the request is only triggered when its dependencies (such as query parameters) change. This avoids redundant requests and improves performance.</p>
+  <pre><code>
+import { useMemo, useState, useEffect } from 'react';
+
+const MyComponent = ({ searchQuery }) =&gt; {
+  const [data, setData] = useState(null);
+
+  const memoizedFetch = useMemo(() =&gt; {
+    const fetchData = async () =&gt; {
+      const response = await fetch(`https://api.example.com/search?q=${searchQuery}`);
+      const result = await response.json();
+      setData(result);
+    };
+    return fetchData;
+  }, [searchQuery]);
+
+  useEffect(() =&gt; {
+    memoizedFetch();
+  }, [memoizedFetch]);
+
+  return &lt;div&gt;{data ? JSON.stringify(data) : 'Loading...'}</div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>38. Can you memoize the result of a function that returns an object with `useMemo`?</h2>
+  <p><strong>Answer:</strong> Yes, you can memoize the result of a function that returns an object. However, be careful when dealing with objects, as React compares objects by reference. If the object reference changes, the result will be recomputed, even if the object content remains the same.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = ({ data }) =&gt; {
+  const computedObject = useMemo(() =&gt; ({ value: data * 2 }), [data]);
+
+  return &lt;div&gt;{computedObject.value}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>39. How does `useMemo` interact with `React.memo`?</h2>
+  <p><strong>Answer:</strong> `useMemo` and `React.memo` can be used together to optimize rendering. `React.memo` prevents unnecessary re-renders of a component by memoizing its props, while `useMemo` can be used to memoize expensive calculations or values passed to the component. Combining both can optimize performance in complex React applications.</p>
+  <pre><code>
+import React, { useMemo } from 'react';
+
+const ExpensiveComponent = React.memo(({ data }) =&gt; {
+  const memoizedValue = useMemo(() =&gt; data * 100, [data]);
+  return &lt;div&gt;{memoizedValue}&lt;/div&gt;;
+});
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>40. What is the purpose of using `useMemo` with complex calculations in React?</h2>
+  <p><strong>Answer:</strong> `useMemo` helps optimize performance by memoizing the results of complex calculations. It ensures that expensive calculations are only re-executed when necessary (i.e., when dependencies change), preventing redundant recalculations during re-renders.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = ({ numbers }) =&gt; {
+  const expensiveCalculation = useMemo(() =&gt; {
+    return numbers.reduce((sum, num) =&gt; sum + num, 0);
+  }, [numbers]);
+
+  return &lt;div&gt;Sum: {expensiveCalculation}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>41. Can you memoize values returned by hooks like `useState` with `useMemo`?</h2>
+  <p><strong>Answer:</strong> It is generally unnecessary to memoize values returned by `useState` with `useMemo`. State values in React are already memoized at the component level, and `useMemo` is more useful for computationally expensive values or props passed to child components.</p>
+  <pre><code>
+import { useState, useMemo } from 'react';
+
+const MyComponent = () =&gt; {
+  const [count, setCount] = useState(0);
+
+  // Using useMemo for count would be unnecessary
+  const memoizedCount = useMemo(() =&gt; count, [count]);
+
+  return (
+    &lt;div&gt;
+      Count: {memoizedCount}
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>42. How do you prevent re-creating an inline function on each render with `useMemo`?</h2>
+  <p><strong>Answer:</strong> You can prevent re-creating an inline function on each render by memoizing the function using `useMemo`. This ensures that the function is only recreated when its dependencies change, thus preventing unnecessary renders caused by new function references.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = () =&gt; {
+  const handleClick = useMemo(() =&gt; () =&gt; {
+    alert('Button clicked');
+  }, []);
+
+  return &lt;button onClick={handleClick}&gt;Click Me&lt;/button&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>43. How do `useMemo` and `useEffect` differ in terms of reactivity?</h2>
+  <p><strong>Answer:</strong> `useMemo` is used to memoize expensive calculations and ensure they are only recomputed when dependencies change, preventing unnecessary recalculations. `useEffect`, on the other hand, is used to handle side effects and runs after every render or when specific dependencies change, but it does not return values to the component like `useMemo` does.</p>
+  <pre><code>
+import { useMemo, useEffect, useState } from 'react';
+
+const MyComponent = () =&gt; {
+  const [count, setCount] = useState(0);
+
+  const doubledCount = useMemo(() =&gt; count * 2, [count]);
+
+  useEffect(() =&gt; {
+    console.log('Count updated');
+  }, [count]);
+
+  return (
+    &lt;div&gt;
+      Count: {count}, Doubled Count: {doubledCount}
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>44. Can you use `useMemo` to prevent unnecessary re-renders when using `useContext`?</h2>
+  <p><strong>Answer:</strong> Yes, `useMemo` can be used in conjunction with `useContext` to prevent unnecessary re-renders. By memoizing values derived from the context, you ensure that only the components consuming the context's values are re-rendered when the actual values change.</p>
+  <pre><code>
+import { useContext, useMemo } from 'react';
+import { MyContext } from './MyContext';
+
+const MyComponent = () =&gt; {
+  const contextValue = useContext(MyContext);
+
+  const memoizedValue = useMemo(() =&gt; contextValue.someExpensiveCalculation(), [contextValue]);
+
+  return &lt;div&gt;{memoizedValue}&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>45. Can `useMemo` improve performance in lists with dynamic content?</h2>
+  <p><strong>Answer:</strong> Yes, `useMemo` can improve performance in lists with dynamic content by memoizing the list's rendering or sorting logic. This ensures that the rendering only re-runs when the relevant dependencies (such as the list data) change.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const ListComponent = ({ items }) =&gt; {
+  const sortedItems = useMemo(() =&gt; items.sort((a, b) =&gt; a.name.localeCompare(b.name)), [items]);
+
+  return (
+    &lt;ul&gt;
+      {sortedItems.map(item =&gt; &lt;li key={item.id}&gt;{item.name}&lt;/li&gt;)}
+    &lt;/ul&gt;
+  );
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>46. How does `useMemo` help with the performance of dynamic forms?</h2>
+  <p><strong>Answer:</strong> `useMemo` can help optimize dynamic forms by memoizing the form field values, validation logic, and any derived state. This ensures that only the necessary fields or components are re-rendered when their values change, improving overall performance in complex forms.</p>
+  <pre><code>
+import { useState, useMemo } from 'react';
+
+const DynamicForm = ({ fields }) =&gt; {
+  const [formData, setFormData] = useState({});
+
+  const formFields = useMemo(() =&gt; fields.map(field =&gt; (
+    &lt;div key={field.name}&gt;
+      &lt;label&gt;{field.label}&lt;/label&gt;
+      &lt;input
+        type={field.type}
+        value={formData[field.name] || ''}
+        onChange={e =&gt; setFormData({...formData, [field.name]: e.target.value})}
+      /&gt;
+    &lt;/div&gt;
+  )), [fields, formData]);
+
+  return &lt;form&gt;{formFields}&lt;/form&gt;;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>47. Can `useMemo` be used for dynamically generating class names?</h2>
+  <p><strong>Answer:</strong> Yes, `useMemo` can be used to dynamically generate class names based on props or state. By memoizing the class name computation, you ensure that the class names are only recalculated when the relevant dependencies change, preventing unnecessary re-computations.</p>
+  <pre><code>
+import { useMemo } from 'react';
+
+const MyComponent = ({ isActive }) =&gt; {
+  const className = useMemo(() =&gt; isActive ? 'active' : 'inactive', [isActive]);
+
+  return &lt;div className={className}&gt;Content here&lt;/div&gt;;
+};
+  </code></pre>
+</div>
+
+
+
+
+</body>
+</html>
