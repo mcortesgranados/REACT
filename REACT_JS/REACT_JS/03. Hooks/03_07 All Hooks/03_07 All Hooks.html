@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+</head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+        th {
+            background-color: #007bff;
+            color: #fff;
+            font-size: 18px;
+        }
+        td {
+            font-size: 16px;
+            color: #555;
+        }
+        td em {
+            color: #007bff;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .table-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow-x: auto;
+        }
+        caption {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        @media (max-width: 768px) {
+            th, td {
+                font-size: 14px;
+                padding: 10px;
+            }
+            caption {
+                font-size: 18px;
+            }
+        }
+    </style>
+
+<body>
+<table data-start="140" data-end="7117">
+  <thead data-start="140" data-end="671">
+    <tr data-start="140" data-end="671">
+      <th data-start="140" data-end="165"><strong data-start="142" data-end="150">Hook</strong></th>
+      <th data-start="165" data-end="221"><strong data-start="167" data-end="178">Purpose</strong></th>
+      <th data-start="221" data-end="308"><strong data-start="223" data-end="243">Typical Use Case</strong></th>
+      <th data-start="308" data-end="360"><strong data-start="310" data-end="326">Return Value</strong></th>
+      <th data-start="360" data-end="423"><strong data-start="362" data-end="378">Dependencies</strong></th>
+      <th data-start="423" data-end="484"><strong data-start="425" data-end="440">When to Use</strong></th>
+      <th data-start="484" data-end="546"><strong data-start="486" data-end="500">Advantages</strong></th>
+      <th data-start="546" data-end="609"><strong data-start="548" data-end="565">Disadvantages</strong></th>
+      <th data-start="609" data-end="671"><strong data-start="611" data-end="623">Use Case</strong></th>
+    </tr>
+  </thead>
+  <tbody data-start="1200" data-end="7117">
+    <tr data-start="1200" data-end="1758">
+      <td data-start="1200" data-end="1226"><strong data-start="1202" data-end="1214">useState</strong></td>
+      <td data-start="1226" data-end="1281">Adds state to functional components. ✨</td>
+      <td data-start="1281" data-end="1371">Storing and updating primitive or complex data types, like numbers, strings, arrays. 📊</td>
+      <td data-start="1371" data-end="1423">Current state value and a function to update it.</td>
+      <td data-start="1423" data-end="1489">The state value itself, typically used in useEffect. 🧑‍💻</td>
+      <td data-start="1489" data-end="1559">When you need local state management in a functional component. 🏗️</td>
+      <td data-start="1559" data-end="1620">Simple to use, intuitive API. ✅</td>
+      <td data-start="1620" data-end="1691">Can lead to unnecessary re-renders if state updates are frequent. 🔄</td>
+      <td data-start="1691" data-end="1758">Managing simple state, e.g., form inputs, counters, toggles. ⏱️</td>
+    </tr>
+    <tr data-start="1759" data-end="2327">
+      <td data-start="1759" data-end="1785"><strong data-start="1761" data-end="1774">useEffect</strong></td>
+      <td data-start="1785" data-end="1849">Handles side effects like data fetching or subscriptions. 🔄</td>
+      <td data-start="1849" data-end="1941">Fetching data, updating the DOM, setting up timers, or subscribing to external events. 🌐</td>
+      <td data-start="1941" data-end="1995">None (it triggers side effects). 🌪️</td>
+      <td data-start="1995" data-end="2057">An array of dependencies; optional. 🔗</td>
+      <td data-start="2057" data-end="2121">When you need to perform side effects after render. 🛠️</td>
+      <td data-start="2121" data-end="2185">Flexible, runs after render. Great for async operations. ⏳</td>
+      <td data-start="2185" data-end="2261">Can lead to race conditions if not managed properly with dependencies. ⚠️</td>
+      <td data-start="2261" data-end="2327">Data fetching, event listeners, DOM manipulation. 📡</td>
+    </tr>
+    <tr data-start="2328" data-end="2896">
+      <td data-start="2328" data-end="2354"><strong data-start="2330" data-end="2344">useContext</strong></td>
+      <td data-start="2354" data-end="2411">Accesses the value of a React context. 🌍</td>
+      <td data-start="2411" data-end="2500">Sharing data like themes or authentication status without manually passing props. 🎨</td>
+      <td data-start="2500" data-end="2553">The current context value. 💡</td>
+      <td data-start="2553" data-end="2615">The context object passed to useContext. 📂</td>
+      <td data-start="2615" data-end="2680">When you need access to a context value within a component. 🔍</td>
+      <td data-start="2680" data-end="2742">Eliminates prop drilling. Simplifies state management. 🎉</td>
+      <td data-start="2742" data-end="2830">Potential performance overhead if not optimized (re-renders when context changes). 🐢</td>
+      <td data-start="2830" data-end="2896">Theme management, global user authentication, settings. 🔐</td>
+    </tr>
+    <tr data-start="2897" data-end="3444">
+      <td data-start="2897" data-end="2923"><strong data-start="2899" data-end="2913">useReducer</strong></td>
+      <td data-start="2923" data-end="2981">Manages more complex state logic with a reducer. ⚙️</td>
+      <td data-start="2981" data-end="3069">Handling complex state transitions in large applications or forms. 🏢</td>
+      <td data-start="3069" data-end="3122">The current state and a dispatch function. 🚀</td>
+      <td data-start="3122" data-end="3185">The reducer function and initial state (optional). 📑</td>
+      <td data-start="3185" data-end="3249">When state logic becomes too complex for useState. 🏋️‍♂️</td>
+      <td data-start="3249" data-end="3314">Useful for managing complex state logic. Easier to scale. 🏢</td>
+      <td data-start="3314" data-end="3379">Slightly more boilerplate code compared to useState. 📚</td>
+      <td data-start="3379" data-end="3444">Managing complex forms, state-driven applications. 📝</td>
+    </tr>
+    <tr data-start="3445" data-end="4081">
+      <td data-start="3445" data-end="3471"><strong data-start="3447" data-end="3462">useCallback</strong></td>
+      <td data-start="3471" data-end="3527">Memoizes a callback function. 🔁</td>
+      <td data-start="3527" data-end="3638">Prevents re-creation of a function on each render, optimizing performance, especially in child components. ⚡</td>
+      <td data-start="3638" data-end="3692">The memoized callback function. 🎯</td>
+      <td data-start="3692" data-end="3761">An array of dependencies (values that the function depends on). 📅</td>
+      <td data-start="3761" data-end="3853">When you need to optimize performance by preventing unnecessary function re-creations. 💨</td>
+      <td data-start="3853" data-end="3929">Prevents unnecessary re-creations of functions, optimizing performance. ⚡</td>
+      <td data-start="3929" data-end="4005">Can be overused or misused, potentially adding unnecessary complexity. 💭</td>
+      <td data-start="4005" data-end="4081">Optimizing event handlers, preventing re-renders in child components. 🎯</td>
+    </tr>
+    <tr data-start="4082" data-end="4664">
+      <td data-start="4082" data-end="4108"><strong data-start="4084" data-end="4095">useMemo</strong></td>
+      <td data-start="4108" data-end="4164">Memoizes a computed value. 🔐</td>
+      <td data-start="4164" data-end="4254">Optimizing expensive calculations or ensuring stable references for complex objects. 🧠</td>
+      <td data-start="4254" data-end="4310">The memoized value. 💎</td>
+      <td data-start="4310" data-end="4377">An array of dependencies (values that trigger recomputation). 🔄</td>
+      <td data-start="4377" data-end="4452">When you want to optimize heavy computations or object references. 🏃‍♂️</td>
+      <td data-start="4452" data-end="4526">Optimizes expensive calculations, reducing unnecessary computations. ⚙️</td>
+      <td data-start="4526" data-end="4599">Misuse can lead to excessive memory usage or redundant computation. 💾</td>
+      <td data-start="4599" data-end="4664">Optimizing performance in data-heavy apps or calculations. 📊</td>
+    </tr>
+    <tr data-start="4665" data-end="5303">
+      <td data-start="4665" data-end="4691"><strong data-start="4667" data-end="4677">useRef</strong></td>
+      <td data-start="4691" data-end="4751">Creates a mutable object that persists across renders. 🔄</td>
+      <td data-start="4751" data-end="4842">Accessing DOM elements directly or storing mutable values like previous state values. 🌿</td>
+      <td data-start="4842" data-end="4897">A mutable ref object. 🏷️</td>
+      <td data-start="4897" data-end="4961">No dependencies (can be updated directly). 🔧</td>
+      <td data-start="4961" data-end="5055">When you need to access or modify DOM elements or store mutable values between renders. 🏗️</td>
+      <td data-start="5055" data-end="5137">Maintains persistent references across renders. Useful for DOM manipulation. 💻</td>
+      <td data-start="5137" data-end="5227">No automatic re-render on value change. Can lead to stale data if not used carefully. ⏳</td>
+      <td data-start="5227" data-end="5303">Storing previous values, focusing on DOM elements, or mutable values. 🌍</td>
+    </tr>
+    <tr data-start="5304" data-end="5949">
+      <td data-start="5304" data-end="5330"><strong data-start="5306" data-end="5329">useImperativeHandle</strong></td>
+      <td data-start="5330" data-end="5387">Customizes the instance value exposed by ref. 🛠️</td>
+      <td data-start="5387" data-end="5484">Controlling a child component’s instance or exposing specific methods to parent components. 🎮</td>
+      <td data-start="5484" data-end="5547">A custom object or method exposed to the parent. 👨‍👩‍👧‍👦</td>
+      <td data-start="5547" data-end="5610">The ref object and optional dependencies. 🔗</td>
+      <td data-start="5610" data-end="5712">When you need to expose a specific set of methods or values to a parent component through ref. 🏠</td>
+      <td data-start="5712" data-end="5793">Exposes specific functionality to parent components, providing flexibility. 🌟</td>
+      <td data-start="5793" data-end="5871">Can create tightly coupled components. Overuse may break encapsulation. 🏚️</td>
+      <td data-start="5871" data-end="5949">Controlling child component methods, handling complex UI interactions. 🖥️</td>
+    </tr>
+    <tr data-start="5950" data-end="6558">
+      <td data-start="5950" data-end="5976"><strong data-start="5952" data-end="5971">useLayoutEffect</strong></td>
+      <td data-start="5976" data-end="6032">Runs synchronously after all DOM mutations. 🔄</td>
+      <td data-start="6032" data-end="6120">Measuring and modifying the DOM before the browser paints, to avoid layout shifts. 🎨</td>
+      <td data-start="6120" data-end="6180">None (it triggers side effects similar to useEffect). ⚡</td>
+      <td data-start="6180" data-end="6244">An array of dependencies, like in useEffect. 🔁</td>
+      <td data-start="6244" data-end="6358">When you need to modify the DOM before it paints or when you need to measure layout for performance reasons. 📏</td>
+      <td data-start="6358" data-end="6422">Synchronous, useful for DOM manipulation before rendering. 💡</td>
+      <td data-start="6422" data-end="6488">Can block the paint, potentially causing performance issues. 🐢</td>
+      <td data-start="6488" data-end="6558">Layout calculations, animations, measurements before rendering. 🎥</td>
+    </tr>
+    <tr data-start="6559" data-end="7117">
+      <td data-start="6559" data-end="6585"><strong data-start="6561" data-end="6578">useDebugValue</strong></td>
+      <td data-start="6585" data-end="6645">Displays a label for custom hooks in React DevTools. 🛠️</td>
+      <td data-start="6645" data-end="6734">Debugging custom hooks by providing more context in the React DevTools. 🔍</td>
+      <td data-start="6734" data-end="6789">A string or value to display in DevTools. 📊</td>
+      <td data-start="6789" data-end="6854">No dependencies, but should be used within custom hooks. 🧑‍💻</td>
+      <td data-start="6854" data-end="6934">When you need to add debug information for custom hooks in React DevTools. 🔧</td>
+      <td data-start="6934" data-end="6995">Helps in debugging custom hooks in the React D</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>
