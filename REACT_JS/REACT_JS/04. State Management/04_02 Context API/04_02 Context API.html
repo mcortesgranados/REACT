@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>04_02 Context API - React Q&A Set 1</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .question {
+      background: #fff;
+      border-left: 5px solid #3498db;
+      padding: 20px;
+      margin: 20px auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 900px;
+      border-radius: 8px;
+    }
+    .question h2 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>04_02 Context API - React Q&A Set 1 (1-13)</h1>
+
+  <div class="question">
+    <h2>1. What is the Context API in React?</h2>
+    <p>The Context API is a React feature that allows you to share state globally across a component tree without having to pass props manually at every level.</p>
+    <pre><code>// Example usage
+import React, { createContext, useContext } from 'react';
+
+const MyContext = createContext();
+
+const Parent = () => {
+  return (
+    &lt;MyContext.Provider value="Hello from context"&gt;
+      &lt;Child /&gt;
+    &lt;/MyContext.Provider&gt;
+  );
+};
+
+const Child = () => {
+  const value = useContext(MyContext);
+  return &lt;div&gt;{value}&lt;/div&gt;;
+};
+
+export default Parent;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>2. How do you create a Context?</h2>
+    <p>Use <code>React.createContext()</code> to create a new context.</p>
+    <pre><code>import { createContext } from 'react';
+
+const ThemeContext = createContext('light');
+
+export default ThemeContext;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>3. How to provide a value to the context?</h2>
+    <p>Use the Context.Provider component to wrap parts of your component tree and pass a value via the <code>value</code> prop.</p>
+    <pre><code>import ThemeContext from './ThemeContext';
+
+const App = () => {
+  return (
+    &lt;ThemeContext.Provider value="dark"&gt;
+      &lt;MainComponent /&gt;
+    &lt;/ThemeContext.Provider&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>4. How to consume Context using useContext hook?</h2>
+    <pre><code>import React, { useContext } from 'react';
+import ThemeContext from './ThemeContext';
+
+const MainComponent = () => {
+  const theme = useContext(ThemeContext);
+  return &lt;div&gt;Current theme: {theme}&lt;/div&gt;;
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>5. How to combine Context API with functional components?</h2>
+    <p>You can create a functional context provider component for better abstraction.</p>
+    <pre><code>const UserContext = createContext();
+
+const UserProvider = ({ children }) => {
+  const user = { name: 'Manuela', role: 'Developer' };
+  return (
+    &lt;UserContext.Provider value={user}&gt;
+      {children}
+    &lt;/UserContext.Provider&gt;
+  );
+};
+
+export { UserProvider, UserContext };
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>6. Can multiple contexts be nested?</h2>
+    <p>Yes, you can nest multiple context providers.</p>
+    <pre><code>&lt;AuthContext.Provider value={authValue}&gt;
+  &lt;ThemeContext.Provider value="dark"&gt;
+    &lt;App /&gt;
+  &lt;/ThemeContext.Provider&gt;
+&lt;/AuthContext.Provider&gt;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>7. What happens if there’s no matching Provider?</h2>
+    <p>If no provider is found above the component, the context value defaults to the value passed to <code>createContext(defaultValue)</code>.</p>
+  </div>
+
+  <div class="question">
+    <h2>8. How to avoid unnecessary re-renders with Context?</h2>
+    <p>Use <code>React.memo</code> or split context values and use selectors to avoid re-renders when context changes but component doesn't care.</p>
+    <pre><code>const MemoizedComponent = React.memo(() =&gt; {
+  const theme = useContext(ThemeContext);
+  return &lt;div&gt;{theme}&lt;/div&gt;;
+});</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>9. How to update context from a child component?</h2>
+    <pre><code>const CounterContext = createContext();
+
+const CounterProvider = ({ children }) =&gt; {
+  const [count, setCount] = useState(0);
+  return (
+    &lt;CounterContext.Provider value={{ count, setCount }}&gt;
+      {children}
+    &lt;/CounterContext.Provider&gt;
+  );
+};
+
+const IncrementButton = () =&gt; {
+  const { setCount } = useContext(CounterContext);
+  return &lt;button onClick={() =&gt; setCount(prev =&gt; prev + 1)}&gt;Increment&lt;/button&gt;;
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>10. Can Context API be used for theming?</h2>
+    <p>Yes. It’s a common use case to pass themes using context.</p>
+    <pre><code>const ThemeContext = createContext('light');
+
+const ThemedComponent = () =&gt; {
+  const theme = useContext(ThemeContext);
+  return &lt;div className={`theme-${theme}`}&gt;Themed Content&lt;/div&gt;;
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>11. What’s a custom hook for Context?</h2>
+    <p>You can wrap <code>useContext</code> inside a custom hook for cleaner code.</p>
+    <pre><code>const useTheme = () =&gt; {
+  return useContext(ThemeContext);
+};
+
+const Component = () =&gt; {
+  const theme = useTheme();
+  return &lt;p&gt;{theme}&lt;/p&gt;;
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>12. Can we use Context API with TypeScript?</h2>
+    <pre><code>type User = {
+  name: string;
+  age: number;
+};
+
+const UserContext = createContext&lt;User | undefined&gt;(undefined);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>13. How to reset context value?</h2>
+    <p>Reassigning a new value via provider will reset it.</p>
+    <pre><code>setUser(null); // Or initial state value to reset context</code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>14. How to structure large applications using multiple contexts?</h2>
+    <pre><code>const App = () =&gt; (
+  &lt;UserProvider&gt;
+    &lt;ThemeProvider&gt;
+      &lt;NotificationsProvider&gt;
+        &lt;MainApp /&gt;
+      &lt;/NotificationsProvider&gt;
+    &lt;/ThemeProvider&gt;
+  &lt;/UserProvider&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>15. Can useContext be used outside a Provider?</h2>
+    <p>Technically yes, but it will return the default value. You should always wrap consuming components inside the Provider.</p>
+  </div>
+
+  <div class="question">
+    <h2>16. How to memoize context value?</h2>
+    <pre><code>const App = () =&gt; {
+  const [user, setUser] = useState({});
+  const value = useMemo(() =&gt; ({ user, setUser }), [user]);
+  
+  return (
+    &lt;UserContext.Provider value={value}&gt;
+      &lt;Main /&gt;
+    &lt;/UserContext.Provider&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>17. How to share functions using Context API?</h2>
+    <pre><code>const ModalContext = createContext();
+
+const ModalProvider = ({ children }) =&gt; {
+  const showModal = (msg) =&gt; alert(msg);
+  return (
+    &lt;ModalContext.Provider value={{ showModal }}&gt;
+      {children}
+    &lt;/ModalContext.Provider&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>18. How to isolate context logic?</h2>
+    <p>Create a separate file for provider and context to avoid duplication and ensure reusability.</p>
+    <pre><code>// context/UserContext.js
+const UserContext = createContext();
+const useUser = () =&gt; useContext(UserContext);
+export { UserContext, useUser };</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>19. Can we use Context with useReducer?</h2>
+    <pre><code>const StateContext = createContext();
+
+const reducer = (state, action) =&gt; {
+  switch (action.type) {
+    case 'INCREMENT': return { count: state.count + 1 };
+    default: return state;
+  }
+};
+
+const StateProvider = ({ children }) =&gt; {
+  const [state, dispatch] = useReducer(reducer, { count: 0 });
+
+  return (
+    &lt;StateContext.Provider value={{ state, dispatch }}&gt;
+      {children}
+    &lt;/StateContext.Provider&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>20. How to access context in deeply nested components?</h2>
+    <p>No matter how deeply nested, components wrapped inside a provider can access the context using useContext.</p>
+  </div>
+
+  <div class="question">
+    <h2>21. How to provide default context values?</h2>
+    <pre><code>const AuthContext = createContext({
+  user: null,
+  login: () =&gt; {},
+  logout: () =&gt; {}
+});</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>22. Can Context API replace Redux?</h2>
+    <p>It depends. For small to medium apps, yes. But Redux offers powerful tools like middleware, dev tools, etc., for larger apps.</p>
+  </div>
+
+  <div class="question">
+    <h2>23. Can I use multiple values in one context?</h2>
+    <p>Yes, you can pass an object with multiple keys in the context value.</p>
+    <pre><code>&lt;AppContext.Provider value={{ theme, user, locale }}&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>24. How to debug Context values?</h2>
+    <p>Use console.log in Provider and custom hooks. You can also use React DevTools to inspect context values.</p>
+  </div>
+
+  <div class="question">
+    <h2>25. How to provide dynamic data from API to context?</h2>
+    <pre><code>useEffect(() =&gt; {
+  fetch('/api/user')
+    .then(res =&gt; res.json())
+    .then(setUser);
+}, []);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>26. Can Context be used with class components?</h2>
+    <p>Yes, by using the <code>Context.Consumer</code> component or static <code>contextType</code>.</p>
+    <pre><code>class MyComponent extends React.Component {
+  static contextType = ThemeContext;
+
+  render() {
+    return &lt;p&gt;Theme: {this.context}&lt;/p&gt;;
+  }
+}</code></pre>
+  </div>
+    <div class="question">
+    <h2>27. How to pass functions in context?</h2>
+    <pre><code>const ThemeContext = createContext();
+
+const ThemeProvider = ({ children }) =&gt; {
+  const toggleTheme = () =&gt; setTheme((prev) =&gt; prev === 'light' ? 'dark' : 'light');
+  return (
+    &lt;ThemeContext.Provider value={{ theme, toggleTheme }}&gt;
+      {children}
+    &lt;/ThemeContext.Provider&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>28. How to handle context value updates with useEffect?</h2>
+    <pre><code>const App = () =&gt; {
+  const [user, setUser] = useState(null);
+
+  useEffect(() =&gt; {
+    fetchUser().then(data =&gt; setUser(data));
+  }, []);
+
+  return (
+    &lt;UserContext.Provider value={user}&gt;
+      &lt;MainComponent /&gt;
+    &lt;/UserContext.Provider&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>29. How to share global state with Context API?</h2>
+    <pre><code>const GlobalStateContext = createContext();
+
+const GlobalStateProvider = ({ children }) =&gt; {
+  const [state, setState] = useState({ count: 0 });
+
+  return (
+    &lt;GlobalStateContext.Provider value={{ state, setState }}&gt;
+      {children}
+    &lt;/GlobalStateContext.Provider&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>30. How do you ensure context is used within a Provider?</h2>
+    <p>Wrap components that need context access with the Provider component, and use useContext within them.</p>
+  </div>
+
+  <div class="question">
+    <h2>31. How to pass a complex object as context value?</h2>
+    <pre><code>const ComplexContext = createContext();
+
+const ComplexProvider = ({ children }) =&gt; {
+  const complexObject = { user: { name: 'Manuela' }, settings: { theme: 'dark' } };
+  return (
+    &lt;ComplexContext.Provider value={complexObject}&gt;
+      {children}
+    &lt;/ComplexContext.Provider&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>32. Can context value be derived from props?</h2>
+    <p>Yes, you can pass props as context values, though be mindful of performance implications when passing large or frequently changing values.</p>
+  </div>
+
+  <div class="question">
+    <h2>33. How to create nested context providers?</h2>
+    <pre><code>const App = () =&gt; {
+  return (
+    &lt;UserProvider&gt;
+      &lt;ThemeProvider&gt;
+        &lt;MainComponent /&gt;
+      &lt;/ThemeProvider&gt;
+    &lt;/UserProvider&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>34. How to handle context in deeply nested components?</h2>
+    <pre><code>const DeepNestedComponent = () =&gt; {
+  const user = useContext(UserContext);
+  return &lt;div&gt;Hello, {user.name}&lt;/div&gt;;
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>35. How to deal with context updates causing unnecessary re-renders?</h2>
+    <p>Use memoization techniques like <code>useMemo</code> to prevent unnecessary re-renders and pass only essential values.</p>
+    <pre><code>const MemoizedComponent = React.memo(() =&gt; {
+  const { theme } = useContext(ThemeContext);
+  return &lt;div&gt;{theme}&lt;/div&gt;;
+});</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>36. How to provide initial values to context?</h2>
+    <pre><code>const ThemeContext = createContext('light');
+const App = () =&gt; (
+  &lt;ThemeContext.Provider value="dark"&gt;
+    &lt;MainComponent /&gt;
+  &lt;/ThemeContext.Provider&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>37. How to handle multiple context values in a single provider?</h2>
+    <pre><code>const AppContext = createContext();
+
+const AppProvider = ({ children }) =&gt; {
+  const [user, setUser] = useState({ name: 'Manuela' });
+  const [theme, setTheme] = useState('light');
+
+  return (
+    &lt;AppContext.Provider value={{ user, setUser, theme, setTheme }}&gt;
+      {children}
+    &lt;/AppContext.Provider&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>38. How to manage global authentication state with Context?</h2>
+    <pre><code>const AuthContext = createContext();
+
+const AuthProvider = ({ children }) =&gt; {
+  const [user, setUser] = useState(null);
+
+  const login = (username, password) =&gt; {
+    // Assume authentication is successful
+    setUser({ username });
+  };
+
+  return (
+    &lt;AuthContext.Provider value={{ user, login }}&gt;
+      {children}
+    &lt;/AuthContext.Provider&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>39. Can we use context with React Router?</h2>
+    <pre><code>const App = () =&gt; {
+  return (
+    &lt;UserContext.Provider value={user}&gt;
+      &lt;BrowserRouter&gt;
+        &lt;Route path="/home" component={Home} /&gt;
+      &lt;/BrowserRouter&gt;
+    &lt;/UserContext.Provider&gt;
+  );
+};</code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>40. How to use context with hooks like useState?</h2>
+    <pre><code>const UserContext = createContext();
+
+const UserProvider = ({ children }) =&gt; {
+  const [user, setUser] = useState(null);
+
+  return (
+    &lt;UserContext.Provider value={{ user, setUser }}&gt;
+      {children}
+    &lt;/UserContext.Provider&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>41. How to use context in combination with Redux?</h2>
+    <p>Context API can be used alongside Redux to manage specific parts of the app's state, while Redux manages global state.</p>
+  </div>
+
+  <div class="question">
+    <h2>42. Can I use multiple context providers in one component?</h2>
+    <pre><code>const App = () =&gt; (
+  &lt;UserProvider&gt;
+    &lt;ThemeProvider&gt;
+      &lt;MainComponent /&gt;
+    &lt;/ThemeProvider&gt;
+  &lt;/UserProvider&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>43. How to access context value in a class component?</h2>
+    <pre><code>class ThemeComponent extends React.Component {
+  static contextType = ThemeContext;
+
+  render() {
+    const theme = this.context;
+    return &lt;div&gt;{theme}&lt;/div&gt;;
+  }
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>44. What is the difference between context and props?</h2>
+    <p>Context is used for global data accessible throughout the component tree, while props are passed directly to child components.</p>
+  </div>
+
+  <div class="question">
+    <h2>45. How to update multiple context values at once?</h2>
+    <pre><code>const App = () =&gt; {
+  const [state, setState] = useState({ user: null, theme: 'light' });
+
+  const updateState = (newUser, newTheme) =&gt; setState({ user: newUser, theme: newTheme });
+
+  return (
+    &lt;AppContext.Provider value={{ state, updateState }}&gt;
+      &lt;MainComponent /&gt;
+    &lt;/AppContext.Provider&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>46. Can context values be mutable?</h2>
+    <p>Yes, context values can be mutable. However, it is recommended to use useState or useReducer for maintaining the state within context.</p>
+  </div>
+
+  <div class="question">
+    <h2>47. How do I avoid unnecessary re-renders with context?</h2>
+    <p>You can use <code>useMemo</code> to optimize and ensure only necessary updates trigger re-renders.</p>
+    <pre><code>const value = useMemo(() =&gt; ({ user, theme }), [user, theme]);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>48. How to manage dynamic values with context?</h2>
+    <pre><code>const DynamicContext = createContext();
+
+const DynamicProvider = ({ children }) =&gt; {
+  const [dynamicValue, setDynamicValue] = useState('initial value');
+  
+  return (
+    &lt;DynamicContext.Provider value={{ dynamicValue, setDynamicValue }}&gt;
+      {children}
+    &lt;/DynamicContext.Provider&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>49. How to handle error states with context?</h2>
+    <pre><code>const ErrorContext = createContext();
+
+const ErrorProvider = ({ children }) =&gt; {
+  const [error, setError] = useState(null);
+
+  const setErrorState = (message) =&gt; setError(message);
+
+  return (
+    &lt;ErrorContext.Provider value={{ error, setErrorState }}&gt;
+      {children}
+    &lt;/ErrorContext.Provider&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>50. How to handle context in lazy-loaded components?</h2>
+    <pre><code>const LazyComponent = React.lazy(() =&gt; import('./LazyComponent'));
+
+const App = () =&gt; {
+  return (
+    &lt;UserProvider&gt;
+      &lt;React.Suspense fallback="Loading..."&gt;
+        &lt;LazyComponent /&gt;
+      &lt;/React.Suspense&gt;
+    &lt;/UserProvider&gt;
+  );
+};</code></pre>
+  </div>
+  
+
+</body>
+</html>
