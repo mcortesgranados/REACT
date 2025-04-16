@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Zustand / Jotai / Recoil - Q&A Set 1</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .question {
+      background: #fff;
+      border-left: 5px solid #3498db;
+      padding: 20px;
+      margin: 20px auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 900px;
+      border-radius: 8px;
+    }
+    .question h2 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>04_04 Zustand / Jotai / Recoil - React Q&A (1–13)</h1>
+
+  <div class="question">
+    <h2>1. What is Zustand and how do you set up a basic store?</h2>
+    <p>Zustand is a small, fast, and scalable bearbones state-management solution for React. Here's how to set up a basic store:</p>
+    <pre><code>import create from 'zustand';
+
+// Define the store
+const useStore = create((set) => ({
+  count: 0,
+  increment: () => set((state) => ({ count: state.count + 1 })),
+  decrement: () => set((state) => ({ count: state.count - 1 }))
+}));
+
+// Use in a component
+import React from 'react';
+
+function Counter() {
+  const { count, increment, decrement } = useStore();
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Count: {count}&lt;/h2&gt;
+      &lt;button onClick={increment}&gt;Increment&lt;/button&gt;
+      &lt;button onClick={decrement}&gt;Decrement&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Counter;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>2. How to create a global state using Zustand in multiple components?</h2>
+    <p>Zustand’s store can be shared across any component just by importing the hook. Here's an example:</p>
+    <pre><code>// store.js
+import create from 'zustand';
+
+export const useStore = create((set) => ({
+  username: '',
+  setUsername: (username) => set({ username })
+}));
+
+// Component A
+import React from 'react';
+import { useStore } from './store';
+
+function Input() {
+  const { username, setUsername } = useStore();
+
+  return (
+    &lt;input 
+      value={username}
+      onChange={(e) =&gt; setUsername(e.target.value)} 
+      placeholder="Type username"
+    /&gt;
+  );
+}
+
+// Component B
+import React from 'react';
+import { useStore } from './store';
+
+function Display() {
+  const username = useStore((state) =&gt; state.username);
+  return &lt;p&gt;Username: {username}&lt;/p&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>3. What is Jotai and how do you create and use an atom?</h2>
+    <p>Jotai is a primitive and flexible state management library for React using atoms. Here’s a basic usage:</p>
+    <pre><code>import { atom, useAtom } from 'jotai';
+
+// Define atom
+const countAtom = atom(0);
+
+// Component
+import React from 'react';
+
+function Counter() {
+  const [count, setCount] = useAtom(countAtom);
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Count: {count}&lt;/h2&gt;
+      &lt;button onClick={() =&gt; setCount((c) =&gt; c + 1)}&gt;Increment&lt;/button&gt;
+      &lt;button onClick={() =&gt; setCount((c) =&gt; c - 1)}&gt;Decrement&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Counter;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>4. How to share state between components with Jotai?</h2>
+    <p>Atoms in Jotai are global by default. Multiple components can access and mutate the same atom:</p>
+    <pre><code>// store.js
+import { atom } from 'jotai';
+
+export const nameAtom = atom('');
+
+// Component A
+import React from 'react';
+import { useAtom } from 'jotai';
+import { nameAtom } from './store';
+
+function NameInput() {
+  const [name, setName] = useAtom(nameAtom);
+  return &lt;input value={name} onChange={(e) =&gt; setName(e.target.value)} /&gt;;
+}
+
+// Component B
+import React from 'react';
+import { useAtom } from 'jotai';
+import { nameAtom } from './store';
+
+function NameDisplay() {
+  const [name] = useAtom(nameAtom);
+  return &lt;p&gt;Name: {name}&lt;/p&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>5. What is Recoil and how to define and use an atom?</h2>
+    <p>Recoil is a state management library for React that uses atoms and selectors. Example:</p>
+    <pre><code>// store.js
+import { atom } from 'recoil';
+
+export const countState = atom({
+  key: 'countState',
+  default: 0
+});
+
+// Component
+import React from 'react';
+import { useRecoilState } from 'recoil';
+import { countState } from './store';
+
+function Counter() {
+  const [count, setCount] = useRecoilState(countState);
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Count: {count}&lt;/h2&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Add&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>6. How to persist Zustand state to localStorage?</h2>
+    <p>Zustand provides middleware to persist the state to localStorage easily:</p>
+    <pre><code>import create from 'zustand';
+import { persist } from 'zustand/middleware';
+
+const useStore = create(persist(
+  (set) => ({
+    theme: 'light',
+    toggleTheme: () => set((state) => ({
+      theme: state.theme === 'light' ? 'dark' : 'light'
+    }))
+  }),
+  {
+    name: 'theme-storage', // name of item in localStorage
+  }
+));
+
+// Component
+function ThemeToggle() {
+  const { theme, toggleTheme } = useStore();
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Current theme: {theme}&lt;/p&gt;
+      &lt;button onClick={toggleTheme}&gt;Toggle Theme&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>7. How to derive computed state with Jotai?</h2>
+    <p>Jotai uses derived atoms for computed values:</p>
+    <pre><code>import { atom, useAtom } from 'jotai';
+
+const countAtom = atom(5);
+const doubledCountAtom = atom((get) => get(countAtom) * 2);
+
+function Display() {
+  const [doubled] = useAtom(doubledCountAtom);
+  return &lt;p&gt;Doubled: {doubled}&lt;/p&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>8. How to create a selector in Recoil to compute derived state?</h2>
+    <p>Recoil’s selectors are for derived data:</p>
+    <pre><code>import { atom, selector, useRecoilValue } from 'recoil';
+
+const priceAtom = atom({ key: 'price', default: 100 });
+const taxSelector = selector({
+  key: 'tax',
+  get: ({ get }) =&gt; get(priceAtom) * 0.2
+});
+
+function TaxDisplay() {
+  const tax = useRecoilValue(taxSelector);
+  return &lt;p&gt;Tax: {tax}&lt;/p&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>9. How to use Zustand with TypeScript?</h2>
+    <p>You can type the store state with an interface:</p>
+    <pre><code>import create from 'zustand';
+
+interface CounterState {
+  count: number;
+  increment: () =&gt; void;
+  decrement: () =&gt; void;
+}
+
+const useCounterStore = create&lt;CounterState&gt;((set) =&gt; ({
+  count: 0,
+  increment: () =&gt; set((state) =&gt; ({ count: state.count + 1 })),
+  decrement: () =&gt; set((state) =&gt; ({ count: state.count - 1 }))
+}));
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>10. How to reset atom state in Recoil?</h2>
+    <p>Recoil provides the useResetRecoilState hook to reset atoms:</p>
+    <pre><code>import { atom, useResetRecoilState } from 'recoil';
+
+const countAtom = atom({ key: 'count', default: 0 });
+
+function ResetButton() {
+  const resetCount = useResetRecoilState(countAtom);
+  return &lt;button onClick={resetCount}&gt;Reset Count&lt;/button&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>11. How to do asynchronous derived state in Jotai?</h2>
+    <p>Jotai supports async atoms using Promises:</p>
+    <pre><code>import { atom, useAtom } from 'jotai';
+
+const userIdAtom = atom(1);
+const userDataAtom = atom(async (get) =&gt; {
+  const userId = get(userIdAtom);
+  const res = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
+  return await res.json();
+});
+
+function UserComponent() {
+  const [user] = useAtom(userDataAtom);
+  return &lt;pre&gt;{JSON.stringify(user, null, 2)}&lt;/pre&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>12. How to handle async selectors in Recoil?</h2>
+    <p>You can return Promises in selectors for async behavior:</p>
+    <pre><code>import { atom, selector, useRecoilValueLoadable } from 'recoil';
+
+const userIdAtom = atom({ key: 'userId', default: 1 });
+
+const userSelector = selector({
+  key: 'userSelector',
+  get: async ({ get }) =&gt; {
+    const id = get(userIdAtom);
+    const res = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`);
+    return await res.json();
+  }
+});
+
+function UserInfo() {
+  const userLoadable = useRecoilValueLoadable(userSelector);
+  if (userLoadable.state === 'loading') return &lt;p&gt;Loading...&lt;/p&gt;;
+  if (userLoadable.state === 'hasError') return &lt;p&gt;Error&lt;/p&gt;;
+  return &lt;pre&gt;{JSON.stringify(userLoadable.contents, null, 2)}&lt;/pre&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>13. How to create multiple slices of state in Zustand?</h2>
+    <p>You can modularize Zustand with state slices:</p>
+    <pre><code>import create from 'zustand';
+
+const createUserSlice = (set) =&gt; ({
+  user: null,
+  setUser: (user) =&gt; set({ user })
+});
+
+const createThemeSlice = (set) =&gt; ({
+  theme: 'light',
+  toggleTheme: () =&gt;
+    set((state) =&gt; ({ theme: state.theme === 'light' ? 'dark' : 'light' }))
+});
+
+const useStore = create((set) =&gt; ({
+  ...createUserSlice(set),
+  ...createThemeSlice(set),
+}));
+
+// Access in component
+function App() {
+  const { user, theme, toggleTheme } = useStore();
+  return (
+    &lt;div&gt;
+      &lt;p&gt;User: {user ? user.name : 'Guest'}&lt;/p&gt;
+      &lt;p&gt;Theme: {theme}&lt;/p&gt;
+      &lt;button onClick={toggleTheme}&gt;Toggle Theme&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+  </div>
+  <div class="question">
+    <h2>14. How to use Zustand with React DevTools?</h2>
+    <p>Zustand integrates automatically with DevTools using middleware:</p>
+    <pre><code>import create from 'zustand';
+import { devtools } from 'zustand/middleware';
+
+const useStore = create(devtools((set) => ({
+  count: 0,
+  increment: () => set((state) => ({ count: state.count + 1 }))
+})));
+
+function Counter() {
+  const { count, increment } = useStore();
+  return &lt;button onClick={increment}&gt;Count: {count}&lt;/button&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>15. How to create an atom family in Recoil?</h2>
+    <p>Recoil supports atom families to create parameterized atoms:</p>
+    <pre><code>import { atomFamily, useRecoilState } from 'recoil';
+
+const itemAtomFamily = atomFamily({
+  key: 'itemAtom',
+  default: (param) => `Item: ${param}`
+});
+
+function Item({ id }) {
+  const [item, setItem] = useRecoilState(itemAtomFamily(id));
+  return (
+    &lt;div&gt;
+      &lt;p&gt;{item}&lt;/p&gt;
+      &lt;button onClick={() => setItem(`Updated ${id}`)}&gt;Update&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>16. How to simulate Redux Toolkit slices in Zustand?</h2>
+    <p>You can structure Zustand store like Redux slices:</p>
+    <pre><code>import create from 'zustand';
+
+const useStore = create((set) => ({
+  counter: {
+    value: 0,
+    increment: () => set((state) => ({
+      counter: { ...state.counter, value: state.counter.value + 1 }
+    }))
+  },
+  user: {
+    name: 'John',
+    setName: (name) => set((state) => ({
+      user: { ...state.user, name }
+    }))
+  }
+}));
+
+function App() {
+  const counter = useStore((state) => state.counter);
+  return &lt;button onClick={counter.increment}&gt;Count: {counter.value}&lt;/button&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>17. How to use derived atom with multiple dependencies in Jotai?</h2>
+    <p>You can create derived atoms from multiple source atoms:</p>
+    <pre><code>import { atom, useAtom } from 'jotai';
+
+const aAtom = atom(1);
+const bAtom = atom(2);
+const sumAtom = atom((get) => get(aAtom) + get(bAtom));
+
+function Sum() {
+  const [sum] = useAtom(sumAtom);
+  return &lt;p&gt;Sum: {sum}&lt;/p&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>18. How to read Recoil state outside React components?</h2>
+    <p>You can use <code>Snapshot</code> for this purpose:</p>
+    <pre><code>import { snapshot_UNSTABLE } from 'recoil';
+import { countAtom } from './atoms';
+
+const snap = snapshot_UNSTABLE();
+const count = snap.getLoadable(countAtom).valueOrThrow();
+console.log('Recoil value outside React:', count);
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>19. How to reset all Zustand state?</h2>
+    <p>You can store initial state and implement a reset function:</p>
+    <pre><code>import create from 'zustand';
+
+const initialState = { count: 0 };
+
+const useStore = create((set) => ({
+  ...initialState,
+  increment: () => set((state) => ({ count: state.count + 1 })),
+  reset: () => set(initialState)
+}));
+
+function ResetCounter() {
+  const { count, increment, reset } = useStore();
+  return (
+    &lt;div&gt;
+      &lt;p&gt;{count}&lt;/p&gt;
+      &lt;button onClick={increment}&gt;+&lt;/button&gt;
+      &lt;button onClick={reset}&gt;Reset&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>20. How to use atomWithStorage in Jotai?</h2>
+    <p>atomWithStorage keeps state synced with localStorage:</p>
+    <pre><code>import { atomWithStorage } from 'jotai/utils';
+import { useAtom } from 'jotai';
+
+const themeAtom = atomWithStorage('theme', 'light');
+
+function ThemeToggle() {
+  const [theme, setTheme] = useAtom(themeAtom);
+  return &lt;button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}&gt;
+    Theme: {theme}
+  &lt;/button&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>21. How to use selectorFamily in Recoil?</h2>
+    <p>selectorFamily works like atomFamily but for selectors:</p>
+    <pre><code>import { selectorFamily, useRecoilValue } from 'recoil';
+
+const userSelector = selectorFamily({
+  key: 'userSelector',
+  get: (id) => async () => {
+    const res = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`);
+    return await res.json();
+  }
+});
+
+function User({ id }) {
+  const user = useRecoilValue(userSelector(id));
+  return &lt;pre&gt;{JSON.stringify(user, null, 2)}&lt;/pre&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>22. How to batch updates in Zustand?</h2>
+    <p>Zustand state updates are already batched in React 18+</p>
+    <pre><code>import create from 'zustand';
+
+const useStore = create((set) => ({
+  a: 0,
+  b: 0,
+  updateBoth: () => set(() => ({ a: 1, b: 2 }))
+}));
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>23. How to update nested objects in Jotai?</h2>
+    <p>Use spread syntax to immutably update nested state:</p>
+    <pre><code>import { atom, useAtom } from 'jotai';
+
+const userAtom = atom({ name: 'Ana', details: { age: 30 } });
+
+function UpdateUser() {
+  const [user, setUser] = useAtom(userAtom);
+  return &lt;button onClick={() =>
+    setUser({ ...user, details: { ...user.details, age: 31 } })}
+  &gt;Update Age&lt;/button&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>24. How to share Zustand store across modules?</h2>
+    <p>Just export and import the store from a common file:</p>
+    <pre><code>// store.js
+import create from 'zustand';
+export const useStore = create((set) => ({
+  count: 0,
+  increment: () => set((state) => ({ count: state.count + 1 }))
+}));
+
+// App.js
+import { useStore } from './store';
+function Counter() {
+  const { count, increment } = useStore();
+  return &lt;button onClick={increment}&gt;{count}&lt;/button&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>25. How to use Recoil’s useRecoilCallback?</h2>
+    <p>Allows you to write async logic using current state:</p>
+    <pre><code>import { atom, useRecoilCallback } from 'recoil';
+
+const countAtom = atom({ key: 'count', default: 0 });
+
+function Counter() {
+  const incrementAsync = useRecoilCallback(({ set }) => async () => {
+    await new Promise((r) => setTimeout(r, 500));
+    set(countAtom, (c) => c + 1);
+  });
+  return &lt;button onClick={incrementAsync}&gt;Async +1&lt;/button&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>26. How to use Zustand with Immer for immutability?</h2>
+    <p>Zustand supports Immer via middleware:</p>
+    <pre><code>import create from 'zustand';
+import { immer } from 'zustand/middleware/immer';
+
+const useStore = create(immer((set) => ({
+  todos: [],
+  addTodo: (text) =>
+    set((state) => {
+      state.todos.push({ text, done: false });
+    })
+})));
+
+function AddTodo() {
+  const addTodo = useStore((s) => s.addTodo);
+  return &lt;button onClick={() => addTodo('Learn Zustand')}&gt;Add&lt;/button&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>27. How to use Zustand with TypeScript?</h2>
+    <pre><code>import create from 'zustand';
+
+type State = {
+  count: number;
+  increment: () => void;
+};
+
+const useStore = create&lt;State&gt;((set) => ({
+  count: 0,
+  increment: () => set((state) => ({ count: state.count + 1 })),
+}));
+
+function Counter() {
+  const { count, increment } = useStore();
+  return &lt;button onClick={increment}&gt;Count: {count}&lt;/button&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>28. How to use atomWithReducer in Jotai?</h2>
+    <pre><code>import { atomWithReducer } from 'jotai/utils';
+import { useAtom } from 'jotai';
+
+const countAtom = atomWithReducer(0, (prev, action) =&gt; {
+  switch (action) {
+    case 'inc': return prev + 1;
+    case 'dec': return prev - 1;
+    default: return prev;
+  }
+});
+
+function Counter() {
+  const [count, dispatch] = useAtom(countAtom);
+  return (
+    &lt;div&gt;
+      &lt;p&gt;{count}&lt;/p&gt;
+      &lt;button onClick={() =&gt; dispatch('inc')}&gt;+&lt;/button&gt;
+      &lt;button onClick={() =&gt; dispatch('dec')}&gt;-&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>29. How to persist Zustand state in sessionStorage?</h2>
+    <pre><code>import create from 'zustand';
+import { persist } from 'zustand/middleware';
+
+const useStore = create(persist(
+  (set) =&gt; ({
+    count: 0,
+    increment: () =&gt; set((state) =&gt; ({ count: state.count + 1 }))
+  }),
+  {
+    name: 'counter',
+    storage: {
+      getItem: (key) =&gt; sessionStorage.getItem(key),
+      setItem: (key, value) =&gt; sessionStorage.setItem(key, value),
+      removeItem: (key) =&gt; sessionStorage.removeItem(key),
+    },
+  }
+));
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>30. How to use atomWithDefault in Jotai?</h2>
+    <pre><code>import { atom } from 'jotai';
+
+const baseAtom = atom(5);
+const doubleAtom = atomWithDefault((get) =&gt; get(baseAtom) * 2);
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>31. How to get/set Recoil atom from outside a component?</h2>
+    <pre><code>import { RecoilRoot, useRecoilValue, useSetRecoilState, atom } from 'recoil';
+
+const stateAtom = atom({ key: 'stateAtom', default: 0 });
+
+let setExternalState;
+
+function App() {
+  const setState = useSetRecoilState(stateAtom);
+  setExternalState = setState;
+  return &lt;p&gt;App mounted&lt;/p&gt;;
+}
+
+// Usage outside:
+setExternalState(123);
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>32. How to use Zustand with selector-like pattern?</h2>
+    <pre><code>import create from 'zustand';
+
+const useStore = create((set) =&gt; ({
+  count: 1,
+  double: () =&gt; get().count * 2
+}));
+
+function DoubleView() {
+  const double = useStore((state) =&gt; state.count * 2);
+  return &lt;p&gt;Double: {double}&lt;/p&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>33. How to use atomWithObservable in Jotai?</h2>
+    <pre><code>import { atomWithObservable } from 'jotai/utils';
+import { interval } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+const observableAtom = atomWithObservable(() =&gt; {
+  return interval(1000).pipe(map((v) =&gt; v * 2));
+});
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>34. How to make an async selector in Recoil?</h2>
+    <pre><code>import { selector } from 'recoil';
+
+const userSelector = selector({
+  key: 'userSelector',
+  get: async () =&gt; {
+    const res = await fetch('/api/user');
+    return res.json();
+  }
+});
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>35. How to use Zustand in server-side rendering (SSR)?</h2>
+    <pre><code>// Ensure you create store per request
+import create from 'zustand';
+
+export const createStore = () =&gt;
+  create(() =&gt; ({
+    count: 0,
+    inc: () =&gt; set((s) =&gt; ({ count: s.count + 1 }))
+  }));
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>36. How to use jotai-suspense for async derived atoms?</h2>
+    <pre><code>import { atom } from 'jotai';
+import { Suspense } from 'react';
+
+const dataAtom = atom(async () =&gt; {
+  const res = await fetch('/api/data');
+  return await res.json();
+});
+
+function View() {
+  const [data] = useAtom(dataAtom);
+  return &lt;pre&gt;{JSON.stringify(data, null, 2)}&lt;/pre&gt;;
+}
+
+function App() {
+  return (
+    &lt;Suspense fallback="Loading..."&gt;
+      &lt;View /&gt;
+    &lt;/Suspense&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>37. How to share Recoil state between multiple tabs?</h2>
+    <pre><code>import { atom } from 'recoil';
+
+const syncedAtom = atom({
+  key: 'syncedAtom',
+  default: 0,
+  effects_UNSTABLE: [
+    ({ onSet }) =&gt; {
+      onSet((newValue) =&gt; {
+        localStorage.setItem('syncedAtom', JSON.stringify(newValue));
+        window.dispatchEvent(new Event('sync-atom'));
+      });
+    }
+  ]
+});
+
+window.addEventListener('sync-atom', () =&gt; {
+  const value = JSON.parse(localStorage.getItem('syncedAtom'));
+  set(syncedAtom, value);
+});
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>38. How to create computed values with Zustand?</h2>
+    <pre><code>const useStore = create((set, get) =&gt; ({
+  count: 1,
+  double: () =&gt; get().count * 2
+}));
+
+function View() {
+  const count = useStore((s) =&gt; s.count);
+  const double = useStore((s) =&gt; s.count * 2);
+  return &lt;p&gt;Count: {count} Double: {double}&lt;/p&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>39. How to integrate Zustand with middleware chain?</h2>
+    <pre><code>import { devtools, persist } from 'zustand/middleware';
+import create from 'zustand';
+
+const useStore = create(
+  devtools(
+    persist((set) =&gt; ({
+      count: 0,
+      increment: () =&gt; set((state) =&gt; ({ count: state.count + 1 })),
+    }), { name: 'store' })
+  )
+);
+</code></pre>
+  </div>
+  <div class="question">
+    <h2>40. How to use Zustand store with React Context manually?</h2>
+    <pre><code>import { createContext, useContext } from 'react';
+import create from 'zustand';
+
+const StoreContext = createContext();
+
+const createStore = () => create((set) => ({
+  count: 0,
+  inc: () => set((s) => ({ count: s.count + 1 }))
+}));
+
+export function StoreProvider({ children }) {
+  const store = createStore();
+  return &lt;StoreContext.Provider value={store}&gt;{children}&lt;/StoreContext.Provider&gt;;
+}
+
+export const useCustomStore = () => useContext(StoreContext)();
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>41. How to use atoms in an array with Jotai?</h2>
+    <pre><code>import { atom } from 'jotai';
+
+const listAtom = atom([
+  atom(1),
+  atom(2),
+  atom(3),
+]);
+
+// Usage in component:
+function List() {
+  const [list] = useAtom(listAtom);
+  return (
+    &lt;ul&gt;
+      {list.map((itemAtom, index) =&gt; {
+        const [value] = useAtom(itemAtom);
+        return &lt;li key={index}&gt;{value}&lt;/li&gt;;
+      })}
+    &lt;/ul&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>42. How to combine multiple atoms in Jotai?</h2>
+    <pre><code>import { atom } from 'jotai';
+
+const a = atom(1);
+const b = atom(2);
+const sum = atom((get) =&gt; get(a) + get(b));
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>43. How to combine multiple atoms in Recoil?</h2>
+    <pre><code>import { atom, selector } from 'recoil';
+
+const a = atom({ key: 'a', default: 1 });
+const b = atom({ key: 'b', default: 2 });
+const sum = selector({
+  key: 'sum',
+  get: ({ get }) =&gt; get(a) + get(b),
+});
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>44. How to derive state from Zustand selector with memoization?</h2>
+    <pre><code>const useStore = create((set) =&gt; ({
+  count: 0,
+  inc: () =&gt; set((s) =&gt; ({ count: s.count + 1 })),
+}));
+
+const useDouble = () =&gt; useStore((s) =&gt; s.count * 2, shallow);
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>45. How to implement global dark mode toggle using Zustand?</h2>
+    <pre><code>const useThemeStore = create((set) =&gt; ({
+  darkMode: false,
+  toggleDarkMode: () =&gt; set((s) =&gt; ({ darkMode: !s.darkMode })),
+}));
+
+function ThemeButton() {
+  const { darkMode, toggleDarkMode } = useThemeStore();
+  return &lt;button onClick={toggleDarkMode}&gt;Dark Mode: {darkMode ? 'On' : 'Off'}&lt;/button&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>46. How to observe Recoil atom updates with effects?</h2>
+    <pre><code>const atomWithLog = atom({
+  key: 'withLog',
+  default: 0,
+  effects_UNSTABLE: [
+    ({ onSet }) =&gt; {
+      onSet((val) =&gt; console.log('New value:', val));
+    }
+  ]
+});
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>47. How to define resettable atoms in Recoil?</h2>
+    <pre><code>import { atom, useResetRecoilState } from 'recoil';
+
+const counterAtom = atom({
+  key: 'counter',
+  default: 0,
+});
+
+function ResetButton() {
+  const reset = useResetRecoilState(counterAtom);
+  return &lt;button onClick={reset}&gt;Reset&lt;/button&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>48. How to track Zustand state changes externally?</h2>
+    <pre><code>const useStore = create((set) =&gt; ({
+  count: 0,
+  inc: () =&gt; set((s) =&gt; ({ count: s.count + 1 })),
+}));
+
+useStore.subscribe((state) =&gt; {
+  console.log('New Zustand state:', state);
+});
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>49. How to use derived atoms and actions in Jotai?</h2>
+    <pre><code>const countAtom = atom(0);
+const incrementAtom = atom(null, (get, set) =&gt; {
+  set(countAtom, get(countAtom) + 1);
+});
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>50. How to test Zustand store updates?</h2>
+    <pre><code>import { act, renderHook } from '@testing-library/react';
+import create from 'zustand';
+
+const useStore = create((set) =&gt; ({
+  count: 0,
+  inc: () =&gt; set((s) =&gt; ({ count: s.count + 1 })),
+}));
+
+test('increments count', () =&gt; {
+  const { result } = renderHook(() =&gt; useStore());
+  act(() =&gt; {
+    result.current.inc();
+  });
+  expect(result.current.count).toBe(1);
+});
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>51. How to test Jotai atoms?</h2>
+    <pre><code>import { Provider, atom, useAtom } from 'jotai';
+import { render, screen } from '@testing-library/react';
+
+const countAtom = atom(0);
+
+function Counter() {
+  const [count] = useAtom(countAtom);
+  return &lt;div&gt;{count}&lt;/div&gt;;
+}
+
+test('renders count', () =&gt; {
+  render(
+    &lt;Provider&gt;
+      &lt;Counter /&gt;
+    &lt;/Provider&gt;
+  );
+  expect(screen.getByText('0')).toBeInTheDocument();
+});
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>52. How to test Recoil selectors?</h2>
+    <pre><code>import { renderRecoilHook } from 'recoil-testing-library';
+import { atom, selector } from 'recoil';
+
+const numAtom = atom({ key: 'num', default: 2 });
+const doubleSelector = selector({
+  key: 'double',
+  get: ({ get }) =&gt; get(numAtom) * 2,
+});
+
+test('selector calculates double', async () =&gt; {
+  const { result } = await renderRecoilHook(() =&gt; useRecoilValue(doubleSelector));
+  expect(result.current).toBe(4);
+});
+</code></pre>
+  </div>
+
+  <!-- Questions 6 to 13 will follow in the next set -->
+</body>
+</html>
