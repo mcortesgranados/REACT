@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSX Syntax - React JS Questions</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 20px;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #4CAF50;
+    }
+    .question {
+      background-color: #ffffff;
+      border-left: 5px solid #4CAF50;
+      margin: 20px 0;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .question h2 {
+      margin-top: 0;
+    }
+    pre {
+      background-color: #eee;
+      padding: 15px;
+      overflow-x: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: 'Courier New', Courier, monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>25 JSX Syntax Questions with Answers and Detailed Code</h1>
+
+  <div class="question">
+    <h2>1. What is JSX in React?</h2>
+    <p><strong>Answer:</strong> JSX stands for JavaScript XML. It is a syntax extension that allows you to write HTML tags inside JavaScript code, which React uses to describe the UI.</p>
+    <pre><code>const element = &lt;h1&gt;Hello, world!&lt;/h1&gt;;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>2. Can JSX return multiple elements?</h2>
+    <p><strong>Answer:</strong> JSX must return a single parent element. To return multiple elements, you can wrap them in a parent element or a React Fragment.</p>
+    <pre><code>const App = () =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Title&lt;/h1&gt;
+      &lt;p&gt;Description&lt;/p&gt;
+    &lt;/div&gt;
+  );
+};
+
+// Or using Fragment
+const App = () =&gt; {
+  return (
+    &lt;&gt;
+      &lt;h1&gt;Title&lt;/h1&gt;
+      &lt;p&gt;Description&lt;/p&gt;
+    &lt;/&gt;
+  );
+};</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>3. How do you embed JavaScript expressions in JSX?</h2>
+    <p><strong>Answer:</strong> JavaScript expressions can be embedded in JSX using curly braces <code>&#123; &#125;</code>.</p>
+    <pre><code>const name = 'Manuela';
+const element = &lt;h1&gt;Hello, &#123;name&#125;!&lt;/h1&gt;;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>4. Can you use if-else statements in JSX?</h2>
+    <p><strong>Answer:</strong> You can't use if-else directly inside JSX, but you can use ternary operators or conditional expressions.</p>
+    <pre><code>const isLoggedIn = true;
+const message = (
+  &lt;h1&gt;&#123;isLoggedIn ? 'Welcome back!' : 'Please sign in.'&#125;&lt;/h1&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>5. What is the use of className in JSX?</h2>
+    <p><strong>Answer:</strong> In JSX, use <code>className</code> instead of <code>class</code> to define CSS classes because <code>class</code> is a reserved word in JavaScript.</p>
+    <pre><code>const element = &lt;div className="container"&gt;Content&lt;/div&gt;;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>6. How do you add inline styles in JSX?</h2>
+    <p><strong>Answer:</strong> Inline styles in JSX are specified as an object with camelCase property names.</p>
+    <pre><code>const element = &lt;div style=&#123;{ color: 'blue', fontSize: '20px' }&#125;&gt;Styled Text&lt;/div&gt;;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>7. How does JSX handle events?</h2>
+    <p><strong>Answer:</strong> JSX uses camelCase for event names and passes a function as the event handler.</p>
+    <pre><code>const handleClick = () =&gt; {
+  alert('Button clicked');
+};
+
+const element = &lt;button onClick=&#123;handleClick&#125;&gt;Click Me&lt;/button&gt;;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>8. Can you use comments in JSX?</h2>
+    <p><strong>Answer:</strong> Yes, comments can be written inside curly braces using JavaScript comment syntax.</p>
+    <pre><code>const element = (
+  &lt;div&gt;
+    &#123;/* This is a comment */&#125;
+    &lt;p&gt;Hello JSX&lt;/p&gt;
+  &lt;/div&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>9. How do you render a list in JSX?</h2>
+    <p><strong>Answer:</strong> Use the <code>map()</code> method to render a list of elements in JSX.</p>
+    <pre><code>const items = ['Apple', 'Banana', 'Cherry'];
+const element = (
+  &lt;ul&gt;
+    &#123;items.map(item =&gt; &lt;li key=&#123;item&#125;&gt;&#123;item&#125;&lt;/li&gt;)&#125;
+  &lt;/ul&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>10. What are fragments in JSX?</h2>
+    <p><strong>Answer:</strong> Fragments let you group multiple elements without adding an extra node to the DOM.</p>
+    <pre><code>const element = (
+  &lt;&gt;
+    &lt;h1&gt;Title&lt;/h1&gt;
+    &lt;p&gt;Subtitle&lt;/p&gt;
+  &lt;/&gt;
+);</code></pre>
+  </div>
+  
+  <div class="question">
+    <h2>11. How do you handle boolean attributes in JSX?</h2>
+    <p><strong>Answer:</strong> In JSX, boolean attributes like <code>disabled</code> can be written with just the attribute name set to true.</p>
+    <pre><code>const element = &lt;button disabled&gt;Disabled Button&lt;/button&gt;;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>12. Can you nest elements in JSX?</h2>
+    <p><strong>Answer:</strong> Yes, JSX allows you to nest elements just like HTML.</p>
+    <pre><code>const element = (
+  &lt;div&gt;
+    &lt;h1&gt;Hello&lt;/h1&gt;
+    &lt;p&gt;Welcome to JSX&lt;/p&gt;
+  &lt;/div&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>13. How does JSX prevent injection attacks?</h2>
+    <p><strong>Answer:</strong> JSX escapes any values embedded in it before rendering, which helps prevent XSS attacks.</p>
+    <pre><code>const title = '&lt;script&gt;alert("Hacked")&lt;/script&gt;';
+const element = &lt;h1&gt;&#123;title&#125;&lt;/h1&gt;; // Rendered safely</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>14. What is the role of keys in JSX lists?</h2>
+    <p><strong>Answer:</strong> Keys help React identify which items have changed, been added, or removed. They should be unique among siblings.</p>
+    <pre><code>const items = ['a', 'b', 'c'];
+const list = items.map((item, index) =&gt; &lt;li key=&#123;index&#125;&gt;&#123;item&#125;&lt;/li&gt;);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>15. How do you use expressions in attribute values in JSX?</h2>
+    <p><strong>Answer:</strong> You can use curly braces <code>&#123;&#125;</code> to embed JavaScript expressions in attribute values.</p>
+    <pre><code>const imageUrl = 'https://example.com/logo.png';
+const element = &lt;img src=&#123;imageUrl&#125; alt="Logo" /&gt;;</code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>16. How do you pass functions as props using JSX?</h2>
+    <p><strong>Answer:</strong> You can pass functions to components as props by using curly braces.</p>
+    <pre><code>const Button = (props) =&gt; (
+  &lt;button onClick=&#123;props.onClick&#125;&gt;Click&lt;/button&gt;
+);
+
+const handleClick = () =&gt; alert('Clicked!');
+
+const App = () =&gt; &lt;Button onClick=&#123;handleClick&#125; /&gt;;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>17. Can JSX be used without React?</h2>
+    <p><strong>Answer:</strong> JSX is designed to work with React, but it can be compiled and used with other frameworks by transforming it to regular JavaScript.</p>
+    <pre><code>// Compiled JSX
+React.createElement('h1', null, 'Hello');</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>18. How do you handle conditional rendering with logical AND in JSX?</h2>
+    <p><strong>Answer:</strong> You can use the logical AND (<code>&amp;&amp;</code>) operator to conditionally render elements.</p>
+    <pre><code>const isLoggedIn = true;
+const element = (
+  &lt;div&gt;
+    &#123;isLoggedIn &amp;&amp; &lt;h1&gt;Welcome!&lt;/h1&gt;&#125;
+  &lt;/div&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>19. What is JSX transpilation?</h2>
+    <p><strong>Answer:</strong> JSX code is transpiled to regular JavaScript using tools like Babel before it can run in the browser.</p>
+    <pre><code>// JSX
+const element = &lt;h1&gt;Hello&lt;/h1&gt;;
+
+// Transpiled
+const element = React.createElement('h1', null, 'Hello');</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>20. How do you handle default props in JSX components?</h2>
+    <p><strong>Answer:</strong> You can assign default props to a component using the <code>defaultProps</code> property.</p>
+    <pre><code>const Greeting = (props) =&gt; (
+  &lt;h1&gt;Hello, &#123;props.name&#125;!&lt;/h1&gt;
+);
+
+Greeting.defaultProps = {
+  name: 'Guest'
+};</code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>21. How can you use a ternary operator in JSX?</h2>
+    <p><strong>Answer:</strong> Use the ternary operator to render content conditionally.</p>
+    <pre><code>const isLoggedIn = true;
+const element = (
+  &lt;div&gt;
+    &#123;isLoggedIn ? &lt;h1&gt;Welcome&lt;/h1&gt; : &lt;h1&gt;Please sign in&lt;/h1&gt;&#125;
+  &lt;/div&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>22. What are fragments in JSX and how are they used?</h2>
+    <p><strong>Answer:</strong> Fragments let you group a list of children without adding extra nodes to the DOM.</p>
+    <pre><code>const element = (
+  &lt;React.Fragment&gt;
+    &lt;h1&gt;Title&lt;/h1&gt;
+    &lt;p&gt;Description&lt;/p&gt;
+  &lt;/React.Fragment&gt;
+);
+
+// Short syntax
+const element2 = (
+  &lt;&gt;
+    &lt;h1&gt;Title&lt;/h1&gt;
+    &lt;p&gt;Description&lt;/p&gt;
+  &lt;/&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>23. How can you comment inside JSX?</h2>
+    <p><strong>Answer:</strong> Comments in JSX use curly braces with <code>//</code> or <code>/* */</code> syntax.</p>
+    <pre><code>const element = (
+  &lt;div&gt;
+    &#123;/* This is a comment */&#125;
+    &lt;h1&gt;Hello&lt;/h1&gt;
+  &lt;/div&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>24. How do you dynamically apply classes in JSX?</h2>
+    <p><strong>Answer:</strong> Use JavaScript expressions to conditionally set class names.</p>
+    <pre><code>const isActive = true;
+const element = &lt;div className=&#123;isActive ? 'active' : 'inactive'&#125;&gt;Status&lt;/div&gt;;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>25. Can you inline styles in JSX?</h2>
+    <p><strong>Answer:</strong> Yes, you can pass a JavaScript object to the <code>style</code> attribute in JSX.</p>
+    <pre><code>const divStyle = &#123;
+  color: 'blue',
+  backgroundColor: 'lightgray'
+&#125;;
+
+const element = &lt;div style=&#123;divStyle&#125;&gt;Styled Text&lt;/div&gt;;</code></pre>
+  </div>
+
+</body>
+</html>
