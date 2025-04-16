@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>React.js Learning Plan</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9fafb;
+      color: #333;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      color: #1f2937;
+    }
+    .category {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin: 1.5rem auto;
+      padding: 1.5rem;
+      max-width: 800px;
+    }
+    .category h2 {
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+      color: #111827;
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    li {
+      padding: 0.3rem 0;
+      position: relative;
+      padding-left: 2rem;
+    }
+    li::before {
+      content: "✓";
+      color: #10b981;
+      position: absolute;
+      left: 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>React.js Learning Plan</h1>
+
+  <div class="category">
+    <h2>01. Core Concepts</h2>
+    <ul>
+      <li><a href="REACT_JS/01. Core Concepts/01_01 JSX syntax/01_01 JSX syntax.html" target="_blank">01_01 JSX syntax</a></li>
+      <li><a href="REACT_JS/01. Core Concepts/01_02 Components (Functional & Class-based)/01_02 Components (Functional & Class-based).html" target="_blank">01_02 Components (Functional & Class-based)</a></li>
+      <li><a href="REACT_JS/01. Core Concepts/01_03 Props and Prop Drilling/01_03 Props and Prop Drilling.html" target="_blank">01_03 Props and Prop Drilling</a></li>
+      <li><a href="REACT_JS/01. Core Concepts/01_04 State and setState/01_04 State and setState.html" target="_blank">01_04 State and setState</a></li>
+      <li><a href="REACT_JS/01. Core Concepts/01_05 Event Handling/01_05 Event Handling.html">01_05 Event Handling</a></li>
+      <li><a href="REACT_JS/01. Core Concepts/01_06 Conditional Rendering/01_06 Conditional Rendering.html" target="_blank">01_06 Conditional Rendering</a></li>
+      <li><a href="REACT_JS/01. Core Concepts/01_07 Lists and Keys/01_07 Lists and Keys.html" target="_blank">01_07 Lists and Keys</a></li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <h2>02. Component Lifecycle</h2>
+    <ul>
+      <li><a href="REACT_JS/02. Component Lifecycle/02_01 Lifecycle Methods (Class components)/02_01 Lifecycle Methods (Class components).html" target="_blank">02_01 Lifecycle Methods (Class components)</a></li>
+      <li><a href="REACT_JS/02. Component Lifecycle/02_02 useEffect Hook (Functional components)/02_02 useEffect Hook (Functional components).html" target="_blank">02_02 useEffect Hook (Functional components)</a></li>
+      <li>02_03 useLayoutEffect vs useEffect</li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <h2>03. Hooks</h2>
+    <ul>
+      <li>03_01 useState, useEffect</li>
+      <li>03_02 useContext</li>
+      <li>03_03 useRef</li>
+      <li>03_04 useMemo, useCallback</li>
+      <li>03_05 useReducer</li>
+      <li>03_06 Custom Hooks</li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <h2>04. State Management</h2>
+    <ul>
+      <li>04_01 Local vs Global State</li>
+      <li>04_02 Context API</li>
+      <li>04_03 Redux / Redux Toolkit</li>
+      <li>04_04 Zustand / Jotai / Recoil</li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <h2>05. Routing</h2>
+    <ul>
+      <li>05_01 React Router (v6+) Basics</li>
+      <li>05_02 Nested Routes</li>
+      <li>05_03 Dynamic Routing</li>
+      <li>05_04 Navigation Guards & Redirects</li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <h2>06. Forms and Validation</h2>
+    <ul>
+      <li>06_01 Controlled vs Uncontrolled Components</li>
+      <li>06_02 useRef and Form Refs</li>
+      <li>06_03 Formik</li>
+      <li>06_04 React Hook Form</li>
+      <li>06_05 Validation with Yup / Zod</li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <h2>07. Styling in React</h2>
+    <ul>
+      <li>07_01 CSS Modules</li>
+      <li>07_02 Styled Components</li>
+      <li>07_03 Emotion</li>
+      <li>07_04 Tailwind CSS</li>
+      <li>07_05 Inline and Dynamic Styles</li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <h2>08. Performance Optimization</h2>
+    <ul>
+      <li>08_01 React.memo</li>
+      <li>08_02 useMemo, useCallback</li>
+      <li>08_03 Lazy Loading (React.lazy, Suspense)</li>
+      <li>08_04 Code Splitting</li>
+      <li>08_05 List Virtualization (react-window, react-virtualized)</li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <h2>09. Testing</h2>
+    <ul>
+      <li>09_01 Unit Testing with Jest</li>
+      <li>09_02 React Testing Library</li>
+      <li>09_03 Integration Testing</li>
+      <li>09_04 End-to-End Testing with Cypress / Playwright</li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <h2>10. React with TypeScript</h2>
+    <ul>
+      <li>10_01 Typing Props and State</li>
+      <li>10_02 Generics in Hooks</li>
+      <li>10_03 Common Utility Types (Partial, Pick, etc.)</li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <h2>11. Server-Side Rendering & Static Site Generation</h2>
+    <ul>
+      <li>11_01 Intro to Next.js</li>
+      <li>11_02 getStaticProps, getServerSideProps</li>
+      <li>11_03 File-based Routing in Next.js</li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <h2>12. API Integration</h2>
+    <ul>
+      <li>12_01 Fetch API / Axios</li>
+      <li>12_02 SWR / React Query</li>
+      <li>12_03 Handling Loading & Error States</li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <h2>13. Advanced Patterns</h2>
+    <ul>
+      <li>13_01 Render Props</li>
+      <li>13_02 Higher-Order Components (HOCs)</li>
+      <li>13_03 Compound Components</li>
+      <li>13_04 Controlled vs Uncontrolled Components</li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <h2>14. Project Structure & Best Practices</h2>
+    <ul>
+      <li>14_01 Folder Structure</li>
+      <li>14_02 Atomic Design (optional)</li>
+      <li>14_03 Code Reusability and DRY</li>
+      <li>14_04 Component Composition</li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <h2>15. DevTools and Ecosystem</h2>
+    <ul>
+      <li>15_01 React DevTools</li>
+      <li>15_02 ESLint & Prettier</li>
+      <li>15_03 Vite / Webpack / CRA</li>
+      <li>15_04 CI/CD Basics (GitHub Actions, Netlify, Vercel, etc.)</li>
+    </ul>
+  </div>
+
+</body>
+</html>
