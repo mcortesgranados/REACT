@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>React Props and Prop Drilling Questions</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 20px;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2196F3;
+    }
+    .question {
+      background-color: #ffffff;
+      border-left: 5px solid #2196F3;
+      margin: 20px 0;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .question h2 {
+      margin-top: 0;
+    }
+    pre {
+      background-color: #eee;
+      padding: 15px;
+      overflow-x: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: 'Courier New', Courier, monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>25 React Props and Prop Drilling Questions</h1>
+
+  <div class="question">
+    <h2>1. What are props in React?</h2>
+    <p><strong>Answer:</strong> Props (short for properties) are inputs to React components. They are used to pass data from a parent component to a child component. Props are read-only and cannot be modified by the child component.</p>
+    <pre><code>function Greeting(props) {
+  return <h1>Hello, {props.name}!</h1>;
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>2. How do you pass props to a functional component?</h2>
+    <p><strong>Answer:</strong> You pass props to a functional component as an argument, and they can be accessed directly inside the function.</p>
+    <pre><code>function Welcome(props) {
+  return <p>Welcome, {props.name}!</p>;
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>3. Can you modify props in a child component?</h2>
+    <p><strong>Answer:</strong> No, props are immutable. They are meant to pass data from parent to child, and the child cannot change the props it receives.</p>
+    <pre><code>// ❌ Invalid
+function Child(props) {
+  props.name = 'Modified'; // Cannot modify props
+  return <p>Name is {props.name}</p>;
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>4. How do you pass multiple props to a component?</h2>
+    <p><strong>Answer:</strong> You can pass multiple props to a component by adding them as attributes when rendering the component.</p>
+    <pre><code>function Greeting(props) {
+  return <p>Hello, {props.firstName} {props.lastName}!</p>;
+}
+
+function App() {
+  return <Greeting firstName="John" lastName="Doe" />;
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>5. What is prop drilling?</h2>
+    <p><strong>Answer:</strong> Prop drilling is the process of passing data through multiple levels of components, from parent to child, until it reaches the component that needs it. This can become cumbersome in deep component trees.</p>
+    <pre><code>function App() {
+  const name = 'Manuela';
+  return <ChildA name={name} />;
+}
+
+function ChildA(props) {
+  return <ChildB name={props.name} />;
+}
+
+function ChildB(props) {
+  return <p>Hello, {props.name}!</p>;
+}</code></pre>
+  </div>
+  
+    <!-- Question 6 to 10 -->
+  <div class="question">
+    <h2>6. How do you access props in class components?</h2>
+    <p><strong>Answer:</strong> In class components, props can be accessed using <code>this.props</code> within the component's methods.</p>
+    <pre><code>class Greeting extends React.Component {
+  render() {
+    return &lt;h1&gt;Hello, {this.props.name}!&lt;/h1&gt;;
+  }
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>7. Can props be used for conditional rendering?</h2>
+    <p><strong>Answer:</strong> Yes, props can be used to conditionally render elements based on their values. You can use conditional operators or <code>if</code> statements in your component's render method.</p>
+    <pre><code>function Greeting({ name }) {
+  return name ? &lt;h1&gt;Hello, {name}!&lt;/h1&gt; : &lt;h1&gt;Welcome, Guest!&lt;/h1&gt;;
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>8. How do you handle default props?</h2>
+    <p><strong>Answer:</strong> You can specify default values for props using <code>defaultProps</code> in class components or by providing default values in destructuring in functional components.</p>
+    <pre><code>function Greeting({ name = 'Guest' }) {
+  return &lt;h1&gt;Hello, {name}!&lt;/h1&gt;;
+}
+
+// Or in class components
+class Greeting extends React.Component {
+  static defaultProps = {
+    name: 'Guest',
+  };
+  render() {
+    return &lt;h1&gt;Hello, {this.props.name}!&lt;/h1&gt;;
+  }
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>9. What is the difference between state and props?</h2>
+    <p><strong>Answer:</strong> Props are immutable and are used to pass data from parent to child, while state is mutable and managed within a component. State can change over time and trigger re-renders of the component.</p>
+    <pre><code>function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={() => setCount(count + 1)}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>10. How do you prevent prop drilling?</h2>
+    <p><strong>Answer:</strong> To prevent prop drilling, you can use state management libraries like Redux or React's Context API. These tools allow you to pass data directly to the components that need it, without having to pass it through every intermediary component.</p>
+    <pre><code>import React, { createContext, useContext, useState } from 'react';
+
+const NameContext = createContext();
+
+function App() {
+  const [name, setName] = useState('Manuela');
+
+  return (
+    &lt;NameContext.Provider value={name}&gt;
+      &lt;Child /&gt;
+    &lt;/NameContext.Provider&gt;
+  );
+}
+
+function Child() {
+  const name = useContext(NameContext);
+  return &lt;h1&gt;Hello, {name}!&lt;/h1&gt;;
+}</code></pre>
+  </div>
+  
+  <div class="question">
+  <h2>11. What is prop drilling in React?</h2>
+  <p><strong>Answer:</strong> Prop drilling refers to the process of passing props through many layers of components in order to get data from a parent component to a deeply nested child component. This can make the code harder to maintain and understand.</p>
+  <pre><code>function Parent() {
+  const [data, setData] = useState('Hello from Parent');
+  
+  return &lt;Child data={data} /&gt;
+}
+
+function Child({ data }) {
+  return &lt;Grandchild data={data} /&gt;
+}
+
+function Grandchild({ data }) {
+  return &lt;h1&gt;Received Data: {data}&lt;/h1&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>12. How do you avoid prop drilling?</h2>
+  <p><strong>Answer:</strong> You can avoid prop drilling by using React’s Context API, which allows you to pass data directly to components without passing it through every intermediary component.</p>
+  <pre><code>import React, { createContext, useContext, useState } from 'react';
+
+const DataContext = createContext();
+
+function Parent() {
+  const [data, setData] = useState('Hello from Parent');
+
+  return (
+    &lt;DataContext.Provider value={data}&gt;
+      &lt;Child /&gt;
+    &lt;/DataContext.Provider&gt;
+  );
+}
+
+function Child() {
+  return &lt;Grandchild /&gt;
+}
+
+function Grandchild() {
+  const data = useContext(DataContext);
+  return &lt;h1&gt;Received Data: {data}&lt;/h1&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>13. What is the purpose of defaultProps in React?</h2>
+  <p><strong>Answer:</strong> <code>defaultProps</code> is used to set default values for props in case the parent component does not pass a value for those props. This helps avoid undefined values for props that are required.</p>
+  <pre><code>class Greeting extends React.Component {
+  static defaultProps = {
+    name: 'Guest',
+  };
+
+  render() {
+    return &lt;h1&gt;Hello, {this.props.name}!&lt;/h1&gt;;
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>14. Can props be modified inside a component?</h2>
+  <p><strong>Answer:</strong> No, props are read-only and cannot be modified by the component that receives them. They are immutable. If you need to modify state, you should use the <code>useState</code> hook (in functional components) or <code>this.setState</code> (in class components).</p>
+  <pre><code>function Counter({ initialCount }) {
+  const [count, setCount] = useState(initialCount);
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={() => setCount(count + 1)}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>15. How do you pass a function as a prop?</h2>
+  <p><strong>Answer:</strong> You can pass a function as a prop in React and invoke it inside the child component when needed. This allows parent-child component interaction.</p>
+  <pre><code>function Parent() {
+  const handleClick = () => alert('Button clicked!');
+  return &lt;Child onClick={handleClick} /&gt;
+}
+
+function Child({ onClick }) {
+  return &lt;button onClick={onClick}&gt;Click Me!&lt;/button&gt;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>16. How can you pass props to a child component dynamically?</h2>
+  <p><strong>Answer:</strong> You can pass props dynamically by setting their values based on variables, states, or computed values within the parent component. This allows for flexible and reusable components.</p>
+  <pre><code>function Parent() {
+  const name = 'Manuela';
+  const age = 30;
+  
+  return &lt;Child name={name} age={age} /&gt;
+}
+
+function Child({ name, age }) {
+  return &lt;p&gt;Name: {name}, Age: {age}&lt;/p&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>17. Can props be passed from sibling components?</h2>
+  <p><strong>Answer:</strong> Props cannot be passed directly between sibling components. However, you can lift the state up to a common parent component and pass the props down to the sibling components from the parent.</p>
+  <pre><code>function Parent() {
+  const [name, setName] = useState('Manuela');
+  
+  return (
+    &lt;div&gt;
+      &lt;SiblingOne name={name} /&gt;
+      &lt;SiblingTwo setName={setName} /&gt;
+    &lt;/div&gt;
+  );
+}
+
+function SiblingOne({ name }) {
+  return &lt;p&gt;Hello, {name}!&lt;/p&gt;
+}
+
+function SiblingTwo({ setName }) {
+  return &lt;button onClick={() => setName('John')}&gt;Change Name&lt;/button&gt;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>18. What is the role of props in functional components?</h2>
+  <p><strong>Answer:</strong> In functional components, props allow data to be passed into the component from a parent component. The props are accessed directly within the component body and can be used to render dynamic content.</p>
+  <pre><code>function Greeting({ name }) {
+  return &lt;h1&gt;Hello, {name}!&lt;/h1&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>19. How do you handle prop validation in React?</h2>
+  <p><strong>Answer:</strong> You can handle prop validation using the <code>prop-types</code> package, which allows you to specify what type of props are expected in a component and ensure that they are provided correctly.</p>
+  <pre><code>import PropTypes from 'prop-types';
+
+function Greeting({ name }) {
+  return &lt;h1&gt;Hello, {name}!&lt;/h1&gt;;
+}
+
+Greeting.propTypes = {
+  name: PropTypes.string.isRequired,
+};</code></pre>
+</div>
+
+<div class="question">
+  <h2>20. What is the Context API in React, and how does it help with prop drilling?</h2>
+  <p><strong>Answer:</strong> The Context API allows you to share state across the component tree without having to explicitly pass props down through each level. It can be used to avoid prop drilling by providing global state to any component in the tree.</p>
+  <pre><code>import React, { createContext, useContext, useState } from 'react';
+
+const ThemeContext = createContext();
+
+function App() {
+  const [theme, setTheme] = useState('light');
+
+  return (
+    &lt;ThemeContext.Provider value={theme}&gt;
+      &lt;Child /&gt;
+    &lt;/ThemeContext.Provider&gt;
+  );
+}
+
+function Child() {
+  const theme = useContext(ThemeContext);
+  return &lt;h1&gt;Current Theme: {theme}&lt;/h1&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>21. How can you update a prop value in a child component?</h2>
+  <p><strong>Answer:</strong> Props are immutable, meaning you cannot directly modify them in a child component. To update the data passed through props, the parent component should pass a function to the child to modify the parent’s state, which then updates the props.</p>
+  <pre><code>function Parent() {
+  const [name, setName] = useState('Manuela');
+  
+  const changeName = () => setName('John');
+  
+  return &lt;Child name={name} changeName={changeName} /&gt;
+}
+
+function Child({ name, changeName }) {
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Name: {name}&lt;/p&gt;
+      &lt;button onClick={changeName}&gt;Change Name&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>22. What is the difference between props and state in React?</h2>
+  <p><strong>Answer:</strong> Props are immutable and passed from parent to child, whereas state is mutable and local to a component. State can be changed within the component, while props cannot.</p>
+  <pre><code>function Counter() {
+  const [count, setCount] = useState(0);
+  
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={() => setCount(count + 1)}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>23. What happens if a required prop is not passed to a component?</h2>
+  <p><strong>Answer:</strong> If a required prop is not passed to a component, React will show a warning in the console (in development mode). This can be avoided by using default props or making sure to pass the required props.</p>
+  <pre><code>import PropTypes from 'prop-types';
+
+function Greeting({ name }) {
+  return &lt;h1&gt;Hello, {name}!&lt;/h1&gt;;
+}
+
+Greeting.propTypes = {
+  name: PropTypes.string.isRequired,
+};
+
+// Warning will appear if 'name' is not passed to Greeting
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>24. Can a parent component pass a function as a prop to a child?</h2>
+  <p><strong>Answer:</strong> Yes, a parent component can pass a function as a prop to a child component. This allows the child component to call the parent’s function and trigger behavior in the parent component.</p>
+  <pre><code>function Parent() {
+  const handleClick = () => alert('Button clicked in Parent!');
+  return &lt;Child onClick={handleClick} /&gt;
+}
+
+function Child({ onClick }) {
+  return &lt;button onClick={onClick}&gt;Click Me!&lt;/button&gt;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>25. What is the purpose of prop-types in React?</h2>
+  <p><strong>Answer:</strong> PropTypes is a library used to validate the types of props passed to a component. It helps ensure that components receive the correct type of data and can display warnings if incorrect types are passed.</p>
+  <pre><code>import PropTypes from 'prop-types';
+
+function Greeting({ name }) {
+  return &lt;h1&gt;Hello, {name}!&lt;/h1&gt;;
+}
+
+Greeting.propTypes = {
+  name: PropTypes.string.isRequired,
+};
+</code></pre>
+</div>
+
+</body>
+</html>
