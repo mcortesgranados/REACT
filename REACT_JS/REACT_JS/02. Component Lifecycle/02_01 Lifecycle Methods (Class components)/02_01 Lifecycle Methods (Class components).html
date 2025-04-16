@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>React Lifecycle Methods (Class Components) - Q&A</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .question {
+      background: #fff;
+      border-left: 5px solid #3498db;
+      padding: 20px;
+      margin: 20px auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 900px;
+      border-radius: 8px;
+    }
+    .question h2 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>React Lifecycle Methods (Class Components) - Q&A</h1>
+
+  <div class="question">
+    <h2>1. What is the purpose of the `constructor` method in a React class component?</h2>
+    <p>The `constructor` method is the first method to be called when an instance of a class component is created. It is used to initialize state and bind event handlers. The constructor method receives props as an argument.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { count: 0 };
+    this.handleClick = this.handleClick.bind(this);
+  }
+  
+  handleClick() {
+    this.setState({ count: this.state.count + 1 });
+  }
+  
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;button onClick={this.handleClick}&gt;Count: {this.state.count}&lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>2. What does the `componentDidMount` lifecycle method do?</h2>
+    <p>The `componentDidMount` method is called once immediately after the component is added to the DOM. It is commonly used for initiating network requests or setting up subscriptions.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  componentDidMount() {
+    console.log('Component has mounted!');
+    // Example of an API call
+    fetch('https://api.example.com/data')
+      .then(response => response.json())
+      .then(data => this.setState({ data }));
+  }
+  
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;h1&gt;Data from API&lt;/h1&gt;
+        &lt;pre&gt;{JSON.stringify(this.state.data, null, 2)}&lt;/pre&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>3. When is `componentDidUpdate` called?</h2>
+    <p>The `componentDidUpdate` method is called after the component re-renders due to changes in either state or props. It receives previous props and state as arguments, allowing for comparisons to decide if any further actions should be taken.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.count !== prevState.count) {
+      console.log('Count has changed!');
+    }
+  }
+  
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;button onClick={() => this.setState({ count: this.state.count + 1 })}&gt;
+          Count: {this.state.count}
+        &lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>4. What is the purpose of `componentWillUnmount` in a React class component?</h2>
+    <p>The `componentWillUnmount` method is called right before a component is removed from the DOM. It is useful for cleaning up subscriptions, canceling network requests, or clearing timers that were set in other lifecycle methods.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  componentDidMount() {
+    this.timer = setInterval(() => console.log('Timer running'), 1000);
+  }
+  
+  componentWillUnmount() {
+    clearInterval(this.timer);
+    console.log('Component is about to unmount');
+  }
+  
+  render() {
+    return &lt;div&gt;Check the console to see timer logs.&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>5. What is the purpose of `shouldComponentUpdate` and how is it used?</h2>
+    <p>The `shouldComponentUpdate` method allows you to optimize re-renders by determining if the component should update based on changes to props or state. By default, it returns true, but it can be overridden to return false if the component does not need to update.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.count === nextState.count) {
+      return false; // Prevent re-rendering if count hasn't changed
+    }
+    return true;
+  }
+  
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;button onClick={() => this.setState({ count: this.state.count + 1 })}&gt;
+          Count: {this.state.count}
+        &lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+    </code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>6. What is `getDerivedStateFromProps` and how is it used?</h2>
+    <p>The `getDerivedStateFromProps` method is called before every render, both on the initial render and on subsequent re-renders. It allows a component to update its state based on changes in props.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  static getDerivedStateFromProps(nextProps, nextState) {
+    if (nextProps.value !== nextState.value) {
+      return { value: nextProps.value }; // Update state based on props
+    }
+    return null; // No state update needed
+  }
+  
+  render() {
+    return (
+      &lt;div&gt;
+        Current value: {this.state.value}
+      &lt;/div&gt;
+    );
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>7. What is the role of the `render` method in a React class component?</h2>
+    <p>The `render` method is required in all class components. It returns the JSX to be rendered to the DOM. The `render` method cannot modify state or props, as it’s purely for describing the UI based on the current state and props.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  render() {
+    return (
+      &lt;div&gt;
+        Hello, {this.props.name}!
+      &lt;/div&gt;
+    );
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>8. How does React handle state updates asynchronously?</h2>
+    <p>State updates in React are batched and processed asynchronously. When `this.setState()` is called, React schedules a re-render of the component, but the state update itself may not happen immediately. To handle post-update logic, you can use the callback function as the second argument to `this.setState`.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  handleClick() {
+    this.setState({ count: this.state.count + 1 }, () => {
+      console.log('State has been updated:', this.state.count);
+    });
+  }
+  
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;button onClick={this.handleClick.bind(this)}&gt;Click Me&lt;/button&gt;
+        &lt;p&gt;Count: {this.state.count}&lt;/p&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>9. What is the `static getDerivedStateFromError` lifecycle method used for?</h2>
+    <p>The `getDerivedStateFromError` method is invoked when an error is thrown during rendering. It allows you to update the state of the component to display an error message or fallback UI in response to an error.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  static getDerivedStateFromError(error) {
+    // Update state to display a fallback UI
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return &lt;div&gt;Something went wrong!&lt;/div&gt;
+    }
+    return this.props.children;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>10. How do you handle asynchronous code inside lifecycle methods?</h2>
+    <p>Asynchronous code should be handled using either Promises or async/await syntax within lifecycle methods such as `componentDidMount` or `componentDidUpdate`. However, you need to be mindful of component unmounting to avoid memory leaks by canceling any ongoing requests.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  async componentDidMount() {
+    try {
+      const response = await fetch('https://api.example.com/data');
+      const data = await response.json();
+      this.setState({ data });
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;pre&gt;{JSON.stringify(this.state.data, null, 2)}&lt;/pre&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+    </code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>11. What happens when a state is updated inside the `componentDidUpdate` lifecycle method?</h2>
+    <p>When state is updated inside `componentDidUpdate`, React will trigger another re-render of the component. This can potentially cause an infinite loop if the state is continuously updated without a proper condition to stop the updates.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.count !== prevState.count) {
+      this.setState({ count: this.state.count + 1 });
+    }
+  }
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;button onClick={() => this.setState({ count: this.state.count + 1 })}&gt;
+          Count: {this.state.count}
+        &lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>12. How do you prevent unnecessary re-renders in React class components?</h2>
+    <p>You can prevent unnecessary re-renders by using `shouldComponentUpdate`. By default, React re-renders a component whenever state or props change. Overriding `shouldComponentUpdate` can allow you to control when a component should or should not update.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextState.count !== this.state.count; // Prevent re-render if count hasn't changed
+  }
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;button onClick={() => this.setState({ count: this.state.count + 1 })}&gt;
+          Count: {this.state.count}
+        &lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>13. Can `componentWillMount` be used in modern React development?</h2>
+    <p>`componentWillMount` is deprecated in React 17 and removed in React 18. It was used for setup logic before the component mounted, but React now recommends using `constructor` or `componentDidMount` instead.</p>
+    <pre><code>
+// `componentWillMount` is deprecated
+class MyComponent extends React.Component {
+  componentWillMount() {
+    console.log('Component will mount');
+  }
+
+  render() {
+    return &lt;div&gt;Hello World&lt;/div&gt;;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>14. What is the role of the `getSnapshotBeforeUpdate` lifecycle method?</h2>
+    <p>The `getSnapshotBeforeUpdate` method is called right before React applies the changes to the DOM. It allows you to capture some information (like scroll position) from the DOM before the update, which can then be used in `componentDidUpdate`.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    const scrollPosition = document.getElementById('scrollable').scrollTop;
+    return scrollPosition; // Capture scroll position
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (snapshot !== undefined) {
+      console.log('Scroll position before update:', snapshot);
+    }
+  }
+
+  render() {
+    return (
+      &lt;div id="scrollable" style={{ height: 200, overflowY: 'scroll' }}&gt;
+        &lt;p&gt;Some long content here&lt;/p&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>15. How do you handle errors in React class components?</h2>
+    <p>Errors in React class components can be handled using the `componentDidCatch` lifecycle method, which is called when an error is thrown anywhere in the component tree. You can use it to log the error or display a fallback UI.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  componentDidCatch(error, info) {
+    console.log('Error occurred:', error);
+    console.log('Error info:', info);
+  }
+
+  render() {
+    return &lt;div&gt;Some content&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>16. What is the difference between `componentDidMount` and `componentDidUpdate`?</h2>
+    <p>The main difference is that `componentDidMount` is called only once after the component has been rendered for the first time, while `componentDidUpdate` is called after every update, i.e., every time the component re-renders due to a change in props or state.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  componentDidMount() {
+    console.log('Component mounted');
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log('Component updated');
+  }
+
+  render() {
+    return &lt;div&gt;Hello World&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>17. What are the consequences of calling `this.setState` in `componentDidUpdate`?</h2>
+    <p>Calling `this.setState` inside `componentDidUpdate` can lead to an infinite loop if not properly handled. If you call `this.setState` without checking the condition for state changes, React will trigger a re-render, which will again trigger `componentDidUpdate` leading to a loop.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.count !== prevState.count) {
+      this.setState({ count: this.state.count + 1 }); // This could cause an infinite loop
+    }
+  }
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;button onClick={() => this.setState({ count: this.state.count + 1 })}&gt;
+          Count: {this.state.count}
+        &lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>18. Can `componentWillUnmount` be used in modern React development?</h2>
+    <p>Yes, `componentWillUnmount` is still used in modern React development. It is called just before a component is removed from the DOM. It's commonly used for cleanup tasks such as invalidating timers, canceling network requests, or cleaning up subscriptions.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  componentWillUnmount() {
+    console.log('Component will unmount');
+    // Cleanup code goes here, e.g., clear timers or cancel network requests
+  }
+
+  render() {
+    return &lt;div&gt;Component content&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>19. How can `componentDidCatch` be used to handle errors in a React component tree?</h2>
+    <p>The `componentDidCatch` method is used to handle errors in a component tree. When an error is thrown in any child component, it will be caught by `componentDidCatch` and allow you to display a fallback UI or log the error.</p>
+    <pre><code>
+class ErrorBoundary extends React.Component {
+  componentDidCatch(error, info) {
+    console.error('Error caught:', error);
+    console.error('Error info:', info);
+  }
+
+  render() {
+    if (this.props.hasError) {
+      return &lt;div&gt;Something went wrong!&lt;/div&gt;
+    }
+    return this.props.children;
+  }
+}
+
+class MyComponent extends React.Component {
+  render() {
+    if (this.props.throwError) {
+      throw new Error('Error in MyComponent');
+    }
+    return &lt;div&gt;No error&lt;/div&gt;
+  }
+}
+
+class App extends React.Component {
+  render() {
+    return (
+      &lt;ErrorBoundary&gt;
+        &lt;MyComponent throwError={true} /&gt;
+      &lt;/ErrorBoundary&gt;
+    );
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>20. How do you optimize performance in React class components?</h2>
+    <p>Performance in React can be optimized by using lifecycle methods such as `shouldComponentUpdate`, which allows you to prevent unnecessary re-renders. Additionally, you can also use memoization techniques and avoid creating new functions or objects in each render to reduce unnecessary updates.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextState.count !== this.state.count; // Only update if count has changed
+  }
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;button onClick={() => this.setState({ count: this.state.count + 1 })}&gt;
+          Count: {this.state.count}
+        &lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+    </code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>21. What is the purpose of `getDerivedStateFromProps` in React class components?</h2>
+    <p>The `getDerivedStateFromProps` lifecycle method is called before every render and allows you to update state based on props changes. It is useful when the state needs to change in response to prop updates, like syncing the state with the props value.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  static getDerivedStateFromProps(nextProps, nextState) {
+    if (nextProps.count !== nextState.count) {
+      return { count: nextProps.count }; // Sync state with prop
+    }
+    return null; // No state update
+  }
+
+  render() {
+    return &lt;div&gt;Count: {this.state.count}&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>22. How can you perform asynchronous operations in lifecycle methods?</h2>
+    <p>You cannot directly return a promise or perform asynchronous operations inside most lifecycle methods like `componentDidMount` or `componentDidUpdate`. However, you can initiate asynchronous operations inside those methods by using `async/await` or `.then()` after the lifecycle method has been called.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  async componentDidMount() {
+    const data = await fetch('https://api.example.com/data');
+    const json = await data.json();
+    this.setState({ data: json });
+  }
+
+  render() {
+    return &lt;div&gt;Data loaded: {this.state.data ? 'Yes' : 'No'}&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>23. When should you use `componentWillReceiveProps` in React class components?</h2>
+    <p>`componentWillReceiveProps` was deprecated in React 16.3. It was used to update state based on props changes, but it is now recommended to use `getDerivedStateFromProps` for this purpose. Avoid using `componentWillReceiveProps` in new code.</p>
+    <pre><code>
+// `componentWillReceiveProps` is deprecated
+class MyComponent extends React.Component {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.count !== this.props.count) {
+      this.setState({ count: nextProps.count });
+    }
+  }
+
+  render() {
+    return &lt;div&gt;Count: {this.state.count}&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>24. Can `componentWillUpdate` be used in modern React development?</h2>
+    <p>`componentWillUpdate` is also deprecated in React 16.3 and is no longer recommended for use in modern React development. Instead, React now provides `getSnapshotBeforeUpdate` for capturing pre-update DOM state and `componentDidUpdate` for handling post-update logic.</p>
+    <pre><code>
+// `componentWillUpdate` is deprecated
+class MyComponent extends React.Component {
+  componentWillUpdate(nextProps, nextState) {
+    console.log('Component will update');
+  }
+
+  render() {
+    return &lt;div&gt;Component content&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>25. What is the significance of `forceUpdate` in React class components?</h2>
+    <p>The `forceUpdate` method is used to force a re-render of a component, bypassing `shouldComponentUpdate`. It is not commonly recommended, as it may cause performance issues and unexpected behavior. Typically, React's state and props management should be enough to trigger re-renders.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  handleClick = () => {
+    this.forceUpdate(); // Forces a re-render
+  };
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;button onClick={this.handleClick}&gt;Force Update&lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+    </code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>26. How does React optimize performance in class components?</h2>
+    <p>React optimizes performance by using lifecycle methods such as `shouldComponentUpdate`. This method can be used to avoid unnecessary re-renders by comparing the current props and state with the next ones. When `shouldComponentUpdate` returns `false`, React skips the rendering process for that component.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.count !== this.props.count; // Only re-render if count changes
+  }
+
+  render() {
+    return &lt;div&gt;Count: {this.props.count}&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>27. What is the role of `getSnapshotBeforeUpdate` in React class components?</h2>
+    <p>The `getSnapshotBeforeUpdate` method is called just before React applies the changes to the DOM. It allows you to capture some information (e.g., scroll position) from the DOM before it is updated, and then use that information in `componentDidUpdate`.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    const prevScrollY = window.scrollY;
+    return { prevScrollY };
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log('Previous scroll position:', snapshot.prevScrollY);
+  }
+
+  render() {
+    return &lt;div&gt;Content&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>28. Can you explain how the `componentWillMount` method works?</h2>
+    <p>The `componentWillMount` method was called just before a component was mounted to the DOM. It is now considered legacy and is deprecated in React 16.3. It is recommended to use `constructor` for initializing state and props, or `componentDidMount` for performing tasks after the component has mounted.</p>
+    <pre><code>
+// `componentWillMount` is deprecated
+class MyComponent extends React.Component {
+  componentWillMount() {
+    console.log('Component will mount');
+  }
+
+  render() {
+    return &lt;div&gt;Component content&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>29. What is the difference between `componentWillReceiveProps` and `getDerivedStateFromProps`?</h2>
+    <p>`componentWillReceiveProps` was used to update state when props change, but it is deprecated. The recommended approach is to use `getDerivedStateFromProps`, which is static and does not rely on the instance. `getDerivedStateFromProps` can be used to update state based on changes in props, ensuring better performance.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  static getDerivedStateFromProps(nextProps, nextState) {
+    if (nextProps.count !== nextState.count) {
+      return { count: nextProps.count }; // Sync state with prop
+    }
+    return null; // No state update
+  }
+
+  render() {
+    return &lt;div&gt;Count: {this.state.count}&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>30. What lifecycle method would you use to fetch data after a component mounts?</h2>
+    <p>The `componentDidMount` lifecycle method is commonly used to fetch data after a component has been mounted to the DOM. It ensures that the data fetching occurs only once after the initial render.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  componentDidMount() {
+    fetch('https://api.example.com/data')
+      .then(response => response.json())
+      .then(data => this.setState({ data }));
+  }
+
+  render() {
+    return &lt;div&gt;Data: {this.state.data ? this.state.data : 'Loading...'}&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>31. What is the purpose of `componentDidUpdate` in React class components?</h2>
+    <p>The `componentDidUpdate` method is called after the component updates and the changes have been flushed to the DOM. It can be used to perform side effects like fetching data, updating external systems, or manipulating the DOM based on prop or state changes.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.count !== prevProps.count) {
+      console.log('Count changed:', this.props.count);
+    }
+  }
+
+  render() {
+    return &lt;div&gt;Count: {this.props.count}&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>32. How do you clean up resources in a React component?</h2>
+    <p>To clean up resources, such as subscriptions or timers, you should use the `componentWillUnmount` lifecycle method. This method is called just before the component is removed from the DOM and is ideal for clearing resources to avoid memory leaks.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  componentDidMount() {
+    this.timer = setInterval(() => {
+      console.log('Timer running');
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer); // Clean up timer
+  }
+
+  render() {
+    return &lt;div&gt;Timer is running&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>33. Can `componentWillUnmount` be used to cancel API requests?</h2>
+    <p>Yes, `componentWillUnmount` can be used to cancel ongoing API requests when the component is about to be removed. For example, you could use a token to track and cancel an API request if the component unmounts before the request completes.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  componentDidMount() {
+    this.isCancelled = false;
+    fetch('https://api.example.com/data')
+      .then(response => response.json())
+      .then(data => {
+        if (!this.isCancelled) {
+          this.setState({ data });
+        }
+      });
+  }
+
+  componentWillUnmount() {
+    this.isCancelled = true; // Cancel the API request on unmount
+  }
+
+  render() {
+    return &lt;div&gt;Data: {this.state.data ? this.state.data : 'Loading...'}&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>34. How does React handle re-renders in class components?</h2>
+    <p>React re-renders a class component when its state or props change. By default, React compares the new props and state with the previous ones to determine if a re-render is necessary. You can prevent unnecessary re-renders by implementing `shouldComponentUpdate` to return `false` when props or state have not changed.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.count !== this.props.count; // Prevent re-render if count hasn't changed
+  }
+
+  render() {
+    return &lt;div&gt;Count: {this.props.count}&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>35. How would you handle an error in a React class component?</h2>
+    <p>To handle errors in a React class component, you can use the `componentDidCatch` method, which is a part of the error boundary feature. This method allows you to catch JavaScript errors anywhere in the child component tree and log them or display a fallback UI.</p>
+    <pre><code>
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, info) {
+    console.log('Error:', error);
+    console.log('Error info:', info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return &lt;h1&gt;Something went wrong.&lt;/h1&gt;
+    }
+
+    return this.props.children;
+  }
+}
+
+class MyComponent extends React.Component {
+  render() {
+    throw new Error('Something went wrong');
+  }
+}
+
+// Usage
+&lt;ErrorBoundary&gt;
+  &lt;MyComponent /&gt;
+&lt;/ErrorBoundary&gt;
+    </code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>36. What is the difference between `getDerivedStateFromProps` and `componentWillReceiveProps`?</h2>
+    <p>The `componentWillReceiveProps` method was used to update the state based on incoming props, but it is now deprecated. The recommended alternative is `getDerivedStateFromProps`, which is a static method that allows you to update the state based on changes in props in a more predictable and performant manner.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  static getDerivedStateFromProps(nextProps, nextState) {
+    if (nextProps.count !== nextState.count) {
+      return { count: nextProps.count }; // Sync state with props
+    }
+    return null; // No state update
+  }
+
+  render() {
+    return &lt;div&gt;Count: {this.state.count}&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>37. How do you handle dynamic state updates in React class components?</h2>
+    <p>To handle dynamic state updates, you can use the `setState` method. It schedules an update to the component's state and triggers a re-render. The state can be updated asynchronously, and you can pass a callback to `setState` that will be invoked once the state is updated.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  handleClick = () => {
+    this.setState({ count: this.state.count + 1 });
+  };
+
+  render() {
+    return &lt;div&gt;
+      &lt;button onClick={this.handleClick}&gt;Increment Count&lt;/button&gt;
+      &lt;div&gt;Count: {this.state.count}&lt;/div&gt;
+    &lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>38. What is the purpose of `shouldComponentUpdate` in React class components?</h2>
+    <p>The `shouldComponentUpdate` method is used to optimize performance by controlling when a component should re-render. By default, React re-renders a component every time its state or props change. However, you can implement `shouldComponentUpdate` to return `false` if the state or props have not changed, preventing unnecessary re-renders.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.count !== this.props.count; // Prevent re-render if count hasn't changed
+  }
+
+  render() {
+    return &lt;div&gt;Count: {this.props.count}&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>39. How does React handle the rendering of child components during lifecycle events?</h2>
+    <p>During lifecycle events, React triggers a re-render for both the parent and its child components when the parent component’s state or props change. React uses a reconciliation process to efficiently update the DOM, comparing the current virtual DOM with the previous one. This process minimizes the number of updates to the actual DOM.</p>
+    <pre><code>
+class ParentComponent extends React.Component {
+  render() {
+    return &lt;div&gt;
+      &lt;ChildComponent /&gt;
+    &lt;/div&gt;
+  }
+}
+
+class ChildComponent extends React.Component {
+  render() {
+    return &lt;div&gt;Child content&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>40. How do you prevent a component from re-rendering when its props haven't changed?</h2>
+    <p>You can prevent unnecessary re-renders by implementing the `shouldComponentUpdate` lifecycle method. By comparing the current props with the next props, you can determine whether a re-render is necessary. If there is no change in props, you can return `false` from this method to prevent the component from re-rendering.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    return nextProps.value !== this.props.value; // Prevent re-render if value hasn't changed
+  }
+
+  render() {
+    return &lt;div&gt;Value: {this.props.value}&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>41. What is the role of `getSnapshotBeforeUpdate` in React?</h2>
+    <p>The `getSnapshotBeforeUpdate` method is called right before changes from the virtual DOM are applied to the real DOM. It allows you to capture some information (like scroll position or other state) from the DOM before it is potentially altered by the update. This information can then be passed to `componentDidUpdate` to act upon it after the update is complete.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    if (this.props.count !== prevProps.count) {
+      return document.getElementById('counter').scrollTop; // Capture scroll position before update
+    }
+    return null;
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (snapshot !== null) {
+      console.log('Scroll position before update:', snapshot);
+    }
+  }
+
+  render() {
+    return &lt;div id="counter"&gt;Count: {this.props.count}&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>42. How can you force a re-render of a React class component?</h2>
+    <p>You can force a re-render in a class component by calling the `forceUpdate` method. This method bypasses `shouldComponentUpdate` and forces the component to re-render. However, it should be used sparingly, as it can lead to performance issues and unexpected behavior.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  handleForceUpdate = () => {
+    this.forceUpdate(); // Force re-render
+  };
+
+  render() {
+    return &lt;div&gt;
+      &lt;button onClick={this.handleForceUpdate}&gt;Force Update&lt;/button&gt;
+      &lt;div&gt;Count: {this.props.count}&lt;/div&gt;
+    &lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>43. How do you update the state in a React class component?</h2>
+    <p>State in a React class component is updated using the `setState` method. `setState` can be called with an object or a function. The method schedules a re-render, and it ensures that the state update is asynchronous and batched for performance optimization.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  handleClick = () => {
+    this.setState({ count: this.state.count + 1 });
+  };
+
+  render() {
+    return &lt;div&gt;
+      &lt;button onClick={this.handleClick}&gt;Increment Count&lt;/button&gt;
+      &lt;div&gt;Count: {this.state.count}&lt;/div&gt;
+    &lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>44. What is the difference between `render` and `rendered` in React?</h2>
+    <p>In React, there is no `rendered` method. The `render` method is a required lifecycle method in class components. It returns the JSX to be rendered on the screen. The `render` method is automatically called when the component's state or props change, triggering the component to re-render.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  render() {
+    return &lt;div&gt;Hello, {this.props.name}&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>45. When should you use the `static getDerivedStateFromError` method?</h2>
+    <p>The `static getDerivedStateFromError` method is used when you need to handle errors in the component tree. This method is called when an error is thrown in a child component, and it allows you to render a fallback UI. It is used in conjunction with `componentDidCatch` to manage error boundaries.</p>
+    <pre><code>
+class ErrorBoundary extends React.Component {
+  static getDerivedStateFromError(error) {
+    return { hasError: true }; // Update state when an error is encountered
+  }
+
+  componentDidCatch(error, info) {
+    console.log('Error caught:', error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return &lt;h1&gt;Something went wrong.&lt;/h1&gt;
+    }
+    return this.props.children;
+  }
+}
+    </code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>46. What is the purpose of `componentDidUpdate` in React?</h2>
+    <p>The `componentDidUpdate` method is called after the component's updates have been flushed to the DOM. It is useful for handling side effects after a component's state or props change. You can access the previous props and state to perform necessary actions based on the changes.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.count !== prevProps.count) {
+      console.log('Count changed:', this.props.count);
+    }
+  }
+
+  render() {
+    return &lt;div&gt;Count: {this.props.count}&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>47. How do you handle errors in React class components?</h2>
+    <p>You can handle errors in React class components by using error boundaries. Error boundaries are components that catch JavaScript errors anywhere in their child component tree and display a fallback UI instead of crashing the entire app. The two main methods for this are `getDerivedStateFromError` and `componentDidCatch`.</p>
+    <pre><code>
+class ErrorBoundary extends React.Component {
+  static getDerivedStateFromError(error) {
+    return { hasError: true }; // Update state if an error occurs
+  }
+
+  componentDidCatch(error, info) {
+    console.log('Error caught:', error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return &lt;h1&gt;Something went wrong.&lt;/h1&gt;
+    }
+    return this.props.children;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>48. How can you prevent a component from unmounting in React?</h2>
+    <p>In React, you cannot directly prevent a component from unmounting, as it is part of the lifecycle process. However, you can use a flag or a condition within the component to delay or prevent the execution of actions that would normally trigger an unmount. Alternatively, consider restructuring your application to manage visibility using state instead of relying on unmounting.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  componentWillUnmount() {
+    if (this.state.preventUnmount) {
+      console.log('Unmount is prevented');
+      return false; // Not a valid React approach, just an example
+    }
+  }
+
+  render() {
+    return &lt;div&gt;Component Content&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>49. What are the differences between `componentDidMount` and `componentWillMount`?</h2>
+    <p>The `componentWillMount` method is called before the component is rendered to the DOM, but it is now deprecated in newer versions of React. It was used for setup tasks. The recommended approach is to use `componentDidMount`, which is called after the component has been rendered to the DOM and is ideal for triggering side effects like data fetching or event listener setup.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  componentDidMount() {
+    console.log('Component mounted');
+  }
+
+  render() {
+    return &lt;div&gt;Component Content&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+  <div class="question">
+    <h2>50. Can you use `componentWillMount` to trigger asynchronous code?</h2>
+    <p>It is not recommended to use `componentWillMount` for triggering asynchronous code. This method is called before the component is rendered, and there is no guarantee that asynchronous tasks like network requests will finish before rendering. It is better to use `componentDidMount` to perform asynchronous operations such as data fetching or setting up subscriptions.</p>
+    <pre><code>
+class MyComponent extends React.Component {
+  async componentDidMount() {
+    const data = await fetch('https://api.example.com/data');
+    console.log(data);
+  }
+
+  render() {
+    return &lt;div&gt;Component Content&lt;/div&gt;
+  }
+}
+    </code></pre>
+  </div>
+
+</body>
+</html>
