@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>React Router v6+ Basics - Set 1</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .question {
+      background: #fff;
+      border-left: 5px solid #3498db;
+      padding: 20px;
+      margin: 20px auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 900px;
+      border-radius: 8px;
+    }
+    .question h2 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>React Router (v6+) Basics - Questions Set 1</h1>
+
+  <div class="question">
+    <h2>1. How do you install React Router v6?</h2>
+    <p>Use the following command in your terminal:</p>
+    <pre><code>npm install react-router-dom@6</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>2. What is the basic setup for React Router v6?</h2>
+    <pre><code>import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './Home';
+import About from './About';
+
+function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+
+export default App;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>3. How do you create navigation links with React Router?</h2>
+    <pre><code>import { Link } from 'react-router-dom';
+
+function Navbar() {
+  return (
+    &lt;nav&gt;
+      &lt;Link to="/"&gt;Home&lt;/Link&gt;
+      &lt;Link to="/about"&gt;About&lt;/Link&gt;
+    &lt;/nav&gt;
+  );
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>4. How does the <code>&lt;Route&gt;</code> component work in v6?</h2>
+    <p>Each <code>&lt;Route&gt;</code> uses the <code>path</code> prop and renders the <code>element</code> when matched.</p>
+    <pre><code>&lt;Route path="/about" element={&lt;About /&gt;} /&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>5. What does <code>&lt;BrowserRouter&gt;</code> do?</h2>
+    <p>It enables client-side routing and keeps the UI in sync with the URL.</p>
+    <pre><code>import { BrowserRouter } from 'react-router-dom';
+
+&lt;BrowserRouter&gt;
+  &lt;App /&gt;
+&lt;/BrowserRouter&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>6. How do you handle a "Not Found" route?</h2>
+    <pre><code>&lt;Routes&gt;
+  &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+  &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
+  &lt;Route path="*" element={&lt;NotFound /&gt;} /&gt;
+&lt;/Routes&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>7. How to use <code>useNavigate</code> for navigation in code?</h2>
+    <pre><code>import { useNavigate } from 'react-router-dom';
+
+function Contact() {
+  const navigate = useNavigate();
+
+  const goHome = () =&gt; {
+    navigate('/');
+  };
+
+  return &lt;button onClick={goHome}&gt;Go Home&lt;/button&gt;;
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>8. How do you pass props through <code>element</code> in Routes?</h2>
+    <pre><code>&lt;Route path="/about" element={&lt;About title="About Us" /&gt;} /&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>9. How to nest routes in React Router v6?</h2>
+    <pre><code>&lt;Routes&gt;
+  &lt;Route path="/dashboard" element={&lt;Dashboard /&gt;}&gt;
+    &lt;Route path="stats" element={&lt;Stats /&gt;} /&gt;
+    &lt;Route path="settings" element={&lt;Settings /&gt;} /&gt;
+  &lt;/Route&gt;
+&lt;/Routes&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>10. How to use <code>Outlet</code> for nested routes?</h2>
+    <pre><code>import { Outlet } from 'react-router-dom';
+
+function Dashboard() {
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Dashboard&lt;/h2&gt;
+      &lt;Outlet /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>11. How to redirect in React Router v6?</h2>
+    <pre><code>import { Navigate } from 'react-router-dom';
+
+&lt;Route path="/old" element={&lt;Navigate to="/new" /&gt;} /&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>12. How to get current route parameters?</h2>
+    <pre><code>import { useParams } from 'react-router-dom';
+
+function User() {
+  const { id } = useParams();
+  return &lt;div&gt;User ID: {id}&lt;/div&gt;;
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>13. How to use query parameters?</h2>
+    <pre><code>import { useSearchParams } from 'react-router-dom';
+
+function Products() {
+  const [searchParams] = useSearchParams();
+  const category = searchParams.get('category');
+  return &lt;div&gt;Category: {category}&lt;/div&gt;;
+}</code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>14. How to use <code>Link</code> with query parameters?</h2>
+    <pre><code>import { Link } from 'react-router-dom';
+
+&lt;Link to="/products?category=books"&gt;Books&lt;/Link&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>15. How to create a route with dynamic segments?</h2>
+    <pre><code>&lt;Route path="/user/:id" element={&lt;User /&gt;} /&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>16. How to use relative links with React Router v6?</h2>
+    <pre><code>import { Link } from 'react-router-dom';
+
+&lt;Link to="settings"&gt;Settings&lt;/Link&gt; {/* resolves relative to current route */}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>17. How to protect a route using a wrapper?</h2>
+    <pre><code>function ProtectedRoute({ isAllowed, children }) {
+  if (!isAllowed) {
+    return &lt;Navigate to="/login" /&gt;;
+  }
+  return children;
+}
+
+&lt;Route path="/dashboard" element={
+  &lt;ProtectedRoute isAllowed={userLoggedIn}&gt;
+    &lt;Dashboard /&gt;
+  &lt;/ProtectedRoute&gt;
+} /&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>18. What’s the difference between <code>useLocation</code> and <code>useParams</code>?</h2>
+    <pre><code>import { useLocation, useParams } from 'react-router-dom';
+
+const location = useLocation(); // gives current pathname, search, etc.
+const { id } = useParams(); // gives route params</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>19. How to scroll to top on route change?</h2>
+    <pre><code>import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() =&gt; {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>20. How to define routes in a separate file?</h2>
+    <pre><code>// routes.js
+export const routes = [
+  { path: '/', element: &lt;Home /&gt; },
+  { path: '/about', element: &lt;About /&gt; }
+];
+
+// App.jsx
+import { Routes, Route } from 'react-router-dom';
+import { routes } from './routes';
+
+&lt;Routes&gt;
+  {routes.map((route, index) =&gt; (
+    &lt;Route key={index} path={route.path} element={route.element} /&gt;
+  ))}
+&lt;/Routes&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>21. How to use <code>Navigate</code> with state?</h2>
+    <pre><code>navigate('/profile', { state: { fromDashboard: true } });
+
+// In Profile.jsx
+const location = useLocation();
+console.log(location.state?.fromDashboard);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>22. How to animate route transitions?</h2>
+    <pre><code>// Use Framer Motion
+import { motion } from 'framer-motion';
+
+function Page() {
+  return (
+    &lt;motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    &gt;
+      &lt;h1&gt;Hello&lt;/h1&gt;
+    &lt;/motion.div&gt;
+  );
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>23. How to lazy load route components?</h2>
+    <pre><code>import { lazy, Suspense } from 'react';
+
+const LazyAbout = lazy(() =&gt; import('./About'));
+
+&lt;Route path="/about" element={
+  &lt;Suspense fallback={&lt;div&gt;Loading...&lt;/div&gt;}&gt;
+    &lt;LazyAbout /&gt;
+  &lt;/Suspense&gt;
+} /&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>24. How to share layout between nested routes?</h2>
+    <pre><code>function Layout() {
+  return (
+    &lt;div&gt;
+      &lt;Navbar /&gt;
+      &lt;Outlet /&gt;
+    &lt;/div&gt;
+  );
+}
+
+&lt;Route path="/" element={&lt;Layout /&gt;}&gt;
+  &lt;Route index element={&lt;Home /&gt;} /&gt;
+  &lt;Route path="about" element={&lt;About /&gt;} /&gt;
+&lt;/Route&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>25. How to set an index route?</h2>
+    <pre><code>&lt;Route path="/" element={&lt;Layout /&gt;}&gt;
+  &lt;Route index element={&lt;Home /&gt;} /&gt;
+&lt;/Route&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>26. How to add a loading spinner for nested routes?</h2>
+    <pre><code>import { Suspense, lazy } from 'react';
+
+const Dashboard = lazy(() =&gt; import('./Dashboard'));
+
+&lt;Route path="/dashboard" element={
+  &lt;Suspense fallback={&lt;div&gt;Loading...&lt;/div&gt;}&gt;
+    &lt;Dashboard /&gt;
+  &lt;/Suspense&gt;
+} /&gt;</code></pre>
+  </div>
+  
+  <div class="question">
+    <h2>27. How to pass state through the <code>Link</code> component?</h2>
+    <pre><code>import { Link } from 'react-router-dom';
+
+&lt;Link to="/profile" state={{ referrer: 'dashboard' }}&gt;Go to Profile&lt;/Link&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>28. How to access route state in the component?</h2>
+    <pre><code>import { useLocation } from 'react-router-dom';
+
+const location = useLocation();
+console.log(location.state?.referrer);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>29. How to use a fallback component for 404 pages?</h2>
+    <pre><code>&lt;Route path="*" element={&lt;NotFound /&gt;} /&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>30. How to set route metadata (like titles)?</h2>
+    <pre><code>useEffect(() =&gt; {
+  document.title = "About Page";
+}, []);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>31. How to detect active links?</h2>
+    <pre><code>import { NavLink } from 'react-router-dom';
+
+&lt;NavLink
+  to="/home"
+  className={({ isActive }) =&gt; isActive ? 'active' : ''}
+&gt;Home&lt;/NavLink&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>32. How to build a multi-level nested route structure?</h2>
+    <pre><code>&lt;Route path="/dashboard" element={&lt;Dashboard /&gt;}&gt;
+  &lt;Route path="analytics" element={&lt;Analytics /&gt;} /&gt;
+  &lt;Route path="settings" element={&lt;Settings /&gt;} /&gt;
+&lt;/Route&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>33. How to programmatically navigate after a form submission?</h2>
+    <pre><code>const navigate = useNavigate();
+
+function handleSubmit() {
+  // after processing
+  navigate('/thank-you');
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>34. How to conditionally render a route?</h2>
+    <pre><code>{user &amp;&amp; (
+  &lt;Route path="/profile" element={&lt;Profile /&gt;} /&gt;
+)}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>35. How to redirect old URLs to new paths?</h2>
+    <pre><code>&lt;Route path="/old-home" element={&lt;Navigate to="/home" replace /&gt;} /&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>36. How to preload route data using useEffect?</h2>
+    <pre><code>useEffect(() =&gt; {
+  fetch('/api/data')
+    .then(res =&gt; res.json())
+    .then(data =&gt; setData(data));
+}, []);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>37. How to scroll to an element after navigation?</h2>
+    <pre><code>useEffect(() =&gt; {
+  const element = document.getElementById("target-section");
+  element?.scrollIntoView({ behavior: "smooth" });
+}, []);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>38. How to persist route parameters in links?</h2>
+    <pre><code>// Current URL: /user/42
+&lt;Link to="../settings"&gt;Settings&lt;/Link&gt; // resolves to /user/settings (invalid)
+&lt;Link to={`/user/${userId}/settings`}&gt;Settings&lt;/Link&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>39. How to use optional parameters in a route?</h2>
+    <pre><code>&lt;Route path="/search/:term?" element={&lt;SearchPage /&gt;} /&gt;
+
+// useParams will return undefined if not present</code></pre>
+  </div>  
+  <div class="question">
+    <h2>40. How to use route grouping in React Router v6?</h2>
+    <pre><code>&lt;Route path="dashboard" element={&lt;DashboardLayout /&gt;}&gt;
+  &lt;Route index element={&lt;DashboardHome /&gt;} /&gt;
+  &lt;Route path="stats" element={&lt;Stats /&gt;} /&gt;
+&lt;/Route&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>41. How to add layout to only some routes?</h2>
+    <pre><code>&lt;Route path="/" element={&lt;MainLayout /&gt;}&gt;
+  &lt;Route path="about" element={&lt;About /&gt;} /&gt;
+  &lt;Route path="contact" element={&lt;Contact /&gt;} /&gt;
+&lt;/Route&gt;
+&lt;Route path="/login" element={&lt;Login /&gt;} /&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>42. How to navigate on button click?</h2>
+    <pre><code>import { useNavigate } from 'react-router-dom';
+
+const navigate = useNavigate();
+
+&lt;button onClick={() =&gt; navigate('/home')}&gt;Go Home&lt;/button&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>43. How to read query parameters in React Router v6?</h2>
+    <pre><code>import { useLocation } from 'react-router-dom';
+
+const { search } = useLocation();
+const params = new URLSearchParams(search);
+const q = params.get('q');</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>44. How to use navigation with dynamic segments?</h2>
+    <pre><code>navigate(`/user/${userId}/profile`);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>45. How to create a route with multiple dynamic segments?</h2>
+    <pre><code>&lt;Route path="/category/:catId/product/:prodId" element={&lt;Product /&gt;} /&gt;
+
+const { catId, prodId } = useParams();</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>46. How to lazy-load pages with React.lazy?</h2>
+    <pre><code>import { lazy, Suspense } from 'react';
+
+const Home = lazy(() =&gt; import('./Home'));
+
+&lt;Suspense fallback={&lt;div&gt;Loading...&lt;/div&gt;}&gt;
+  &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+&lt;/Suspense&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>47. How to handle 403 (unauthorized) error routing?</h2>
+    <pre><code>{!user.hasAccess
+  ? &lt;Navigate to="/unauthorized" replace /&gt;
+  : &lt;ProtectedPage /&gt;}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>48. How to redirect after login using location state?</h2>
+    <pre><code>const location = useLocation();
+const from = location.state?.from?.pathname || "/";
+
+navigate(from, { replace: true });</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>49. How to protect all nested routes?</h2>
+    <pre><code>&lt;Route element={&lt;RequireAuth /&gt;}&gt;
+  &lt;Route path="admin" element={&lt;AdminHome /&gt;} /&gt;
+  &lt;Route path="admin/settings" element={&lt;Settings /&gt;} /&gt;
+&lt;/Route&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>50. How to use location to trigger animations?</h2>
+    <pre><code>import { useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+
+const location = useLocation();
+
+&lt;AnimatePresence mode="wait"&gt;
+  &lt;Routes location={location} key={location.pathname}&gt;
+    ...
+  &lt;/Routes&gt;
+&lt;/AnimatePresence&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>51. How to use <code>replace: true</code> in navigation?</h2>
+    <pre><code>navigate('/dashboard', { replace: true }); // no back button entry</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>52. How to set a custom scroll behavior on route change?</h2>
+    <pre><code>import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() =&gt; {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}</code></pre>
+  </div>
+
+</body>
+</html>
