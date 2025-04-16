@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>React Event Handling Questions</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 20px;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2196F3;
+    }
+    .question {
+      background-color: #ffffff;
+      border-left: 5px solid #2196F3;
+      margin: 20px 0;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .question h2 {
+      margin-top: 0;
+    }
+    pre {
+      background-color: #eee;
+      padding: 15px;
+      overflow-x: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: 'Courier New', Courier, monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>React Event Handling Questions</h1>
+
+  <div class="question">
+    <h2>1. How do you handle events in React?</h2>
+    <p><strong>Answer:</strong> In React, events are handled by passing event handler functions as props. These handlers are named using camelCase (e.g., <code>onClick</code>, <code>onChange</code>). The event handler functions receive a synthetic event object as an argument, which is a cross-browser wrapper around the native event.</p>
+    <pre><code>import React from 'react';
+
+class Button extends React.Component {
+  handleClick = () =&gt; {
+    console.log('Button clicked');
+  };
+
+  render() {
+    return (
+      &lt;button onClick={this.handleClick}&gt;Click me&lt;/button&gt;
+    );
+  }
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>2. What is the difference between a regular function and an arrow function when handling events?</h2>
+    <p><strong>Answer:</strong> The main difference is that arrow functions do not have their own <code>this</code> context; they inherit the <code>this</code> value from the surrounding lexical scope. In event handlers, if you use a regular function, <code>this</code> will refer to the DOM element that fired the event, whereas with an arrow function, it will refer to the component instance.</p>
+    <pre><code>class Button extends React.Component {
+  handleClickRegular() {
+    console.log(this); // 'this' will refer to the button element
+  }
+
+  handleClickArrow = () =&gt; {
+    console.log(this); // 'this' will refer to the component instance
+  };
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;button onClick={this.handleClickRegular}&gt;Regular Function&lt;/button&gt;
+        &lt;button onClick={this.handleClickArrow}&gt;Arrow Function&lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>3. How do you pass arguments to an event handler in React?</h2>
+    <p><strong>Answer:</strong> You can pass arguments to an event handler by using an anonymous function or an arrow function in the JSX. This allows you to pass any custom argument to the event handler.</p>
+    <pre><code>class Button extends React.Component {
+  handleClick = (message) =&gt; {
+    console.log(message);
+  };
+
+  render() {
+    return (
+      &lt;button onClick={() =&gt; this.handleClick('Hello, World!')}&gt;Click me&lt;/button&gt;
+    );
+  }
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>4. What is event delegation, and how is it implemented in React?</h2>
+    <p><strong>Answer:</strong> Event delegation is a pattern where events are handled at a higher level in the DOM tree. React automatically delegates events to the root of the component tree and uses event delegation to optimize performance. You can attach an event listener to a parent element instead of every individual child element.</p>
+    <pre><code>class List extends React.Component {
+  handleClick = (event) =&gt; {
+    console.log(`Item clicked: ${event.target.innerText}`);
+  };
+
+  render() {
+    return (
+      &lt;ul onClick={this.handleClick}&gt;
+        &lt;li&gt;Item 1&lt;/li&gt;
+        &lt;li&gt;Item 2&lt;/li&gt;
+        &lt;li&gt;Item 3&lt;/li&gt;
+      &lt;/ul&gt;
+    );
+  }
+}</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>5. How do you prevent the default behavior of an event in React?</h2>
+    <p><strong>Answer:</strong> In React, you can prevent the default behavior of an event by calling <code>event.preventDefault()</code> inside the event handler. This is commonly used for form submissions or anchor tags where you want to prevent the default action (like page reload) from occurring.</p>
+    <pre><code>class Form extends React.Component {
+  handleSubmit = (event) =&gt; {
+    event.preventDefault();
+    console.log('Form submitted');
+  };
+
+  render() {
+    return (
+      &lt;form onSubmit={this.handleSubmit}&gt;
+        &lt;button type="submit"&gt;Submit&lt;/button&gt;
+      &lt;/form&gt;
+    );
+  }
+}</code></pre>
+  </div>
+  
+  <div class="question">
+  <h2>6. How do you bind a method to the current instance of a class in React?</h2>
+  <p><strong>Answer:</strong> In React, you can bind a method to the current instance of the class by using the <code>bind()</code> method inside the constructor. This ensures that the method has the correct <code>this</code> context when invoked.</p>
+  <pre><code>class Button extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick() {
+    console.log(this); // 'this' refers to the Button component
+  }
+
+  render() {
+    return &lt;button onClick={this.handleClick}&gt;Click me&lt;/button&gt;
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>7. What is SyntheticEvent in React?</h2>
+  <p><strong>Answer:</strong> SyntheticEvent is a cross-browser wrapper around the native DOM event. React normalizes events to ensure consistent behavior across different browsers. The SyntheticEvent object works identically across all browsers and provides the same interface as the native DOM event.</p>
+  <pre><code>class Button extends React.Component {
+  handleClick = (event) =&gt; {
+    console.log(event instanceof React.SyntheticEvent); // true
+  };
+
+  render() {
+    return &lt;button onClick={this.handleClick}&gt;Click me&lt;/button&gt;
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>8. How do you handle multiple events in React?</h2>
+  <p><strong>Answer:</strong> You can handle multiple events in React by defining separate event handler functions for each event type, or by calling multiple functions inside a single handler if needed. The event handlers can be chained together within a single function.</p>
+  <pre><code>class Button extends React.Component {
+  handleClick = () =&gt; {
+    console.log('Button clicked');
+    this.handleAnotherEvent();
+  };
+
+  handleAnotherEvent = () =&gt; {
+    console.log('Another event triggered');
+  };
+
+  render() {
+    return &lt;button onClick={this.handleClick}&gt;Click me&lt;/button&gt;
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>9. What is the purpose of <code>event.stopPropagation()</code> in React?</h2>
+  <p><strong>Answer:</strong> <code>event.stopPropagation()</code> is used to prevent the event from propagating to parent elements. This is useful when you don’t want the event to trigger other handlers on parent or ancestor elements.</p>
+  <pre><code>class Parent extends React.Component {
+  handleClick = () =&gt; {
+    console.log('Parent clicked');
+  };
+
+  render() {
+    return (
+      &lt;div onClick={this.handleClick}&gt;
+        &lt;Child /&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+
+class Child extends React.Component {
+  handleClick = (event) =&gt; {
+    event.stopPropagation();
+    console.log('Child clicked');
+  };
+
+  render() {
+    return &lt;button onClick={this.handleClick}&gt;Click me&lt;/button&gt;
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>10. How do you handle form input events in React?</h2>
+  <p><strong>Answer:</strong> In React, you can handle form input events by using controlled components. A controlled component receives its value from the state, and any changes to the input field update the state using event handlers like <code>onChange</code>.</p>
+  <pre><code>class Form extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { inputValue: '' };
+  }
+
+  handleChange = (event) =&gt; {
+    this.setState({ inputValue: event.target.value });
+  };
+
+  render() {
+    return (
+      &lt;form&gt;
+        &lt;input
+          type="text"
+          value={this.state.inputValue}
+          onChange={this.handleChange}
+        /&gt;
+        &lt;button type="submit"&gt;Submit&lt;/button&gt;
+      &lt;/form&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>11. How do you handle mouse events in React?</h2>
+  <p><strong>Answer:</strong> React provides a set of mouse events such as <code>onMouseEnter</code>, <code>onMouseLeave</code>, <code>onMouseMove</code>, <code>onMouseDown</code>, <code>onMouseUp</code>, and <code>onClick</code>. These events are handled similarly to other event types and provide useful information about the mouse interaction.</p>
+  <pre><code>class MouseEvents extends React.Component {
+  handleMouseEnter = () =&gt; {
+    console.log('Mouse entered');
+  };
+
+  handleMouseLeave = () =&gt; {
+    console.log('Mouse left');
+  };
+
+  render() {
+    return (
+      &lt;div
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
+      &gt;
+        Hover over me!
+      &lt;/div&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>12. How do you handle keyboard events in React?</h2>
+  <p><strong>Answer:</strong> React provides a set of keyboard events such as <code>onKeyDown</code>, <code>onKeyPress</code>, and <code>onKeyUp</code>. These events are used to handle keyboard actions, such as pressing a key or releasing it.</p>
+  <pre><code>class KeyboardEvents extends React.Component {
+  handleKeyDown = (event) =&gt; {
+    console.log('Key pressed:', event.key);
+  };
+
+  render() {
+    return (
+      &lt;input
+        type="text"
+        onKeyDown={this.handleKeyDown}
+        placeholder="Press a key"
+      /&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>13. How do you handle form submit events in React?</h2>
+  <p><strong>Answer:</strong> To handle form submit events in React, you can attach the <code>onSubmit</code> event to the <code>&lt;form&gt;</code> element. It’s important to call <code>event.preventDefault()</code> to prevent the default form submission behavior.</p>
+  <pre><code>class Form extends React.Component {
+  handleSubmit = (event) =&gt; {
+    event.preventDefault();
+    console.log('Form submitted');
+  };
+
+  render() {
+    return (
+      &lt;form onSubmit={this.handleSubmit}&gt;
+        &lt;button type="submit"&gt;Submit&lt;/button&gt;
+      &lt;/form&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>14. How do you handle touch events in React?</h2>
+  <p><strong>Answer:</strong> React supports touch events such as <code>onTouchStart</code>, <code>onTouchMove</code>, <code>onTouchEnd</code>, and <code>onTouchCancel</code>. These events are used to handle touch interactions on mobile devices or touch screens.</p>
+  <pre><code>class TouchEvents extends React.Component {
+  handleTouchStart = (event) =&gt; {
+    console.log('Touch started');
+  };
+
+  handleTouchEnd = (event) =&gt; {
+    console.log('Touch ended');
+  };
+
+  render() {
+    return (
+      &lt;div
+        onTouchStart={this.handleTouchStart}
+        onTouchEnd={this.handleTouchEnd}
+      &gt;
+        Touch me!
+      &lt;/div&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>15. How do you handle drag-and-drop events in React?</h2>
+  <p><strong>Answer:</strong> React provides drag-and-drop events like <code>onDrag</code>, <code>onDragStart</code>, <code>onDragEnd</code>, <code>onDragOver</code>, and <code>onDrop</code>. These events can be used to implement drag-and-drop functionality within your React components.</p>
+  <pre><code>class DragAndDrop extends React.Component {
+  handleDragStart = (event) =&gt; {
+    console.log('Drag started');
+  };
+
+  handleDrop = (event) =&gt; {
+    event.preventDefault();
+    console.log('Item dropped');
+  };
+
+  render() {
+    return (
+      &lt;div
+        draggable
+        onDragStart={this.handleDragStart}
+        onDrop={this.handleDrop}
+      &gt;
+        Drag me!
+      &lt;/div&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>16. How do you prevent the default behavior of an event in React?</h2>
+  <p><strong>Answer:</strong> To prevent the default behavior of an event in React, you can use <code>event.preventDefault()</code>. This method stops the default action associated with the event from being executed.</p>
+  <pre><code>class Form extends React.Component {
+  handleSubmit = (event) =&gt; {
+    event.preventDefault(); // Prevents form submission
+    console.log('Form submission prevented');
+  };
+
+  render() {
+    return (
+      &lt;form onSubmit={this.handleSubmit}&gt;
+        &lt;button type="submit"&gt;Submit&lt;/button&gt;
+      &lt;/form&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>17. What is the difference between <code>onClick</code> and <code>onMouseClick</code> in React?</h2>
+  <p><strong>Answer:</strong> In React, <code>onClick</code> is used to handle mouse click events, while <code>onMouseClick</code> is not a valid event handler. React uses <code>onClick</code> to handle both mouse and keyboard clicks, so <code>onMouseClick</code> doesn’t exist.</p>
+  <pre><code>class Button extends React.Component {
+  handleClick = () =&gt; {
+    console.log('Button clicked');
+  };
+
+  render() {
+    return &lt;button onClick={this.handleClick}&gt;Click me&lt;/button&gt;
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>18. What are controlled components in React?</h2>
+  <p><strong>Answer:</strong> Controlled components are components where form data is handled by the React component’s state. The value of the form element is controlled via React state and updated using <code>setState</code> when the user interacts with it.</p>
+  <pre><code>class Form extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { name: '' };
+  }
+
+  handleChange = (event) =&gt; {
+    this.setState({ name: event.target.value });
+  };
+
+  render() {
+    return (
+      &lt;input
+        type="text"
+        value={this.state.name}
+        onChange={this.handleChange}
+        placeholder="Enter your name"
+      /&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>19. How do you handle multiple inputs in a controlled component?</h2>
+  <p><strong>Answer:</strong> You can handle multiple inputs by creating separate state variables for each input and using event handlers to update the values accordingly.</p>
+  <pre><code>class Form extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { name: '', age: '' };
+  }
+
+  handleChange = (event) =&gt; {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
+  };
+
+  render() {
+    return (
+      &lt;form&gt;
+        &lt;input
+          type="text"
+          name="name"
+          value={this.state.name}
+          onChange={this.handleChange}
+          placeholder="Enter your name"
+        /&gt;
+        &lt;input
+          type="text"
+          name="age"
+          value={this.state.age}
+          onChange={this.handleChange}
+          placeholder="Enter your age"
+        /&gt;
+        &lt;button type="submit"&gt;Submit&lt;/button&gt;
+      &lt;/form&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>20. How do you handle state updates based on previous state in React?</h2>
+  <p><strong>Answer:</strong> To handle state updates based on previous state, you can use a function inside <code>setState</code>. This function receives the previous state as an argument and returns the updated state.</p>
+  <pre><code>class Counter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { count: 0 };
+  }
+
+  increment = () =&gt; {
+    this.setState((prevState) =&gt; ({
+      count: prevState.count + 1
+    }));
+  };
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;p&gt;Count: {this.state.count}&lt;/p&gt;
+        &lt;button onClick={this.increment}&gt;Increment&lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>21. How do you handle events with arguments in React?</h2>
+  <p><strong>Answer:</strong> To handle events with arguments, you can create an arrow function inside the event handler to pass the arguments. However, it’s important to ensure that this doesn't interfere with performance, especially when dealing with a large number of event listeners.</p>
+  <pre><code>class Button extends React.Component {
+  handleClick = (message) =&gt; {
+    console.log(message);
+  };
+
+  render() {
+    return (
+      &lt;button onClick={() =&gt; this.handleClick('Button clicked')}&gt;Click me&lt;/button&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>22. What is event bubbling in React?</h2>
+  <p><strong>Answer:</strong> Event bubbling refers to the way events propagate in the DOM, starting from the target element and bubbling up to the root. In React, you can handle this behavior using event delegation, where an event is handled by a parent component and not the individual child elements.</p>
+  <pre><code>class EventBubbling extends React.Component {
+  handleClick = (event) =&gt; {
+    console.log('Button clicked');
+    event.stopPropagation(); // Stops the event from bubbling up
+  };
+
+  render() {
+    return (
+      &lt;div onClick={() =&gt; console.log('Div clicked')}&gt;
+        &lt;button onClick={this.handleClick}&gt;Click me&lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>23. How do you use the <code>event.target</code> in React?</h2>
+  <p><strong>Answer:</strong> The <code>event.target</code> property refers to the DOM element that triggered the event. In React, it is often used to access the properties of the element that triggered the event, such as <code>value</code> in a form input.</p>
+  <pre><code>class InputField extends React.Component {
+  handleChange = (event) =&gt; {
+    console.log('Input value:', event.target.value);
+  };
+
+  render() {
+    return (
+      &lt;input type="text" onChange={this.handleChange} /&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>24. How do you handle multiple event listeners on the same element in React?</h2>
+  <p><strong>Answer:</strong> In React, you can attach multiple event listeners to the same element by using a single handler function and checking for the event type. You can also use a wrapper function that calls multiple functions based on specific conditions.</p>
+  <pre><code>class MultipleEvents extends React.Component {
+  handleClick = () =&gt; {
+    console.log('Button clicked');
+  };
+
+  handleMouseEnter = () =&gt; {
+    console.log('Mouse entered');
+  };
+
+  render() {
+    return (
+      &lt;button
+        onClick={this.handleClick}
+        onMouseEnter={this.handleMouseEnter}
+      &gt;Click or Hover&lt;/button&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>25. What is synthetic event in React?</h2>
+  <p><strong>Answer:</strong> A synthetic event in React is a wrapper around the native browser event. React's synthetic events are normalized across browsers, providing consistent behavior and preventing cross-browser issues. They behave the same way across all browsers, and React ensures that events are properly handled even on older browsers.</p>
+  <pre><code>class SyntheticEventExample extends React.Component {
+  handleClick = (event) =&gt; {
+    console.log(event.nativeEvent); // Native browser event
+    console.log(event.type); // Synthetic event type
+  };
+
+  render() {
+    return (
+      &lt;button onClick={this.handleClick}&gt;Click me&lt;/button&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>26. How do you handle <code>onSubmit</code> events in React?</h2>
+  <p><strong>Answer:</strong> You can handle <code>onSubmit</code> events in React in a similar way as other events. It is typically used with form elements to handle form submissions. Make sure to call <code>event.preventDefault()</code> to prevent the page from refreshing when the form is submitted.</p>
+  <pre><code>class Form extends React.Component {
+  handleSubmit = (event) =&gt; {
+    event.preventDefault();
+    console.log('Form submitted');
+  };
+
+  render() {
+    return (
+      &lt;form onSubmit={this.handleSubmit}&gt;
+        &lt;button type="submit"&gt;Submit&lt;/button&gt;
+      &lt;/form&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>27. Can you pass arguments to an event handler in React?</h2>
+  <p><strong>Answer:</strong> Yes, you can pass arguments to an event handler by using an arrow function or a wrapper function within the event handler.</p>
+  <pre><code>class Button extends React.Component {
+  handleClick = (message) =&gt; {
+    alert(message);
+  };
+
+  render() {
+    return (
+      &lt;button onClick={() =&gt; this.handleClick('Hello, React!')}&gt;Click Me&lt;/button&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>28. How do you handle <code>onChange</code> events in React?</h2>
+  <p><strong>Answer:</strong> In React, <code>onChange</code> events are used to handle changes in form elements like <code>input</code> fields, <code>textarea</code>, and <code>select</code>. The event is triggered when the value of the form element changes.</p>
+  <pre><code>class TextInput extends React.Component {
+  handleChange = (event) =&gt; {
+    console.log('Input value:', event.target.value);
+  };
+
+  render() {
+    return (
+      &lt;input type="text" onChange={this.handleChange} /&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>29. What are synthetic events in React?</h2>
+  <p><strong>Answer:</strong> Synthetic events are React’s cross-browser wrapper around the browser’s native events. They normalize the events so they behave the same across all browsers. React handles these events and they are accessible using event handlers like <code>onClick</code>, <code>onChange</code>, etc.</p>
+  <pre><code>class EventExample extends React.Component {
+  handleClick = (event) =&gt; {
+    console.log(event);
+  };
+
+  render() {
+    return (
+      &lt;button onClick={this.handleClick}&gt;Click me&lt;/button&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>30. What is the use of <code>stopPropagation()</code> in React events?</h2>
+  <p><strong>Answer:</strong> The <code>stopPropagation()</code> method is used to stop the event from propagating further up or down the DOM tree. It prevents the event from triggering other event listeners on parent or child elements.</p>
+  <pre><code>class Button extends React.Component {
+  handleClick = (event) =&gt; {
+    event.stopPropagation(); // Prevent event from propagating
+    console.log('Button clicked');
+  };
+
+  render() {
+    return (
+      &lt;div onClick={() =&gt; console.log('Div clicked')}&gt;
+        &lt;button onClick={this.handleClick}&gt;Click me&lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>31. How do you bind methods in React class components?</h2>
+  <p><strong>Answer:</strong> In React class components, methods need to be bound to the component instance to access <code>this</code> correctly. This can be done in the constructor, using an arrow function, or by using public class fields syntax.</p>
+  <pre><code>class Counter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { count: 0 };
+    this.handleClick = this.handleClick.bind(this); // Binding in constructor
+  }
+
+  handleClick() {
+    this.setState({ count: this.state.count + 1 });
+  }
+
+  render() {
+    return (
+      &lt;button onClick={this.handleClick}&gt;Count: &#123;this.state.count&#125;&lt;/button&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>32. What is the purpose of <code>this</code> in React event handlers?</h2>
+  <p><strong>Answer:</strong> In React class components, <code>this</code> refers to the current instance of the class. It is used to access properties, methods, and state within the class component. When binding event handlers, <code>this</code> ensures the correct context is maintained.</p>
+  <pre><code>class Toggle extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { isOn: false };
+    this.toggle = this.toggle.bind(this); // Binding the method
+  }
+
+  toggle() {
+    this.setState(prevState =&gt; ({ isOn: !prevState.isOn }));
+  }
+
+  render() {
+    return (
+      &lt;button onClick={this.toggle}&gt;
+        &#123;this.state.isOn ? 'ON' : 'OFF'&#125;
+      &lt;/button&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>33. How do you prevent default behavior in React events?</h2>
+  <p><strong>Answer:</strong> In React, you can prevent the default behavior of an event by calling <code>event.preventDefault()</code>. This is commonly used in form submissions or anchor clicks to prevent the browser’s default behavior (e.g., reloading the page).</p>
+  <pre><code>class Form extends React.Component {
+  handleSubmit = (event) =&gt; {
+    event.preventDefault(); // Prevent form from reloading the page
+    console.log('Form submitted');
+  };
+
+  render() {
+    return (
+      &lt;form onSubmit={this.handleSubmit}&gt;
+        &lt;button type="submit"&gt;Submit&lt;/button&gt;
+      &lt;/form&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>34. How do you handle <code>onClick</code> event in functional components?</h2>
+  <p><strong>Answer:</strong> In functional components, <code>onClick</code> event handlers are defined using functions and can directly update state using React hooks like <code>useState</code>.</p>
+  <pre><code>import React, { useState } from 'react';
+
+function Button() {
+  const [count, setCount] = useState(0);
+
+  const handleClick = () =&gt; {
+    setCount(count + 1);
+  };
+
+  return (
+    &lt;button onClick={handleClick}&gt;Clicked &#123;count&#125; times&lt;/button&gt;
+  );
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>35. Can you use inline event handlers in React?</h2>
+  <p><strong>Answer:</strong> Yes, you can use inline event handlers in React by passing a function directly in the event handler attribute. However, this may lead to performance issues when the component re-renders, as a new function is created each time.</p>
+  <pre><code>class Button extends React.Component {
+  render() {
+    return (
+      &lt;button onClick={() =&gt; console.log('Button clicked')}&gt;Click me&lt;/button&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>36. What is the difference between <code>onClick</code> and <code>onMouseDown</code> events in React?</h2>
+  <p><strong>Answer:</strong> The <code>onClick</code> event in React is triggered when the mouse button is clicked, whereas <code>onMouseDown</code> is triggered as soon as the mouse button is pressed down. You may use <code>onMouseDown</code> if you need to capture the event before the mouse button is released.</p>
+  <pre><code>class MouseEvent extends React.Component {
+  handleMouseDown = () =&gt; {
+    console.log('Mouse button pressed');
+  };
+
+  handleClick = () =&gt; {
+    console.log('Mouse clicked');
+  };
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;button onMouseDown={this.handleMouseDown}&gt;Mouse Down&lt;/button&gt;
+        &lt;button onClick={this.handleClick}&gt;Click&lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>37. How can you handle key events like <code>onKeyDown</code>, <code>onKeyPress</code>, and <code>onKeyUp</code> in React?</h2>
+  <p><strong>Answer:</strong> React provides key event handlers like <code>onKeyDown</code>, <code>onKeyPress</code>, and <code>onKeyUp</code> to handle keyboard interactions. <code>onKeyDown</code> is triggered when a key is pressed, <code>onKeyPress</code> is triggered when the key character is input, and <code>onKeyUp</code> is triggered when the key is released.</p>
+  <pre><code>class KeyEvent extends React.Component {
+  handleKeyDown = (event) =&gt; {
+    console.log('Key pressed:', event.key);
+  };
+
+  handleKeyUp = (event) =&gt; {
+    console.log('Key released:', event.key);
+  };
+
+  render() {
+    return (
+      &lt;input
+        type="text"
+        onKeyDown={this.handleKeyDown}
+        onKeyUp={this.handleKeyUp}
+        placeholder="Press a key"
+      /&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>38. What is the <code>event.target</code> in React events?</h2>
+  <p><strong>Answer:</strong> <code>event.target</code> refers to the DOM element that triggered the event. It allows you to access properties of the element, such as its value, type, and other attributes, when handling an event.</p>
+  <pre><code>class InputField extends React.Component {
+  handleChange = (event) =&gt; {
+    console.log('Changed input value:', event.target.value);
+  };
+
+  render() {
+    return (
+      &lt;input
+        type="text"
+        onChange={this.handleChange}
+        placeholder="Type something"
+      /&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>39. What is the difference between <code>onClick</code> and <code>onDoubleClick</code> events?</h2>
+  <p><strong>Answer:</strong> The <code>onClick</code> event is triggered when the element is clicked once, whereas the <code>onDoubleClick</code> event is triggered when the element is clicked twice in quick succession.</p>
+  <pre><code>class ClickExample extends React.Component {
+  handleClick = () =&gt; {
+    console.log('Single click');
+  };
+
+  handleDoubleClick = () =&gt; {
+    console.log('Double click');
+  };
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;button onClick={this.handleClick} onDoubleClick={this.handleDoubleClick}&gt;
+          Click or Double Click
+        &lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>40. How do you handle form input events like <code>onChange</code> and <code>onSubmit</code> in React?</h2>
+  <p><strong>Answer:</strong> In React, <code>onChange</code> is used to handle updates in form elements like <code>input</code> fields, while <code>onSubmit</code> handles the form submission. The state is often updated using <code>useState</code> or <code>setState</code> to capture the form input data.</p>
+  <pre><code>class FormComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { text: '' };
+  }
+
+  handleChange = (event) =&gt; {
+    this.setState({ text: event.target.value });
+  };
+
+  handleSubmit = (event) =&gt; {
+    event.preventDefault();
+    alert('Form submitted with: ' + this.state.text);
+  };
+
+  render() {
+    return (
+      &lt;form onSubmit={this.handleSubmit}&gt;
+        &lt;input
+          type="text"
+          value={this.state.text}
+          onChange={this.handleChange}
+        /&gt;
+        &lt;button type="submit"&gt;Submit&lt;/button&gt;
+      &lt;/form&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>41. How can you access the value of an input field in React?</h2>
+  <p><strong>Answer:</strong> In React, you can access the value of an input field by using controlled components. You bind the <code>value</code> of the input field to the component’s state and handle the <code>onChange</code> event to update the state whenever the value changes.</p>
+  <pre><code>class InputExample extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { inputValue: '' };
+  }
+
+  handleChange = (event) =&gt; {
+    this.setState({ inputValue: event.target.value });
+  };
+
+  render() {
+    return (
+      &lt;input
+        type="text"
+        value={this.state.inputValue}
+        onChange={this.handleChange}
+        placeholder="Type something"
+      /&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>42. How do you prevent form submission from reloading the page in React?</h2>
+  <p><strong>Answer:</strong> In React, you can prevent the default form submission behavior (which reloads the page) by calling <code>event.preventDefault()</code> inside the <code>onSubmit</code> event handler.</p>
+  <pre><code>class Form extends React.Component {
+  handleSubmit = (event) =&gt; {
+    event.preventDefault(); // Prevent form from reloading the page
+    console.log('Form submitted');
+  };
+
+  render() {
+    return (
+      &lt;form onSubmit={this.handleSubmit}&gt;
+        &lt;button type="submit"&gt;Submit&lt;/button&gt;
+      &lt;/form&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>43. How do you handle form validation in React?</h2>
+  <p><strong>Answer:</strong> In React, form validation can be handled by updating the state based on input field values and checking the validation condition within the <code>onSubmit</code> handler before proceeding with form submission.</p>
+  <pre><code>class FormValidation extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { email: '', isValid: true };
+  }
+
+  handleChange = (event) =&gt; {
+    this.setState({ email: event.target.value });
+  };
+
+  handleSubmit = (event) =&gt; {
+    event.preventDefault();
+    const { email } = this.state;
+    if (!email.includes('@')) {
+      this.setState({ isValid: false });
+      return;
+    }
+    this.setState({ isValid: true });
+    console.log('Form submitted with email:', email);
+  };
+
+  render() {
+    return (
+      &lt;form onSubmit={this.handleSubmit}&gt;
+        &lt;input
+          type="email"
+          value={this.state.email}
+          onChange={this.handleChange}
+          placeholder="Enter email"
+        /&gt;
+        {!this.state.isValid && &lt;p style="color: red;"&gt;Invalid email address&lt;/p&gt;}
+        &lt;button type="submit"&gt;Submit&lt;/button&gt;
+      &lt;/form&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>44. How do you handle input focus in React?</h2>
+  <p><strong>Answer:</strong> You can handle input focus in React using the <code>ref</code> attribute. This allows you to create a reference to an element and then focus it programmatically using <code>ref.current.focus()</code>.</p>
+  <pre><code>class FocusInput extends React.Component {
+  constructor(props) {
+    super(props);
+    this.inputRef = React.createRef();
+  }
+
+  handleFocus = () =&gt; {
+    this.inputRef.current.focus();
+  };
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;input ref={this.inputRef} type="text" placeholder="Focus me!" /&gt;
+        &lt;button onClick={this.handleFocus}&gt;Focus Input&lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>45. How can you handle multiple event listeners in React?</h2>
+  <p><strong>Answer:</strong> In React, you can attach multiple event listeners to an element by passing a function that handles the event, and you can call multiple functions inside that handler or attach multiple handlers directly to different events.</p>
+  <pre><code>class MultiEventHandler extends React.Component {
+  handleClick = () =&gt; {
+    console.log('Button clicked');
+  };
+
+  handleHover = () =&gt; {
+    console.log('Button hovered');
+  };
+
+  render() {
+    return (
+      &lt;button onClick={this.handleClick} onMouseOver={this.handleHover}&gt;
+        Click or Hover
+      &lt;/button&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>46. How do you bind event handlers in React class components?</h2>
+  <p><strong>Answer:</strong> In class components, you can bind event handlers either in the constructor or using public class fields syntax. Binding ensures that <code>this</code> refers to the component instance inside the handler.</p>
+  <pre><code>class Button extends React.Component {
+  constructor(props) {
+    super(props);
+    // Binding in the constructor
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick() {
+    console.log('Button clicked');
+  }
+
+  render() {
+    return &lt;button onClick={this.handleClick}&gt;Click Me&lt;/button&gt;;
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>47. What is synthetic event in React?</h2>
+  <p><strong>Answer:</strong> A synthetic event is a cross-browser wrapper around the browser's native event. React uses synthetic events to normalize events and make them consistent across different browsers. They provide the same interface as native events but with added performance benefits.</p>
+  <pre><code>class SyntheticEventExample extends React.Component {
+  handleClick = (event) =&gt; {
+    console.log(event instanceof SyntheticEvent); // true
+  };
+
+  render() {
+    return &lt;button onClick={this.handleClick}&gt;Click Me&lt;/button&gt;;
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>48. What is the difference between <code>event.preventDefault()</code> and <code>event.stopPropagation()</code> in React?</h2>
+  <p><strong>Answer:</strong> <code>event.preventDefault()</code> prevents the default action of the event (like form submission or anchor navigation), while <code>event.stopPropagation()</code> stops the event from bubbling up the DOM tree, preventing other handlers from being triggered.</p>
+  <pre><code>class EventExample extends React.Component {
+  handleClick = (event) =&gt; {
+    event.preventDefault(); // Prevent default behavior
+    event.stopPropagation(); // Stop event propagation
+    console.log('Event prevented and stopped');
+  };
+
+  render() {
+    return &lt;a href="#" onClick={this.handleClick}&gt;Click Me&lt;/a&gt;;
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>49. How do you handle events in React without using inline functions?</h2>
+  <p><strong>Answer:</strong> In React, you can handle events without inline functions by defining separate handler methods inside the component and passing them as references in the JSX. This can improve performance, especially in large applications.</p>
+  <pre><code>class EventHandlerExample extends React.Component {
+  handleClick() {
+    console.log('Button clicked');
+  }
+
+  render() {
+    return &lt;button onClick={this.handleClick}&gt;Click Me&lt;/button&gt;;
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>50. How can you handle mouse events like <code>onMouseEnter</code> and <code>onMouseLeave</code> in React?</h2>
+  <p><strong>Answer:</strong> React provides <code>onMouseEnter</code> and <code>onMouseLeave</code> events for detecting mouse interactions. These events are triggered when the mouse enters or leaves an element, respectively, and can be used to create hover effects or custom interactions.</p>
+  <pre><code>class MouseEventExample extends React.Component {
+  handleMouseEnter = () =&gt; {
+    console.log('Mouse entered');
+  };
+
+  handleMouseLeave = () =&gt; {
+    console.log('Mouse left');
+  };
+
+  render() {
+    return (
+      &lt;div
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
+        style={{ width: 200, height: 100, backgroundColor: 'lightblue' }}
+      &gt;
+        Hover over me!
+      &lt;/div&gt;
+    );
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>51. How can you pass arguments to an event handler in React?</h2>
+  <p><strong>Answer:</strong> You can pass arguments to an event handler by using an arrow function or by using the <code>bind</code> method to create a new function with parameters.</p>
+  <pre><code>function ButtonWithArgs() {
+  function handleClick(message) {
+    alert(message);
+  }
+
+  return &lt;button onClick={() =&gt; handleClick('Hello, Manuela!')}&gt;Click Me&lt;/button&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>52. How do you handle form submission in React?</h2>
+  <p><strong>Answer:</strong> In React, you handle form submission by attaching an <code>onSubmit</code> handler to the <code>&lt;form&gt;</code> element. Use <code>event.preventDefault()</code> to stop the page from reloading.</p>
+  <pre><code>function MyForm() {
+  function handleSubmit(event) {
+    event.preventDefault();
+    alert('Form submitted!');
+  }
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input type="text" name="name" /&gt;
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>53. Can you attach multiple event handlers to a single element in React?</h2>
+  <p><strong>Answer:</strong> You can't attach multiple handlers to a single event in JSX like in vanilla JS, but you can call multiple functions from one handler.</p>
+  <pre><code>function MultiHandler() {
+  function handler1() {
+    console.log('Handler 1');
+  }
+  function handler2() {
+    console.log('Handler 2');
+  }
+
+  function handleClick() {
+    handler1();
+    handler2();
+  }
+
+  return &lt;button onClick={handleClick}&gt;Click Me&lt;/button&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>54. What are keyboard events in React and how are they handled?</h2>
+  <p><strong>Answer:</strong> Keyboard events like <code>onKeyDown</code>, <code>onKeyUp</code>, and <code>onKeyPress</code> are used to detect key actions. Use the event object to check which key was pressed.</p>
+  <pre><code>function KeyboardHandler() {
+  function handleKeyDown(event) {
+    console.log('Key pressed:', event.key);
+  }
+
+  return &lt;input type="text" onKeyDown={handleKeyDown} /&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>55. What is the difference between onClick and onDoubleClick in React?</h2>
+  <p><strong>Answer:</strong> <code>onClick</code> handles single mouse clicks, while <code>onDoubleClick</code> fires only when the element is double-clicked.</p>
+  <pre><code>function ClickExample() {
+  function handleClick() {
+    console.log('Single Click');
+  }
+
+  function handleDoubleClick() {
+    console.log('Double Click');
+  }
+
+  return (
+    &lt;button
+      onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
+    &gt;
+      Click or Double Click Me
+    &lt;/button&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>56. How do you prevent a button click from triggering a parent element’s event in React?</h2>
+  <p><strong>Answer:</strong> Use <code>event.stopPropagation()</code> inside the click handler to prevent the event from bubbling up to parent elements.</p>
+  <pre><code>function ParentChildExample() {
+  function handleParentClick() {
+    console.log('Parent clicked');
+  }
+
+  function handleChildClick(event) {
+    event.stopPropagation();
+    console.log('Child clicked');
+  }
+
+  return (
+    &lt;div onClick={handleParentClick}&gt;
+      &lt;button onClick={handleChildClick}&gt;Click Me&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>57. How can you detect if the Enter key was pressed in an input field?</h2>
+  <p><strong>Answer:</strong> You can detect the Enter key by checking <code>event.key === 'Enter'</code> inside an <code>onKeyDown</code> or <code>onKeyUp</code> event handler.</p>
+  <pre><code>function EnterKeyExample() {
+  function handleKeyDown(event) {
+    if (event.key === 'Enter') {
+      console.log('Enter key pressed');
+    }
+  }
+
+  return &lt;input type="text" onKeyDown={handleKeyDown} /&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>58. How do you toggle a value using a button click in React?</h2>
+  <p><strong>Answer:</strong> Use a state variable and toggle it by setting its value to the opposite of the current value in the click handler.</p>
+  <pre><code>import React, &#123; useState &#125; from 'react';
+
+function ToggleExample() {
+  const [isOn, setIsOn] = useState(false);
+
+  function toggle() {
+    setIsOn(!isOn);
+  }
+
+  return (
+    &lt;button onClick={toggle}&gt;&#123;isOn ? 'ON' : 'OFF'&#125;&lt;/button&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>59. Can you chain multiple state updates in one event handler?</h2>
+  <p><strong>Answer:</strong> Yes, but because state updates are asynchronous, use a function to update based on previous state to ensure correct values.</p>
+  <pre><code>function Counter() {
+  const [count, setCount] = React.useState(0);
+
+  function incrementTwice() {
+    setCount(prev =&gt; prev + 1);
+    setCount(prev =&gt; prev + 1);
+  }
+
+  return &lt;button onClick={incrementTwice}&gt;Count: &#123;count&#125;&lt;/button&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>60. What happens if you don't call <code>event.preventDefault()</code> in a form submit handler?</h2>
+  <p><strong>Answer:</strong> If you don't call <code>preventDefault()</code>, the browser will reload the page (default behavior) and you'll lose the React state and context.</p>
+  <pre><code>function DefaultForm() {
+  function handleSubmit(event) {
+    // Not calling event.preventDefault()
+    alert('Submitting form');
+  }
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input type="text" /&gt;
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>61. How can you prevent default behavior and stop propagation in a single handler?</h2>
+  <p><strong>Answer:</strong> Call both <code>event.preventDefault()</code> and <code>event.stopPropagation()</code> within the same function.</p>
+  <pre><code>function ClickHandler(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  console.log('Handled!');
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>62. What is event delegation and how is it handled in React?</h2>
+  <p><strong>Answer:</strong> Event delegation means attaching one event listener to a parent element instead of individual children. React uses a synthetic event system that handles delegation at the root.</p>
+  <pre><code>function List() {
+  function handleClick(event) {
+    console.log('Clicked element:', event.target.textContent);
+  }
+
+  return (
+    &lt;ul onClick={handleClick}&gt;
+      &lt;li&gt;Item 1&lt;/li&gt;
+      &lt;li&gt;Item 2&lt;/li&gt;
+    &lt;/ul&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>63. How can you disable a button based on state in React?</h2>
+  <p><strong>Answer:</strong> Use the <code>disabled</code> attribute and bind it to a boolean condition from your component’s state.</p>
+  <pre><code>import React, &#123; useState &#125; from 'react';
+
+function SubmitButton() {
+  const [isDisabled, setIsDisabled] = useState(true);
+
+  return &lt;button disabled={isDisabled}&gt;Submit&lt;/button&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>64. How do you handle mouse over and mouse out events in React?</h2>
+  <p><strong>Answer:</strong> Use the <code>onMouseOver</code> and <code>onMouseOut</code> event handlers for hover interactions.</p>
+  <pre><code>function HoverBox() {
+  function handleMouseOver() {
+    console.log('Mouse entered');
+  }
+
+  function handleMouseOut() {
+    console.log('Mouse left');
+  }
+
+  return (
+    &lt;div onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}&gt;
+      Hover over me!
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>65. Can you access the native browser event in React?</h2>
+  <p><strong>Answer:</strong> Yes, React wraps the native event in a SyntheticEvent, but you can access the native event with <code>event.nativeEvent</code>.</p>
+  <pre><code>function NativeEventExample() {
+  function handleClick(event) {
+    console.log('Native event:', event.nativeEvent);
+  }
+
+  return &lt;button onClick={handleClick}&gt;Click Me&lt;/button&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>66. How do you handle a checkbox toggle in React?</h2>
+  <p><strong>Answer:</strong> Use the <code>checked</code> attribute and update state using the <code>onChange</code> event.</p>
+  <pre><code>import React, &#123; useState &#125; from 'react';
+
+function CheckboxToggle() {
+  const [checked, setChecked] = useState(false);
+
+  function handleChange(event) {
+    setChecked(event.target.checked);
+  }
+
+  return (
+    &lt;label&gt;
+      &lt;input type="checkbox" checked={checked} onChange={handleChange} /&gt;
+      Accept Terms
+    &lt;/label&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>67. How do you bind methods in class components?</h2>
+  <p><strong>Answer:</strong> You bind methods either in the constructor or use arrow functions to preserve the correct <code>this</code> context.</p>
+  <pre><code>class BoundComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick() {
+    console.log('Clicked!', this);
+  }
+
+  render() {
+    return &lt;button onClick={this.handleClick}&gt;Click&lt;/button&gt;;
+  }
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>68. Can you define event handlers inline?</h2>
+  <p><strong>Answer:</strong> Yes, you can define handlers inline using arrow functions, but it might affect performance if overused.</p>
+  <pre><code>function InlineHandler() {
+  return (
+    &lt;button onClick={() =&gt; console.log('Inline clicked')}&gt;
+      Click Me
+    &lt;/button&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>69. How do you handle right-click events?</h2>
+  <p><strong>Answer:</strong> Use the <code>onContextMenu</code> event and call <code>event.preventDefault()</code> if needed.</p>
+  <pre><code>function RightClickHandler() {
+  function handleContextMenu(event) {
+    event.preventDefault();
+    console.log('Right click prevented');
+  }
+
+  return &lt;div onContextMenu={handleContextMenu}&gt;
+    Right click me!
+  &lt;/div&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>70. Can you trigger a click programmatically in React?</h2>
+  <p><strong>Answer:</strong> Yes, using a <code>ref</code> to access the DOM element and call <code>.click()</code> on it.</p>
+  <pre><code>import React, &#123; useRef &#125; from 'react';
+
+function ProgrammaticClick() {
+  const buttonRef = useRef();
+
+  function handleClick() {
+    buttonRef.current.click();
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;button ref={buttonRef} onClick={() =&gt; alert('Clicked!')}&gt;Hidden Button&lt;/button&gt;
+      &lt;button onClick={handleClick}&gt;Trigger Click&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+
+
+</body>
+</html>
