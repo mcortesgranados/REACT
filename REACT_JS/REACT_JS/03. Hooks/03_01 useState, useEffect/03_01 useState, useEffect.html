@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React useState and useEffect Q&A</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .question {
+            background: #fff;
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            margin: 20px auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 900px;
+            border-radius: 8px;
+        }
+        .question h2 {
+            margin-top: 0;
+            color: #2980b9;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            overflow-x: auto;
+            border-radius: 5px;
+        }
+        code {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>React useState and useEffect Q&A</h1>
+
+    <div class="question">
+        <h2>1. What is the purpose of the useState hook in React?</h2>
+        <p><strong>Answer:</strong> The <code>useState</code> hook is used to add state management to functional components in React. It allows you to declare state variables and update them, causing the component to re-render when the state changes.</p>
+        <pre><code>&lt;import React, { useState } from 'react';&gt;
+
+const Counter = () =&gt; {
+    const [count, setCount] = useState(0);
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default Counter;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>2. How does useEffect work in React?</h2>
+        <p><strong>Answer:</strong> The <code>useEffect</code> hook allows you to perform side effects in functional components. It is invoked after every render and can be used to fetch data, subscribe to events, or manually change the DOM. It can also be controlled with dependencies to only run on specific updates.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const Timer = () =&gt; {
+    const [seconds, setSeconds] = useState(0);
+
+    useEffect(() =&gt; {
+        const timer = setInterval(() =&gt; {
+            setSeconds(prevSeconds =&gt; prevSeconds + 1);
+        }, 1000);
+
+        return () =&gt; clearInterval(timer); // Cleanup function
+    }, []); // Empty dependency array means it runs only once
+
+    return &lt;p&gt;Time: {seconds}s&lt;/p&gt;;
+};
+
+export default Timer;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>3. What is the difference between useState and useEffect?</h2>
+        <p><strong>Answer:</strong> <code>useState</code> is used for managing state within a component, while <code>useEffect</code> is used for handling side effects such as data fetching, event listeners, and manual DOM manipulation. <code>useState</code> triggers a re-render of the component when the state changes, while <code>useEffect</code> runs after the render cycle to perform actions.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const Example = () =&gt; {
+    const [text, setText] = useState('Initial state');
+
+    useEffect(() =&gt; {
+        document.title = text; // Set document title as an effect
+    }, [text]); // Runs whenever 'text' state changes
+
+    return (
+        &lt;div&gt;
+            &lt;input 
+                type="text" 
+                value={text} 
+                onChange={(e) =&gt; setText(e.target.value)} 
+            /&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default Example;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>4. Can useEffect run multiple times within the same component?</h2>
+        <p><strong>Answer:</strong> Yes, <code>useEffect</code> can run multiple times within the same component. You can have several <code>useEffect</code> hooks with different dependencies, allowing them to run based on specific conditions. Each <code>useEffect</code> hook operates independently.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const MultipleEffects = () =&gt; {
+    const [count, setCount] = useState(0);
+    const [name, setName] = useState('');
+
+    useEffect(() =&gt; {
+        console.log('Count changed:', count);
+    }, [count]);
+
+    useEffect(() =&gt; {
+        console.log('Name changed:', name);
+    }, [name]);
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment Count&lt;/button&gt;
+            &lt;input 
+                type="text" 
+                value={name} 
+                onChange={(e) =&gt; setName(e.target.value)} 
+            /&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default MultipleEffects;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>5. What does the cleanup function in useEffect do?</h2>
+        <p><strong>Answer:</strong> The cleanup function in <code>useEffect</code> is used to clean up resources when a component is unmounted or before the effect runs again. It can be used for things like clearing timers, unsubscribing from event listeners, or cancelling network requests.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const CleanupExample = () =&gt; {
+    const [count, setCount] = useState(0);
+
+    useEffect(() =&gt; {
+        const interval = setInterval(() =&gt; {
+            console.log('Interval running');
+        }, 1000);
+
+        return () =&gt; {
+            clearInterval(interval); // Cleanup the interval
+        };
+    }, []);
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default CleanupExample;&lt;/code&gt;</pre>
+    </div>
+    
+        <div class="question">
+        <h2>6. How do you pass values to useEffect and control when it runs?</h2>
+        <p><strong>Answer:</strong> You pass an array of dependencies as the second argument to <code>useEffect</code>. The effect will run only when any of the dependencies change. If the dependency array is empty, the effect will only run once when the component mounts.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const DataFetcher = () =&gt; {
+    const [data, setData] = useState(null);
+    const [id, setId] = useState(1);
+
+    useEffect(() =&gt; {
+        fetch(`https://api.example.com/data/${id}`)
+            .then(response =&gt; response.json())
+            .then(data =&gt; setData(data));
+    }, [id]); // Runs when 'id' changes
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Data: {data ? data.name : 'Loading...'}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setId(id + 1)}&gt;Next Item&lt;/button&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default DataFetcher;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>7. What is the difference between useEffect with an empty dependency array and useEffect with no dependency array?</h2>
+        <p><strong>Answer:</strong> If <code>useEffect</code> has an empty dependency array, it will only run once, when the component is first mounted. If there is no dependency array, the effect runs after every render, which means it will execute on every update of the component.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const Component = () =&gt; {
+    const [value, setValue] = useState(0);
+
+    // Runs once when the component is mounted
+    useEffect(() =&gt; {
+        console.log('Effect runs once');
+    }, []);
+
+    // Runs after every render (state or props change)
+    useEffect(() =&gt; {
+        console.log('Effect runs after every render');
+    });
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Value: {value}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setValue(value + 1)}&gt;Increment&lt;/button&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default Component;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>8. How do you handle asynchronous operations inside useEffect?</h2>
+        <p><strong>Answer:</strong> Since <code>useEffect</code> itself cannot return a promise, you can define an asynchronous function inside the effect and invoke it, or use async/await to handle the async operations.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const AsyncEffect = () =&gt; {
+    const [data, setData] = useState(null);
+
+    useEffect(() =&gt; {
+        const fetchData = async () =&gt; {
+            const response = await fetch('https://api.example.com/data');
+            const result = await response.json();
+            setData(result);
+        };
+
+        fetchData();
+    }, []); // Runs once when the component is mounted
+
+    return &lt;p&gt;Data: {data ? data.name : 'Loading...'}&lt;/p&gt;;
+};
+
+export default AsyncEffect;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>9. Can you use useEffect for event listeners like scroll or resize?</h2>
+        <p><strong>Answer:</strong> Yes, you can use <code>useEffect</code> to add event listeners such as scroll or resize. It’s important to clean up the event listener when the component is unmounted or the dependencies change to prevent memory leaks.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const ResizeListener = () =&gt; {
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+    useEffect(() =&gt; {
+        const handleResize = () =&gt; {
+            setWindowWidth(window.innerWidth);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () =&gt; {
+            window.removeEventListener('resize', handleResize); // Cleanup
+        };
+    }, []); // Runs once when the component is mounted
+
+    return &lt;p&gt;Window Width: {windowWidth}px&lt;/p&gt;;
+};
+
+export default ResizeListener;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>10. How do you prevent useEffect from running on every render?</h2>
+        <p><strong>Answer:</strong> To prevent <code>useEffect</code> from running on every render, you can pass a dependency array. This tells React to run the effect only when the values in the array change.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const PreventEffect = () =&gt; {
+    const [counter, setCounter] = useState(0);
+    const [message, setMessage] = useState('');
+
+    useEffect(() =&gt; {
+        console.log('Effect runs because counter changed');
+    }, [counter]); // Runs only when 'counter' changes
+
+    useEffect(() =&gt; {
+        console.log('Effect runs only once');
+    }, []); // Runs only once when the component is mounted
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Counter: {counter}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCounter(counter + 1)}&gt;Increment Counter&lt;/button&gt;
+            &lt;p&gt;Message: {message}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setMessage('Hello World!')}&gt;Set Message&lt;/button&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default PreventEffect;&lt;/code&gt;</pre>
+    </div>
+    
+        <div class="question">
+        <h2>11. What happens when you pass an empty array as a dependency in useEffect?</h2>
+        <p><strong>Answer:</strong> When you pass an empty array as a dependency to <code>useEffect</code>, it tells React to run the effect only once, after the initial render. It will not run again unless the component is unmounted and mounted again.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const FetchDataOnce = () =&gt; {
+    const [data, setData] = useState(null);
+
+    useEffect(() =&gt; {
+        fetch('https://api.example.com/data')
+            .then(response =&gt; response.json())
+            .then(result =&gt; setData(result));
+    }, []); // Empty dependency array
+
+    return &lt;p&gt;Data: {data ? data.name : 'Loading...'}&lt;/p&gt;;
+};
+
+export default FetchDataOnce;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>12. What is the purpose of the cleanup function in useEffect?</h2>
+        <p><strong>Answer:</strong> The cleanup function in <code>useEffect</code> is used to clean up side effects when the component is unmounted or before the effect runs again. This is useful for tasks like clearing timers or unsubscribing from events.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const Timer = () =&gt; {
+    useEffect(() =&gt; {
+        const interval = setInterval(() =&gt; {
+            console.log('Interval running');
+        }, 1000);
+
+        return () =&gt; {
+            clearInterval(interval); // Cleanup function
+        };
+    }, []);
+
+    return &lt;p&gt;Timer is running, check console log&lt;/p&gt;;
+};
+
+export default Timer;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>13. How do you update the state with useState based on the previous state?</h2>
+        <p><strong>Answer:</strong> You can update the state based on the previous state by passing a function to the <code>setState</code> function. This function receives the previous state as an argument and returns the new state value.</p>
+        <pre><code>&lt;import React, { useState } from 'react';&gt;
+
+const Counter = () =&gt; {
+    const [count, setCount] = useState(0);
+
+    const increment = () =&gt; {
+        setCount(prevCount =&gt; prevCount + 1); // Based on previous state
+    };
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;button onClick={increment}&gt;Increment&lt;/button&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default Counter;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>14. Can useEffect return a value?</h2>
+        <p><strong>Answer:</strong> Yes, <code>useEffect</code> can return a cleanup function, which is used to clean up side effects such as clearing timers or unsubscribing from events. It cannot return any value that you can directly use like a function.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const CleanupExample = () =&gt; {
+    const [count, setCount] = useState(0);
+
+    useEffect(() =&gt; {
+        const interval = setInterval(() =&gt; {
+            console.log('Interval running');
+        }, 1000);
+
+        return () =&gt; {
+            clearInterval(interval); // Cleanup function
+        };
+    }, []);
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default CleanupExample;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>15. How can you use multiple useEffect hooks in one component?</h2>
+        <p><strong>Answer:</strong> You can use multiple <code>useEffect</code> hooks in a single component. Each hook runs independently based on the dependencies passed to it, allowing you to manage different side effects separately.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const MultipleEffects = () =&gt; {
+    const [count, setCount] = useState(0);
+    const [name, setName] = useState('');
+
+    useEffect(() =&gt; {
+        console.log('Count changed:', count);
+    }, [count]); // Runs only when 'count' changes
+
+    useEffect(() =&gt; {
+        console.log('Name changed:', name);
+    }, [name]); // Runs only when 'name' changes
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+            &lt;input 
+                type="text" 
+                value={name} 
+                onChange={(e) =&gt; setName(e.target.value)} 
+            /&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default MultipleEffects;&lt;/code&gt;</pre>
+    </div>
+    
+        <div class="question">
+        <h2>16. How can useEffect be used for data fetching in React?</h2>
+        <p><strong>Answer:</strong> <code>useEffect</code> is ideal for fetching data after the component mounts. You can use it to trigger an API call, and upon receiving the data, update the component's state to reflect the new data.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const DataFetcher = () =&gt; {
+    const [data, setData] = useState(null);
+
+    useEffect(() =&gt; {
+        fetch('https://api.example.com/data')
+            .then(response =&gt; response.json())
+            .then(result =&gt; setData(result));
+    }, []); // Runs once when the component is mounted
+
+    return &lt;p&gt;Data: {data ? data.name : 'Loading...'}&lt;/p&gt;;
+};
+
+export default DataFetcher;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>17. How does useEffect handle asynchronous functions?</h2>
+        <p><strong>Answer:</strong> <code>useEffect</code> itself cannot be asynchronous. However, you can define an asynchronous function inside the effect and invoke it. The effect itself should always return a cleanup function, but the async operation is handled inside the inner function.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const AsyncExample = () =&gt; {
+    const [data, setData] = useState(null);
+
+    useEffect(() =&gt; {
+        const fetchData = async () =&gt; {
+            const response = await fetch('https://api.example.com/data');
+            const result = await response.json();
+            setData(result);
+        };
+
+        fetchData();
+    }, []); // Runs once when the component is mounted
+
+    return &lt;p&gt;Data: {data ? data.name : 'Loading...'}&lt;/p&gt;;
+};
+
+export default AsyncExample;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>18. How do you handle cleanup for event listeners in useEffect?</h2>
+        <p><strong>Answer:</strong> You can handle cleanup in <code>useEffect</code> by returning a function that removes the event listener or cleans up any side effects, such as clearing timeouts or canceling API requests.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const EventListenerComponent = () =&gt; {
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+    useEffect(() =&gt; {
+        const handleMouseMove = (event) =&gt; {
+            setMousePosition({ x: event.clientX, y: event.clientY });
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+
+        return () =&gt; {
+            window.removeEventListener('mousemove', handleMouseMove); // Cleanup event listener
+        };
+    }, []); // Runs once when the component is mounted
+
+    return &lt;p&gt;Mouse Position: X: {mousePosition.x}, Y: {mousePosition.y}&lt;/p&gt;;
+};
+
+export default EventListenerComponent;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>19. What is the difference between useState and useEffect in React?</h2>
+        <p><strong>Answer:</strong> <code>useState</code> is used to declare state variables that will trigger a re-render when updated. <code>useEffect</code> is used to perform side effects, such as fetching data, subscribing to external events, or changing the DOM after the component renders.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const StateAndEffect = () =&gt; {
+    const [count, setCount] = useState(0);
+
+    useEffect(() =&gt; {
+        console.log('Effect runs because count changed');
+    }, [count]); // Runs when 'count' changes
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default StateAndEffect;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>20. How do you manage multiple state updates in React?</h2>
+        <p><strong>Answer:</strong> You can use multiple <code>useState</code> hooks to manage multiple pieces of state. Each state hook is independent, and you can update them separately as needed, keeping the logic modular and easier to manage.</p>
+        <pre><code>&lt;import React, { useState } from 'react';&gt;
+
+const MultipleStateExample = () =&gt; {
+    const [count, setCount] = useState(0);
+    const [name, setName] = useState('');
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment Count&lt;/button&gt;
+            &lt;p&gt;Name: {name}&lt;/p&gt;
+            &lt;input 
+                type="text" 
+                value={name} 
+                onChange={(e) =&gt; setName(e.target.value)} 
+            /&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default MultipleStateExample;&lt;/code&gt;</pre>
+    </div>
+    
+        <div class="question">
+        <h2>21. How can useState be used to manage a boolean value?</h2>
+        <p><strong>Answer:</strong> You can use <code>useState</code> to manage a boolean state by initializing it with a boolean value (true or false). You can then update the state based on user actions such as button clicks.</p>
+        <pre><code>&lt;import React, { useState } from 'react';&gt;
+
+const ToggleButton = () =&gt; {
+    const [isToggled, setIsToggled] = useState(false);
+
+    const toggle = () =&gt; {
+        setIsToggled(prevState =&gt; !prevState); // Toggle the boolean state
+    };
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Toggled: {isToggled ? 'Yes' : 'No'}&lt;/p&gt;
+            &lt;button onClick={toggle}&gt;Toggle&lt;/button&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default ToggleButton;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>22. Can useEffect be used for DOM manipulation?</h2>
+        <p><strong>Answer:</strong> While React manages the DOM for you, <code>useEffect</code> can be used for direct DOM manipulation after the component renders. However, it is better to use React's declarative approach, and only use <code>useEffect</code> for cases like integrating with third-party libraries or managing complex side effects.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const DOMManipulation = () =&gt; {
+    const [isVisible, setIsVisible] = useState(true);
+
+    useEffect(() =&gt; {
+        const element = document.getElementById('toggleText');
+        if (element) {
+            element.style.color = isVisible ? 'green' : 'red';
+        }
+    }, [isVisible]); // Runs when isVisible changes
+
+    return (
+        &lt;div&gt;
+            &lt;p id="toggleText"&gt;{isVisible ? 'Visible' : 'Hidden'}</p>
+            &lt;button onClick={() =&gt; setIsVisible(!isVisible)}&gt;Toggle Visibility&lt;/button&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default DOMManipulation;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>23. What is the effect of passing a non-empty dependency array to useEffect?</h2>
+        <p><strong>Answer:</strong> Passing a non-empty dependency array to <code>useEffect</code> means that the effect will run only when one or more of the dependencies change. This can optimize performance by reducing unnecessary re-renders.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const DependentEffect = () =&gt; {
+    const [count, setCount] = useState(0);
+
+    useEffect(() =&gt; {
+        console.log('Effect runs because count changed');
+    }, [count]); // Runs only when 'count' changes
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default DependentEffect;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>24. Can you have a useEffect hook with multiple dependencies?</h2>
+        <p><strong>Answer:</strong> Yes, you can pass an array with multiple dependencies to <code>useEffect</code>. The effect will run whenever any of the dependencies change.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const MultipleDependencies = () =&gt; {
+    const [count, setCount] = useState(0);
+    const [name, setName] = useState('');
+
+    useEffect(() =&gt; {
+        console.log('Effect runs because count or name changed');
+    }, [count, name]); // Runs when 'count' or 'name' changes
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment Count&lt;/button&gt;
+            &lt;p&gt;Name: {name}&lt;/p&gt;
+            &lt;input 
+                type="text" 
+                value={name} 
+                onChange={(e) =&gt; setName(e.target.value)} 
+            /&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default MultipleDependencies;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>25. How do you use useEffect with local storage in React?</h2>
+        <p><strong>Answer:</strong> You can use <code>useEffect</code> to sync state with <code>localStorage</code>. Whenever the state changes, you can save it to <code>localStorage</code> and retrieve it when the component mounts.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const LocalStorageExample = () =&gt; {
+    const [name, setName] = useState('');
+
+    useEffect(() =&gt; {
+        const storedName = localStorage.getItem('name');
+        if (storedName) {
+            setName(storedName);
+        }
+    }, []); // Runs once when the component is mounted
+
+    useEffect(() =&gt; {
+        localStorage.setItem('name', name); // Sync to localStorage
+    }, [name]); // Runs when 'name' changes
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Name: {name}&lt;/p&gt;
+            &lt;input 
+                type="text" 
+                value={name} 
+                onChange={(e) =&gt; setName(e.target.value)} 
+            /&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default LocalStorageExample;&lt;/code&gt;</pre>
+    </div>
+    
+        <div class="question">
+        <h2>26. What happens if you pass an empty dependency array to useEffect?</h2>
+        <p><strong>Answer:</strong> If you pass an empty dependency array to <code>useEffect</code>, the effect will run only once, after the initial render. This is similar to <code>componentDidMount</code> in class components.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const OneTimeEffect = () =&gt; {
+    const [count, setCount] = useState(0);
+
+    useEffect(() =&gt; {
+        console.log('Effect runs once after the initial render');
+    }, []); // Empty dependency array ensures effect runs only once
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default OneTimeEffect;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>27. How can you conditionally execute useEffect based on a prop or state?</h2>
+        <p><strong>Answer:</strong> You can conditionally execute <code>useEffect</code> by including a condition inside the effect or by passing certain dependencies. If the condition is not met, you can prevent further actions within the effect.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const ConditionalEffect = ({ trigger }) =&gt; {
+    const [count, setCount] = useState(0);
+
+    useEffect(() =&gt; {
+        if (trigger) {
+            console.log('Effect runs because trigger is true');
+        }
+    }, [trigger]); // Runs when 'trigger' changes
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default ConditionalEffect;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>28. How do you clean up side effects in useEffect?</h2>
+        <p><strong>Answer:</strong> To clean up side effects in <code>useEffect</code>, you return a cleanup function from the effect. This cleanup function will be executed when the component unmounts or when the dependencies change.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const CleanupEffect = () =&gt; {
+    const [count, setCount] = useState(0);
+
+    useEffect(() =&gt; {
+        const interval = setInterval(() =&gt; {
+            console.log('Interval running...');
+        }, 1000);
+
+        // Cleanup function
+        return () =&gt; {
+            clearInterval(interval); // Clears the interval when component unmounts or dependencies change
+        };
+    }, []); // Runs once on mount
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default CleanupEffect;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>29. Can useEffect be used to fetch data from an API?</h2>
+        <p><strong>Answer:</strong> Yes, <code>useEffect</code> can be used to fetch data from an API when the component mounts or when a dependency changes. It's commonly used to handle asynchronous operations in React components.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const FetchDataEffect = () =&gt; {
+    const [data, setData] = useState(null);
+
+    useEffect(() =&gt; {
+        const fetchData = async () =&gt; {
+            const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+            const data = await response.json();
+            setData(data);
+        };
+
+        fetchData();
+    }, []); // Runs once on mount
+
+    return (
+        &lt;div&gt;
+            &lt;h3&gt;Fetched Data:&lt;/h3&gt;
+            &lt;pre&gt;{JSON.stringify(data, null, 2)}&lt;/pre&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default FetchDataEffect;&lt;/code&gt;</pre>
+    </div>
+
+    <div class="question">
+        <h2>30. How can you prevent useEffect from running on every render?</h2>
+        <p><strong>Answer:</strong> You can prevent <code>useEffect</code> from running on every render by passing a dependency array with specific values. If none of the dependencies change, the effect will not run again.</p>
+        <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const PreventReRunEffect = () =&gt; {
+    const [count, setCount] = useState(0);
+
+    useEffect(() =&gt; {
+        console.log('Effect runs only when count changes');
+    }, [count]); // Runs only when 'count' changes
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default PreventReRunEffect;&lt;/code&gt;</pre>
+    </div>
+    
+    <div class="question">
+  <h2>31. What happens if you omit the dependency array in useEffect?</h2>
+  <p><strong>Answer:</strong> If you omit the dependency array, the effect will run after every render, which can lead to performance issues or infinite loops if not handled carefully.</p>
+  <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const WithoutDependencies = () =&gt; {
+    const [count, setCount] = useState(0);
+
+    useEffect(() =&gt; {
+        console.log('This runs after every render');
+    }); // No dependency array
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default WithoutDependencies;&lt;/code&gt;</pre>
+</div>
+
+<div class="question">
+  <h2>32. How to debounce a search input using useEffect?</h2>
+  <p><strong>Answer:</strong> You can use <code>useEffect</code> with <code>setTimeout</code> to debounce a value. A cleanup function ensures that previous timers are cleared before the next effect runs.</p>
+  <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const DebouncedSearch = () =&gt; {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [result, setResult] = useState('');
+
+    useEffect(() =&gt; {
+        const timer = setTimeout(() =&gt; {
+            setResult(`Searching for: ${searchTerm}`);
+        }, 500);
+
+        return () =&gt; clearTimeout(timer);
+    }, [searchTerm]);
+
+    return (
+        &lt;div&gt;
+            &lt;input 
+                type="text" 
+                value={searchTerm}
+                onChange={(e) =&gt; setSearchTerm(e.target.value)}
+                placeholder="Search..."
+            /&gt;
+            &lt;p&gt;{result}&lt;/p&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default DebouncedSearch;&lt;/code&gt;</pre>
+</div>
+
+<div class="question">
+  <h2>33. How can you track window resize using useEffect?</h2>
+  <p><strong>Answer:</strong> You can add an event listener to the window resize event inside <code>useEffect</code>, and clean it up to avoid memory leaks.</p>
+  <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const WindowResizeTracker = () =&gt; {
+    const [width, setWidth] = useState(window.innerWidth);
+
+    useEffect(() =&gt; {
+        const handleResize = () =&gt; setWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+
+        return () =&gt; {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Window width: {width}px&lt;/p&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default WindowResizeTracker;&lt;/code&gt;</pre>
+</div>
+
+<div class="question">
+  <h2>34. How do you set up a countdown timer using useEffect?</h2>
+  <p><strong>Answer:</strong> You can use <code>setInterval</code> within <code>useEffect</code> to create a countdown and clear it when the timer reaches zero or when the component unmounts.</p>
+  <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const CountdownTimer = () =&gt; {
+    const [seconds, setSeconds] = useState(10);
+
+    useEffect(() =&gt; {
+        if (seconds === 0) return;
+
+        const timer = setInterval(() =&gt; {
+            setSeconds(prev =&gt; prev - 1);
+        }, 1000);
+
+        return () =&gt; clearInterval(timer);
+    }, [seconds]);
+
+    return (
+        &lt;div&gt;
+            &lt;h2&gt;Countdown: {seconds}&lt;/h2&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default CountdownTimer;&lt;/code&gt;</pre>
+</div>
+
+<div class="question">
+  <h2>35. Can you update the document title dynamically using useEffect?</h2>
+  <p><strong>Answer:</strong> Yes, you can use <code>useEffect</code> to change the document title whenever a state changes.</p>
+  <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const DynamicTitle = () =&gt; {
+    const [count, setCount] = useState(0);
+
+    useEffect(() =&gt; {
+        document.title = `You clicked ${count} times`;
+    }, [count]);
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;You clicked {count} times&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Click me&lt;/button&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default DynamicTitle;&lt;/code&gt;</pre>
+</div>
+
+<div class="question">
+  <h2>36. How can you detect if a component has mounted using useEffect?</h2>
+  <p><strong>Answer:</strong> To detect when a component has mounted, use <code>useEffect</code> with an empty dependency array. It will only run once after the initial render.</p>
+  <pre><code>&lt;import React, { useEffect } from 'react';&gt;
+
+const DetectMount = () =&gt; {
+    useEffect(() =&gt; {
+        console.log('Component mounted');
+    }, []);
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Check the console to see the mount message.&lt;/p&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default DetectMount;&lt;/code&gt;</pre>
+</div>
+
+<div class="question">
+  <h2>37. How do you mimic componentWillUnmount using useEffect?</h2>
+  <p><strong>Answer:</strong> You mimic <code>componentWillUnmount</code> by returning a cleanup function inside <code>useEffect</code> with an empty dependency array.</p>
+  <pre><code>&lt;import React, { useEffect } from 'react';&gt;
+
+const WillUnmountEffect = () =&gt; {
+    useEffect(() =&gt; {
+        return () =&gt; {
+            console.log('Component will unmount');
+        };
+    }, []);
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Unmount this component to trigger cleanup.&lt;/p&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default WillUnmountEffect;&lt;/code&gt;</pre>
+</div>
+
+<div class="question">
+  <h2>38. How can you trigger an effect only when a specific prop changes?</h2>
+  <p><strong>Answer:</strong> You include the specific prop in the dependency array. The effect will only run when that prop changes.</p>
+  <pre><code>&lt;import React, { useEffect } from 'react';&gt;
+
+const EffectOnPropChange = ({ username }) =&gt; {
+    useEffect(() =&gt; {
+        console.log(`Username changed to: ${username}`);
+    }, [username]);
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Current user: {username}&lt;/p&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default EffectOnPropChange;&lt;/code&gt;</pre>
+</div>
+
+<div class="question">
+  <h2>39. Can you use multiple useEffect hooks in a single component?</h2>
+  <p><strong>Answer:</strong> Yes, you can have multiple <code>useEffect</code> hooks, each handling a different concern. They run independently.</p>
+  <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const MultipleEffects = () =&gt; {
+    const [count, setCount] = useState(0);
+    const [name, setName] = useState('John');
+
+    useEffect(() =&gt; {
+        console.log('Count changed:', count);
+    }, [count]);
+
+    useEffect(() =&gt; {
+        console.log('Name changed:', name);
+    }, [name]);
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;p&gt;Name: {name}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment Count&lt;/button&gt;
+            &lt;button onClick={() =&gt; setName('Jane')}&gt;Change Name&lt;/button&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default MultipleEffects;&lt;/code&gt;</pre>
+</div>
+
+<div class="question">
+  <h2>40. How can you avoid unnecessary re-renders using useEffect?</h2>
+  <p><strong>Answer:</strong> By carefully managing the dependency array, you ensure <code>useEffect</code> only runs when needed, preventing unnecessary re-renders or logic execution.</p>
+  <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const AvoidReRender = () =&gt; {
+    const [value, setValue] = useState('');
+    const [display, setDisplay] = useState('');
+
+    useEffect(() =&gt; {
+        if (value.length &gt; 3) {
+            setDisplay(value);
+        }
+    }, [value]);
+
+    return (
+        &lt;div&gt;
+            &lt;input 
+                type="text"
+                value={value}
+                onChange={(e) =&gt; setValue(e.target.value)}
+                placeholder="Type here..."
+            /&gt;
+            &lt;p&gt;Display: {display}&lt;/p&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default AvoidReRender;&lt;/code&gt;</pre>
+</div>
+
+<div class="question">
+  <h2>41. How do you reset state when a prop changes using useEffect?</h2>
+  <p><strong>Answer:</strong> You can listen to the prop change in <code>useEffect</code> and call the state updater to reset the state accordingly.</p>
+  <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const ResetStateOnProp = ({ userId }) =&gt; {
+    const [userDetails, setUserDetails] = useState(null);
+
+    useEffect(() =&gt; {
+        setUserDetails(null); // Reset state
+        // Simulate fetch
+        setTimeout(() =&gt; {
+            setUserDetails({ id: userId, name: 'User ' + userId });
+        }, 1000);
+    }, [userId]);
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Loading user {userId}...&lt;/p&gt;
+            {userDetails &amp;&amp; &lt;p&gt;User: {userDetails.name}&lt;/p&gt;}
+        &lt;/div&gt;
+    );
+};
+
+export default ResetStateOnProp;&lt;/code&gt;</pre>
+</div>
+
+<div class="question">
+  <h2>42. How can you log previous props or state with useEffect?</h2>
+  <p><strong>Answer:</strong> Use a ref to store previous values and update it after the effect runs, so you can compare before and after values.</p>
+  <pre><code>&lt;import React, { useState, useEffect, useRef } from 'react';&gt;
+
+const LogPreviousValue = () =&gt; {
+    const [value, setValue] = useState('');
+    const prevValueRef = useRef();
+
+    useEffect(() =&gt; {
+        if (prevValueRef.current !== undefined) {
+            console.log('Previous:', prevValueRef.current, 'Current:', value);
+        }
+        prevValueRef.current = value;
+    }, [value]);
+
+    return (
+        &lt;div&gt;
+            &lt;input 
+                type="text" 
+                value={value} 
+                onChange={(e) =&gt; setValue(e.target.value)} 
+                placeholder="Type something..." 
+            /&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default LogPreviousValue;&lt;/code&gt;</pre>
+</div>
+
+<div class="question">
+  <h2>43. How do you prevent memory leaks in asynchronous useEffect logic?</h2>
+  <p><strong>Answer:</strong> Use a flag (like <code>isMounted</code>) or AbortController to prevent updating state after a component has unmounted.</p>
+  <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const SafeAsyncEffect = () =&gt; {
+    const [data, setData] = useState(null);
+
+    useEffect(() =&gt; {
+        let isMounted = true;
+
+        const fetchData = async () =&gt; {
+            const response = await fetch('https://jsonplaceholder.typicode.com/posts/1');
+            const result = await response.json();
+            if (isMounted) {
+                setData(result);
+            }
+        };
+
+        fetchData();
+
+        return () =&gt; {
+            isMounted = false;
+        };
+    }, []);
+
+    return (
+        &lt;div&gt;
+            &lt;pre&gt;{JSON.stringify(data, null, 2)}&lt;/pre&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default SafeAsyncEffect;&lt;/code&gt;</pre>
+</div>
+
+<div class="question">
+  <h2>44. How can you use useEffect to scroll to an element on mount?</h2>
+  <p><strong>Answer:</strong> Use a ref to target the DOM element and scroll to it inside <code>useEffect</code>.</p>
+  <pre><code>&lt;import React, { useEffect, useRef } from 'react';&gt;
+
+const ScrollIntoViewOnMount = () =&gt; {
+    const myRef = useRef(null);
+
+    useEffect(() =&gt; {
+        myRef.current.scrollIntoView({ behavior: 'smooth' });
+    }, []);
+
+    return (
+        &lt;div style={{ height: '150vh' }}&gt;
+            &lt;div style={{ marginTop: '140vh' }} ref={myRef}&gt;
+                &lt;h2&gt;Scrolled into view on mount&lt;/h2&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default ScrollIntoViewOnMount;&lt;/code&gt;</pre>
+</div>
+
+<div class="question">
+  <h2>45. How can you combine useState and useEffect for a real-time clock?</h2>
+  <p><strong>Answer:</strong> Use <code>useState</code> to store the current time and <code>useEffect</code> with <code>setInterval</code> to update it every second.</p>
+  <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const RealTimeClock = () =&gt; {
+    const [time, setTime] = useState(new Date().toLocaleTimeString());
+
+    useEffect(() =&gt; {
+        const timer = setInterval(() =&gt; {
+            setTime(new Date().toLocaleTimeString());
+        }, 1000);
+
+        return () =&gt; clearInterval(timer);
+    }, []);
+
+    return (
+        &lt;div&gt;
+            &lt;h1&gt;Current Time: {time}&lt;/h1&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default RealTimeClock;&lt;/code&gt;</pre>
+</div>
+
+<div class="question">
+  <h2>46. How do you use useEffect to detect window resizing?</h2>
+  <p><strong>Answer:</strong> You add an event listener to the <code>resize</code> event in <code>useEffect</code> and remove it in the cleanup function to avoid memory leaks.</p>
+  <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const WindowResize = () =&gt; {
+    const [size, setSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+
+    useEffect(() =&gt; {
+        const handleResize = () =&gt; {
+            setSize({ width: window.innerWidth, height: window.innerHeight });
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () =&gt; window.removeEventListener('resize', handleResize);
+    }, []);
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Width: {size.width}px&lt;/p&gt;
+            &lt;p&gt;Height: {size.height}px&lt;/p&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default WindowResize;&lt;/code&gt;</pre>
+</div>
+
+<div class="question">
+  <h2>47. How do you debounce a search input using useEffect?</h2>
+  <p><strong>Answer:</strong> Use a timeout inside <code>useEffect</code> that delays the state update. Cancel the timeout in the cleanup function to prevent overlapping calls.</p>
+  <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const DebouncedSearch = () =&gt; {
+    const [input, setInput] = useState('');
+    const [query, setQuery] = useState('');
+
+    useEffect(() =&gt; {
+        const timeout = setTimeout(() =&gt; {
+            setQuery(input);
+        }, 500);
+
+        return () =&gt; clearTimeout(timeout);
+    }, [input]);
+
+    return (
+        &lt;div&gt;
+            &lt;input 
+                type="text" 
+                value={input}
+                onChange={(e) =&gt; setInput(e.target.value)} 
+                placeholder="Search..." 
+            /&gt;
+            &lt;p&gt;Debounced query: {query}&lt;/p&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default DebouncedSearch;&lt;/code&gt;</pre>
+</div>
+
+<div class="question">
+  <h2>48. How can you trigger useEffect only once when a condition becomes true?</h2>
+  <p><strong>Answer:</strong> Combine the condition in the <code>useEffect</code> body and dependency array to ensure the effect runs once when the condition is met.</p>
+  <pre><code>&lt;import React, { useEffect, useState } from 'react';&gt;
+
+const TriggerEffectOnce = () =&gt; {
+    const [ready, setReady] = useState(false);
+    const [message, setMessage] = useState('');
+
+    useEffect(() =&gt; {
+        if (ready) {
+            setMessage('Ready state detected!');
+        }
+    }, [ready]);
+
+    return (
+        &lt;div&gt;
+            &lt;button onClick={() =&gt; setReady(true)}&gt;Set Ready&lt;/button&gt;
+            &lt;p&gt;{message}&lt;/p&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default TriggerEffectOnce;&lt;/code&gt;</pre>
+</div>
+
+<div class="question">
+  <h2>49. How can you fetch multiple resources in parallel using useEffect?</h2>
+  <p><strong>Answer:</strong> Use <code>Promise.all</code> inside <code>useEffect</code> to fetch multiple endpoints concurrently, then update the state once all responses are received.</p>
+  <pre><code>&lt;import React, { useEffect, useState } from 'react';&gt;
+
+const MultiFetch = () =&gt; {
+    const [posts, setPosts] = useState([]);
+    const [users, setUsers] = useState([]);
+
+    useEffect(() =&gt; {
+        const fetchResources = async () =&gt; {
+            const [postsRes, usersRes] = await Promise.all([
+                fetch('https://jsonplaceholder.typicode.com/posts'),
+                fetch('https://jsonplaceholder.typicode.com/users')
+            ]);
+            const postsData = await postsRes.json();
+            const usersData = await usersRes.json();
+
+            setPosts(postsData.slice(0, 3));
+            setUsers(usersData.slice(0, 3));
+        };
+
+        fetchResources();
+    }, []);
+
+    return (
+        &lt;div&gt;
+            &lt;h3&gt;Posts&lt;/h3&gt;
+            &lt;ul&gt;
+                {posts.map(post =&gt; &lt;li key={post.id}&gt;{post.title}&lt;/li&gt;)}
+            &lt;/ul&gt;
+            &lt;h3&gt;Users&lt;/h3&gt;
+            &lt;ul&gt;
+                {users.map(user =&gt; &lt;li key={user.id}&gt;{user.name}&lt;/li&gt;)}
+            &lt;/ul&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default MultiFetch;&lt;/code&gt;</pre>
+</div>
+
+<div class="question">
+  <h2>50. How can you implement polling using useEffect?</h2>
+  <p><strong>Answer:</strong> Set an interval in <code>useEffect</code> that calls a function periodically. Clear it in the cleanup function to prevent memory leaks.</p>
+  <pre><code>&lt;import React, { useState, useEffect } from 'react';&gt;
+
+const PollingExample = () =&gt; {
+    const [time, setTime] = useState(Date.now());
+
+    useEffect(() =&gt; {
+        const interval = setInterval(() =&gt; {
+            setTime(Date.now());
+        }, 2000);
+
+        return () =&gt; clearInterval(interval);
+    }, []);
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Current timestamp: {time}&lt;/p&gt;
+        &lt;/div&gt;
+    );
+};
+
+export default PollingExample;&lt;/code&gt;</pre>
+</div>
+
+
+
+
+</body>
+</html>
