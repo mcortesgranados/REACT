@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redux / Redux Toolkit Q&A Set 1</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .question {
+      background: #fff;
+      border-left: 5px solid #3498db;
+      padding: 20px;
+      margin: 20px auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 900px;
+      border-radius: 8px;
+    }
+    .question h2 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>Redux / Redux Toolkit - Q&A Set 1 (1–13)</h1>
+
+  <div class="question">
+    <h2>1. What is Redux and why is it useful in React applications?</h2>
+    <p>Redux is a predictable state container for JavaScript applications. It helps manage state in a single store, enabling better state control, debugging, and state sharing across components.</p>
+    <pre><code>// No code necessary for conceptual explanation</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>2. What is Redux Toolkit and how does it simplify Redux development?</h2>
+    <p>Redux Toolkit is the official, recommended way to write Redux logic. It provides utilities like <code>createSlice</code>, <code>configureStore</code>, and <code>createAsyncThunk</code> that reduce boilerplate.</p>
+    <pre><code>// Example store setup
+import { configureStore, createSlice } from '@reduxjs/toolkit';
+
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: { value: 0 },
+  reducers: {
+    increment: (state) => { state.value += 1 },
+    decrement: (state) => { state.value -= 1 },
+  }
+});
+
+export const { increment, decrement } = counterSlice.actions;
+
+const store = configureStore({
+  reducer: { counter: counterSlice.reducer }
+});
+
+export default store;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>3. How to install Redux Toolkit and React Redux?</h2>
+    <p>Use npm or yarn to install both packages:</p>
+    <pre><code>npm install @reduxjs/toolkit react-redux</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>4. How to configure a basic Redux store using Redux Toolkit?</h2>
+    <pre><code>import { configureStore } from '@reduxjs/toolkit';
+import counterReducer from './counterSlice';
+
+const store = configureStore({
+  reducer: {
+    counter: counterReducer
+  }
+});
+
+export default store;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>5. What is a slice in Redux Toolkit?</h2>
+    <p>A slice contains reducer logic and actions for a specific feature of the application. It includes a name, initial state, and reducer functions.</p>
+    <pre><code>import { createSlice } from '@reduxjs/toolkit';
+
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: { value: 0 },
+  reducers: {
+    increment: state => { state.value++ },
+    decrement: state => { state.value-- }
+  }
+});
+
+export const { increment, decrement } = counterSlice.actions;
+export default counterSlice.reducer;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>6. How to connect a React app to the Redux store?</h2>
+    <pre><code>import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
+import App from './App';
+import store from './store';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  &lt;Provider store={store}&gt;
+    &lt;App /&gt;
+  &lt;/Provider&gt;
+);
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>7. How to access Redux state in a component?</h2>
+    <pre><code>import { useSelector } from 'react-redux';
+
+function CounterDisplay() {
+  const count = useSelector(state => state.counter.value);
+  return &lt;h2&gt;Count: {count}&lt;/h2&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>8. How to dispatch Redux actions in a component?</h2>
+    <pre><code>import { useDispatch } from 'react-redux';
+import { increment, decrement } from './counterSlice';
+
+function CounterButtons() {
+  const dispatch = useDispatch();
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() => dispatch(increment())}&gt;Increment&lt;/button&gt;
+      &lt;button onClick={() => dispatch(decrement())}&gt;Decrement&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>9. What is Immer and how does Redux Toolkit use it?</h2>
+    <p>Immer allows writing reducers with "mutating" logic while keeping the state immutable under the hood. Redux Toolkit uses Immer internally for its reducers.</p>
+  </div>
+
+  <div class="question">
+    <h2>10. What is createAsyncThunk and when is it used?</h2>
+    <p><code>createAsyncThunk</code> is used for handling asynchronous logic like API calls. It auto-generates actions for pending, fulfilled, and rejected states.</p>
+    <pre><code>import { createAsyncThunk } from '@reduxjs/toolkit';
+
+export const fetchData = createAsyncThunk(
+  'data/fetchData',
+  async () => {
+    const response = await fetch('/api/data');
+    return await response.json();
+  }
+);
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>11. How to handle async thunk actions in a slice?</h2>
+    <pre><code>import { createSlice } from '@reduxjs/toolkit';
+import { fetchData } from './dataThunks';
+
+const dataSlice = createSlice({
+  name: 'data',
+  initialState: { items: [], loading: false },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchData.pending, (state) => { state.loading = true })
+      .addCase(fetchData.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = action.payload;
+      })
+      .addCase(fetchData.rejected, (state) => {
+        state.loading = false;
+      });
+  }
+});
+
+export default dataSlice.reducer;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>12. How to structure a large Redux Toolkit app?</h2>
+    <p>Split state into feature slices, each in its own folder with <code>slice.js</code> and <code>thunks.js</code>. Combine them in the store using <code>configureStore</code>.</p>
+  </div>
+
+  <div class="question">
+    <h2>13. What are the benefits of using Redux Toolkit over vanilla Redux?</h2>
+    <ul>
+      <li>Less boilerplate</li>
+      <li>Built-in Immer</li>
+      <li>Built-in Thunk middleware</li>
+      <li>Easier store setup</li>
+      <li>Opinionated best practices</li>
+    </ul>
+  </div>
+  
+  <div class="question">
+  <h2>14. How to use combineReducers with Redux Toolkit?</h2>
+  <p>Although Redux Toolkit recommends a single reducer object, you can still use <code>combineReducers</code> manually if needed.</p>
+  <pre><code>import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import counterReducer from './counterSlice';
+import userReducer from './userSlice';
+
+const rootReducer = combineReducers({
+  counter: counterReducer,
+  user: userReducer,
+});
+
+const store = configureStore({
+  reducer: rootReducer
+});
+
+export default store;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>15. How to persist Redux state to localStorage?</h2>
+  <pre><code>import { configureStore } from '@reduxjs/toolkit';
+import counterReducer from './counterSlice';
+
+const loadState = () => {
+  try {
+    const serializedState = localStorage.getItem('state');
+    return serializedState ? JSON.parse(serializedState) : undefined;
+  } catch (err) {
+    return undefined;
+  }
+};
+
+const saveState = (state) => {
+  try {
+    localStorage.setItem('state', JSON.stringify(state));
+  } catch {}
+};
+
+const store = configureStore({
+  reducer: { counter: counterReducer },
+  preloadedState: loadState()
+});
+
+store.subscribe(() => {
+  saveState(store.getState());
+});
+
+export default store;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>16. How to reset state in a slice?</h2>
+  <p>You can define a reducer to return the initial state explicitly.</p>
+  <pre><code>const initialState = { value: 0 };
+
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState,
+  reducers: {
+    reset: () => initialState,
+    increment: (state) => { state.value++ }
+  }
+});
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>17. How to use middleware in Redux Toolkit?</h2>
+  <pre><code>const logger = storeAPI => next => action => {
+  console.log('dispatching', action);
+  return next(action);
+};
+
+const store = configureStore({
+  reducer: { /* reducers */ },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(logger),
+});
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>18. How to debug Redux Toolkit using Redux DevTools?</h2>
+  <p>Redux Toolkit includes DevTools by default. Just install the Redux DevTools browser extension. It works out of the box.</p>
+</div>
+
+<div class="question">
+  <h2>19. What is the purpose of the builder callback in extraReducers?</h2>
+  <p>The builder pattern allows you to chain case reducers for handling actions in a more readable and type-safe way.</p>
+</div>
+
+<div class="question">
+  <h2>20. How to use createSelector from Reselect with Redux Toolkit?</h2>
+  <pre><code>import { createSelector } from 'reselect';
+
+const selectCounter = (state) => state.counter;
+export const selectCounterValue = createSelector(
+  selectCounter,
+  (counter) => counter.value
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>21. How to test Redux Toolkit reducers?</h2>
+  <pre><code>import counterReducer, { increment } from './counterSlice';
+
+test('should handle increment', () => {
+  const initialState = { value: 0 };
+  const newState = counterReducer(initialState, increment());
+  expect(newState.value).toBe(1);
+});
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>22. How to test async thunks?</h2>
+  <pre><code>import { fetchData } from './dataSlice';
+import { configureStore } from '@reduxjs/toolkit';
+import dataReducer from './dataSlice';
+
+test('dispatches fetchData and updates state', async () => {
+  const store = configureStore({ reducer: { data: dataReducer } });
+  await store.dispatch(fetchData());
+  const state = store.getState().data;
+  expect(state.items.length).toBeGreaterThan(0);
+});
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>23. How to use Redux Toolkit in a TypeScript project?</h2>
+  <p>Use typed versions of hooks and configure slices with TypeScript interfaces.</p>
+  <pre><code>interface CounterState {
+  value: number;
+}
+
+const initialState: CounterState = { value: 0 };
+
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState,
+  reducers: {
+    increment: state => { state.value++ }
+  }
+});
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>24. How to structure Redux slices in a scalable app?</h2>
+  <ul>
+    <li><code>/features/counter/counterSlice.js</code></li>
+    <li><code>/features/user/userSlice.js</code></li>
+    <li><code>/store.js</code> to configure global store</li>
+  </ul>
+</div>
+
+<div class="question">
+  <h2>25. How to handle loading and error states in async thunks?</h2>
+  <pre><code>const dataSlice = createSlice({
+  name: 'data',
+  initialState: { items: [], loading: false, error: null },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchData.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchData.fulfilled, (state, action) => {
+        state.items = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
+  }
+});
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>26. How to dispatch actions from one slice inside another?</h2>
+  <p>Dispatch actions using <code>dispatch()</code> from the thunk level or inside extraReducers. Cross-slice actions can be handled using <code>addCase()</code>.</p>
+  <pre><code>import { logout } from '../auth/authSlice';
+
+builder.addCase(logout, (state) => {
+  state.items = [];
+});
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>27. How to create a custom hook for Redux state and dispatch?</h2>
+  <pre><code>import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../store';
+import { increment } from '../features/counter/counterSlice';
+
+export const useCounter = () => {
+  const value = useSelector((state: RootState) => state.counter.value);
+  const dispatch = useDispatch();
+  const increase = () => dispatch(increment());
+  return { value, increase };
+};
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>28. How to integrate Redux Toolkit with React Router?</h2>
+  <p>Just use them independently inside your app components. Redux handles state, Router handles navigation.</p>
+  <pre><code>// App.tsx
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import About from './pages/About';
+
+function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>29. How to use Redux Toolkit with Formik or React Hook Form?</h2>
+  <p>Handle form submission and dispatch Redux actions manually.</p>
+  <pre><code>// onSubmit in Formik
+onSubmit={(values) => {
+  dispatch(updateUser(values));
+}}
+// onSubmit in React Hook Form
+handleSubmit((data) => {
+  dispatch(updateUser(data));
+});
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>30. How to memoize selectors using createSelector?</h2>
+  <p>Memoized selectors prevent unnecessary recalculations.</p>
+  <pre><code>const selectUsers = (state) => state.users.list;
+
+export const selectActiveUsers = createSelector(
+  [selectUsers],
+  (users) => users.filter(u => u.active)
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>31. How to share state between Redux and Context?</h2>
+  <p>You can combine both. Use Context for local component data, Redux for global shared data.</p>
+  <pre><code>// Inside ContextProvider
+const { user } = useSelector((state) => state.auth);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>32. How to reset Redux state on logout?</h2>
+  <p>You can return the initial state in a slice when logout is dispatched.</p>
+  <pre><code>builder.addCase(logout, () => initialState);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>33. How to inject multiple thunks in one component?</h2>
+  <p>Just use multiple dispatches for each thunk.</p>
+  <pre><code>useEffect(() => {
+  dispatch(fetchProfile());
+  dispatch(fetchNotifications());
+}, []);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>34. How to preload data before rendering with Redux Toolkit?</h2>
+  <p>Dispatch thunks in <code>useEffect</code> of root or layout component.</p>
+  <pre><code>useEffect(() => {
+  dispatch(loadInitialData());
+}, []);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>35. How to handle optimistic updates with Redux Toolkit?</h2>
+  <p>Update state before API call completes, then revert if fails.</p>
+  <pre><code>// In component
+dispatch(updateItemOptimistically(item));
+
+try {
+  await dispatch(updateItemAsync(item)).unwrap();
+} catch {
+  dispatch(revertItemUpdate(item.id));
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>36. How to slice large state into feature modules?</h2>
+  <p>Use a separate slice file per feature and combine in store.</p>
+  <pre><code>import authReducer from './features/auth/authSlice';
+import cartReducer from './features/cart/cartSlice';
+
+const store = configureStore({
+  reducer: {
+    auth: authReducer,
+    cart: cartReducer
+  }
+});
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>37. How to type the Redux state with TypeScript?</h2>
+  <pre><code>// store.ts
+const store = configureStore({
+  reducer: { counter: counterReducer }
+});
+
+export type RootState = ReturnType&lt;typeof store.getState&gt;;
+export type AppDispatch = typeof store.dispatch;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>38. How to use Redux Toolkit in SSR (Next.js)?</h2>
+  <p>Use <code>next-redux-wrapper</code> to bind Redux with SSR properly.</p>
+  <pre><code>import { createWrapper } from 'next-redux-wrapper';
+
+const makeStore = () => configureStore({ reducer: rootReducer });
+export const wrapper = createWrapper(makeStore);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>39. How to test actions using mock store?</h2>
+  <pre><code>import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { fetchData } from './dataSlice';
+
+const middlewares = [thunk];
+const mockStore = configureMockStore(middlewares);
+
+test('dispatches actions in correct order', async () => {
+  const store = mockStore({ data: [] });
+  await store.dispatch(fetchData());
+  const actions = store.getActions();
+  expect(actions[0].type).toBe('data/fetchData/pending');
+});
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>40. How to avoid prop drilling using Redux Toolkit?</h2>
+  <p>Use Redux to store global data and access it via <code>useSelector</code> instead of passing it through component props.</p>
+  <pre><code>// Instead of:
+&lt;Parent user={user}&gt;
+  &lt;Child user={user}&gt;
+
+// Use:
+const user = useSelector((state) => state.auth.user);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>41. How to use Redux Toolkit with RTK Query and caching?</h2>
+  <p>RTK Query handles caching automatically using its internal logic.</p>
+  <pre><code>// apiSlice.js
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+export const apiSlice = createApi({
+  reducerPath: 'api',
+  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
+  endpoints: (builder) => ({
+    getPosts: builder.query({
+      query: () => '/posts'
+    })
+  })
+});
+
+export const { useGetPostsQuery } = apiSlice;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>42. How to use lazy queries in RTK Query?</h2>
+  <pre><code>const [trigger, result] = useLazyGetPostsQuery();
+
+const handleClick = () => {
+  trigger();
+};
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>43. How to refetch data with RTK Query?</h2>
+  <p>Call <code>refetch()</code> returned by the query hook.</p>
+  <pre><code>const { data, refetch } = useGetPostsQuery();
+
+&lt;button onClick={() => refetch()}>Reload&lt;/button&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>44. How to handle polling with RTK Query?</h2>
+  <pre><code>const { data } = useGetPostsQuery(undefined, {
+  pollingInterval: 10000 // 10 seconds
+});
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>45. How to set global baseQuery headers in RTK Query?</h2>
+  <pre><code>fetchBaseQuery({
+  baseUrl: '/api',
+  prepareHeaders: (headers, { getState }) => {
+    const token = getState().auth.token;
+    if (token) {
+      headers.set('authorization', `Bearer ${token}`);
+    }
+    return headers;
+  }
+})
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>46. How to use mutation with RTK Query?</h2>
+  <pre><code>// In apiSlice
+addPost: builder.mutation({
+  query: (newPost) => ({
+    url: '/posts',
+    method: 'POST',
+    body: newPost
+  })
+})
+
+// In component
+const [addPost] = useAddPostMutation();
+addPost({ title: 'Hello', body: 'World' });
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>47. How to invalidate cache in RTK Query?</h2>
+  <pre><code>// Add tagTypes
+tagTypes: ['Posts']
+
+// In getPosts
+providesTags: ['Posts']
+
+// In addPost
+invalidatesTags: ['Posts']
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>48. How to access API error messages with RTK Query?</h2>
+  <pre><code>const { error } = useGetPostsQuery();
+if (error) {
+  console.error(error.data.message);
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>49. How to skip query execution in RTK Query?</h2>
+  <pre><code>const { data } = useGetUserQuery(id, {
+  skip: !id
+});
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>50. How to extend RTK Query for file uploads?</h2>
+  <pre><code>uploadFile: builder.mutation({
+  query: (formData) => ({
+    url: '/upload',
+    method: 'POST',
+    body: formData
+  })
+})
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>51. How to show a loading spinner using RTK Query?</h2>
+  <pre><code>const { data, isLoading } = useGetPostsQuery();
+
+if (isLoading) return &lt;p&gt;Loading...&lt;/p&gt;;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>52. How to manage access tokens using RTK Query?</h2>
+  <p>Use <code>prepareHeaders</code> and handle token refresh in <code>baseQuery</code> using interceptors or retry logic.</p>
+  <pre><code>baseQuery: async (args, api, extraOptions) => {
+  let result = await fetchBaseQuery(args, api, extraOptions);
+  if (result.error?.status === 401) {
+    // dispatch refreshToken()
+  }
+  return result;
+}
+</code></pre>
+</div>
+
+
+
+</body>
+</html>
