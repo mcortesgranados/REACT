@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>06_02 useRef and Form Refs - Part 1</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .question {
+      background: #fff;
+      border-left: 5px solid #3498db;
+      padding: 20px;
+      margin: 20px auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 900px;
+      border-radius: 8px;
+    }
+    .question h2 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>06_02 useRef and Form Refs - Part 1</h1>
+
+  <div class="question">
+    <h2>Q1: What is useRef and how does it work in React?</h2>
+    <p>
+      <code>useRef</code> is a React Hook that returns a mutable ref object whose <code>.current</code> property is initialized to the passed argument. This ref object persists for the full lifetime of the component.
+    </p>
+    <pre><code>import React, { useRef } from 'react';
+
+function RefExample() {
+  const inputRef = useRef(null); // Create ref
+
+  const focusInput = () => {
+    // Access DOM element directly
+    inputRef.current.focus();
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={inputRef} type="text" placeholder="Click button to focus" /&gt;
+      &lt;button onClick={focusInput}&gt;Focus Input&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default RefExample;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q2: How to use useRef to control focus on form fields?</h2>
+    <p>useRef can help focus an input after certain interactions such as button click or form validation errors.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function FocusForm() {
+  const emailRef = useRef(null);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Example logic: check if input is empty
+    if (!emailRef.current.value) {
+      alert("Email is required!");
+      emailRef.current.focus(); // Automatically focus if empty
+    } else {
+      alert("Submitted!");
+    }
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input ref={emailRef} type="email" placeholder="Enter your email" /&gt;
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+
+export default FocusForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q3: Can useRef hold any value, not just DOM nodes?</h2>
+    <p>Yes. <code>useRef</code> can hold any mutable value, not just DOM references.</p>
+    <pre><code>import React, { useEffect, useRef } from 'react';
+
+function TimerCounter() {
+  const count = useRef(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      count.current += 1; // Mutate without causing re-render
+      console.log("Count:", count.current);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return &lt;div&gt;Open console to see counter&lt;/div&gt;;
+}
+
+export default TimerCounter;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q4: How to use useRef in a multi-field form to set focus sequentially?</h2>
+    <p>Set refs on each input and call <code>.focus()</code> based on form progress.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function MultiFieldForm() {
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
+
+  const handleNext = () => {
+    emailRef.current.focus();
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={nameRef} type="text" placeholder="Name" /&gt;&lt;br /&gt;
+      &lt;input ref={emailRef} type="email" placeholder="Email" /&gt;&lt;br /&gt;
+      &lt;button onClick={handleNext}&gt;Next&lt;/button&gt;
+    &lt;/div&gt;
+
+  );
+}
+
+export default MultiFieldForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q5: How to auto-focus an input when the component mounts?</h2>
+    <p>Use <code>useEffect</code> with <code>useRef</code> to focus input on mount.</p>
+    <pre><code>import React, { useRef, useEffect } from 'react';
+
+function AutoFocusInput() {
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current.focus(); // Focus on mount
+  }, []);
+
+  return &lt;input ref={inputRef} type="text" placeholder="Auto focused input" /&gt;;
+}
+
+export default AutoFocusInput;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q6: Can useRef replace useState for certain values?</h2>
+    <p>Yes, if you don't need re-renders. It's perfect for tracking values like timers, counters, or previous props.</p>
+    <pre><code>import React, { useRef, useEffect, useState } from 'react';
+
+function PreviousValueExample() {
+  const [count, setCount] = useState(0);
+  const prevCount = useRef();
+
+  useEffect(() => {
+    prevCount.current = count;
+  }, [count]);
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Current: {count}&lt;/p&gt;
+      &lt;p&gt;Previous: {prevCount.current}&lt;/p&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default PreviousValueExample;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q7: How to scroll into a ref when an event occurs?</h2>
+    <p>You can call <code>.scrollIntoView()</code> on a DOM element ref.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function ScrollIntoViewExample() {
+  const sectionRef = useRef(null);
+
+  const scrollToSection = () => {
+    sectionRef.current.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={scrollToSection}&gt;Go to Section&lt;/button&gt;
+      &lt;div style={{ height: '100vh' }} /&gt;
+      &lt;div ref={sectionRef} style={{ background: '#ccc', padding: 20 }}&gt;
+        Target Section
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default ScrollIntoViewExample;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q8: How to use multiple refs with a dynamic list of inputs?</h2>
+    <p>Use <code>useRef</code> combined with an array or object to manage multiple elements.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function DynamicRefsForm() {
+  const inputRefs = useRef([]);
+
+  const focusInput = (index) => {
+    inputRefs.current[index].focus();
+  };
+
+  return (
+    &lt;div&gt;
+      {[0, 1, 2].map((i) =&gt; (
+        &lt;input
+          key={i}
+          ref={el =&gt; inputRefs.current[i] = el}
+          placeholder={`Input ${i + 1}`}
+        /&gt;
+      ))}
+      &lt;br /&gt;
+      &lt;button onClick={() =&gt; focusInput(1)}&gt;Focus Second Input&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default DynamicRefsForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q9: How to track input value changes with useRef?</h2>
+    <p>Ref values don't update on re-render, but you can use event handlers to update <code>.current</code>.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function TrackInputWithRef() {
+  const valueRef = useRef('');
+
+  const handleChange = (e) => {
+    valueRef.current = e.target.value;
+    console.log("Current Value:", valueRef.current);
+  };
+
+  return &lt;input type="text" onChange={handleChange} placeholder="Type to track" /&gt;;
+}
+
+export default TrackInputWithRef;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q10: How to reset form fields using useRef?</h2>
+    <p>You can reset values of ref-bound inputs directly by setting <code>.value</code>.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function ResetForm() {
+  const nameRef = useRef();
+  const emailRef = useRef();
+
+  const handleReset = () => {
+    nameRef.current.value = '';
+    emailRef.current.value = '';
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={nameRef} type="text" placeholder="Name" /&gt;
+      &lt;input ref={emailRef} type="email" placeholder="Email" /&gt;
+      &lt;button onClick={handleReset}&gt;Reset&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default ResetForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q11: How to combine useRef with useEffect for animations?</h2>
+    <p>You can apply CSS classes or manipulate styles in useEffect using a DOM ref.</p>
+    <pre><code>import React, { useRef, useEffect } from 'react';
+
+function FadeInComponent() {
+  const boxRef = useRef();
+
+  useEffect(() => {
+    boxRef.current.style.transition = 'opacity 1s';
+    boxRef.current.style.opacity = 1;
+  }, []);
+
+  return (
+    &lt;div ref={boxRef} style={{ opacity: 0, background: '#2ecc71', padding: 20 }}&gt;
+      Fade In Box
+    &lt;/div&gt;
+  );
+}
+
+export default FadeInComponent;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q12: How to manage focus in modal components with useRef?</h2>
+    <p>When a modal opens, focus can be automatically placed on a specific input for accessibility.</p>
+    <pre><code>import React, { useRef, useEffect } from 'react';
+
+function Modal() {
+  const inputRef = useRef();
+
+  useEffect(() => {
+    inputRef.current.focus(); // Focus when modal appears
+  }, []);
+
+  return (
+    &lt;div className="modal"&gt;
+      &lt;input ref={inputRef} type="text" placeholder="Modal input" /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Modal;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q13: How to validate a form with useRef instead of state?</h2>
+    <p>You can directly check <code>.current.value</code> from refs instead of using state.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function ValidateWithRefs() {
+  const nameRef = useRef();
+  const emailRef = useRef();
+
+  const validate = () => {
+    if (!nameRef.current.value || !emailRef.current.value) {
+      alert("All fields are required.");
+      return;
+    }
+    alert("Validated!");
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={nameRef} placeholder="Name" /&gt;&lt;br /&gt;
+      &lt;input ref={emailRef} placeholder="Email" /&gt;&lt;br /&gt;
+      &lt;button onClick={validate}&gt;Validate&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default ValidateWithRefs;
+</code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>Q14: How to handle form reset and keep the ref values intact?</h2>
+    <p>useRef allows you to reset form fields but retain the state across renders.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function ResetWithRef() {
+  const nameRef = useRef('');
+  const emailRef = useRef('');
+
+  const handleReset = () => {
+    nameRef.current = '';
+    emailRef.current = '';
+    // Manually reset form fields
+    console.log("Form reset:", nameRef.current, emailRef.current);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={nameRef} defaultValue="John Doe" /&gt;&lt;br /&gt;
+      &lt;input ref={emailRef} defaultValue="john@example.com" /&gt;&lt;br /&gt;
+      &lt;button onClick={handleReset}&gt;Reset&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default ResetWithRef;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q15: Can you focus a form field based on validation results using useRef?</h2>
+    <p>Yes, you can focus on the field in case of a validation error.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function FormValidation() {
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
+
+  const validateForm = () => {
+    if (!nameRef.current.value) {
+      alert('Name is required!');
+      nameRef.current.focus(); // Focus if validation fails
+    } else if (!emailRef.current.value) {
+      alert('Email is required!');
+      emailRef.current.focus();
+    }
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={nameRef} type="text" placeholder="Name" /&gt;&lt;br /&gt;
+      &lt;input ref={emailRef} type="email" placeholder="Email" /&gt;&lt;br /&gt;
+      &lt;button onClick={validateForm}&gt;Submit&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default FormValidation;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q16: How can useRef help with multiple forms in a single component?</h2>
+    <p>Use an array or object in useRef to manage multiple form refs dynamically.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function MultipleForms() {
+  const formRefs = useRef([]);
+
+  const focusOnForm = (index) => {
+    formRefs.current[index].focus();
+  };
+
+  return (
+    &lt;div&gt;
+      {[0, 1].map((i) =&gt; (
+        &lt;input
+          key={i}
+          ref={el =&gt; formRefs.current[i] = el}
+          placeholder={`Form ${i + 1}`}
+        /&gt;
+      ))}
+      &lt;br /&gt;
+      &lt;button onClick={() =&gt; focusOnForm(0)}&gt;Focus First Form&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default MultipleForms;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q17: How to use useRef to handle input auto-focus after validation?</h2>
+    <p>Auto-focus can be triggered with refs after performing validation on form fields.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function AutoFocusAfterValidation() {
+  const nameRef = useRef(null);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!nameRef.current.value) {
+      alert("Name is required!");
+      nameRef.current.focus(); // Focus if validation fails
+    }
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input ref={nameRef} type="text" placeholder="Name" /&gt;&lt;br /&gt;
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+
+export default AutoFocusAfterValidation;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q18: How to use useRef to handle form submission without page reload?</h2>
+    <p>useRef can handle form submission while preventing page reload by using event handlers.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function PreventReloadForm() {
+  const nameRef = useRef(null);
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevent default form submit behavior
+    console.log("Form submitted with name:", nameRef.current.value);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input ref={nameRef} type="text" placeholder="Enter your name" /&gt;&lt;br /&gt;
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+
+export default PreventReloadForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q19: Can useRef be used to scroll a div or section?</h2>
+    <p>Yes, you can scroll a div or any element into view using refs.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function ScrollDiv() {
+  const sectionRef = useRef(null);
+
+  const scrollToSection = () => {
+    sectionRef.current.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={scrollToSection}&gt;Scroll to Section&lt;/button&gt;
+      &lt;div style={{ height: '100vh' }} /&gt;
+      &lt;div ref={sectionRef} style={{ background: '#e74c3c', padding: 20 }}&gt;
+        Scroll to me
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default ScrollDiv;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q20: How to implement custom form validation with refs?</h2>
+    <p>By using refs to access the form elements, you can implement custom validation logic.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function CustomValidationForm() {
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+
+  const validate = () => {
+    if (!emailRef.current.value) {
+      alert('Email is required!');
+    } else if (!passwordRef.current.value) {
+      alert('Password is required!');
+    } else {
+      alert('Form valid!');
+    }
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={emailRef} placeholder="Email" /&gt;&lt;br /&gt;
+      &lt;input ref={passwordRef} type="password" placeholder="Password" /&gt;&lt;br /&gt;
+      &lt;button onClick={validate}&gt;Validate&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default CustomValidationForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q21: How to manage the form input dynamically using useRef?</h2>
+    <p>Managing dynamic inputs can be done with useRef and dynamically adding refs to the elements.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function DynamicInputForm() {
+  const inputRefs = useRef([]);
+
+  const addInput = () => {
+    inputRefs.current.push(React.createRef()); // Add new ref for new input
+  };
+
+  const focusLastInput = () => {
+    inputRefs.current[inputRefs.current.length - 1].current.focus();
+  };
+
+  return (
+    &lt;div&gt;
+      {inputRefs.current.map((ref, index) =&gt; (
+        &lt;input key={index} ref={ref} placeholder={`Input ${index + 1}`} /&gt;
+      ))}
+      &lt;br /&gt;
+      &lt;button onClick={addInput}&gt;Add Input&lt;/button&gt;
+      &lt;button onClick={focusLastInput}&gt;Focus Last Input&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default DynamicInputForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q22: How to focus an input after a specific timeout using useRef?</h2>
+    <p>useRef can help set a delay using setTimeout and focus an element after the timeout period.</p>
+    <pre><code>import React, { useRef, useEffect } from 'react';
+
+function FocusAfterTimeout() {
+  const nameRef = useRef(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      nameRef.current.focus(); // Focus after 2 seconds
+    }, 2000);
+    
+    return () => clearTimeout(timer); // Clean up the timer
+  }, []);
+
+  return (
+    &lt;input ref={nameRef} placeholder="Focus me after 2 seconds" /&gt;
+  );
+}
+
+export default FocusAfterTimeout;
+</code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>Q23: How to handle dynamic form validation using useRef?</h2>
+    <p>useRef can store form element references and can be used for validating inputs dynamically before submission.</p>
+    <pre><code>import React, { useRef, useState } from 'react';
+
+function DynamicFormValidation() {
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
+  const [error, setError] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Simple validation check
+    if (!nameRef.current.value || !emailRef.current.value) {
+      setError('All fields are required!');
+      return;
+    }
+
+    alert(`Form submitted with Name: ${nameRef.current.value} and Email: ${emailRef.current.value}`);
+  };
+
+  return (
+    &lt;div&gt;
+      {error && &lt;p style={{ color: 'red' }}&gt;{error}&lt;/p&gt;}
+      &lt;form onSubmit={handleSubmit}&gt;
+        &lt;input ref={nameRef} type="text" placeholder="Name" /&gt;&lt;br /&gt;
+        &lt;input ref={emailRef} type="email" placeholder="Email" /&gt;&lt;br /&gt;
+        &lt;button type="submit"&gt;Submit&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default DynamicFormValidation;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q24: How to handle conditional rendering of form fields with useRef?</h2>
+    <p>useRef can be combined with conditional rendering to show or hide form fields dynamically.</p>
+    <pre><code>import React, { useRef, useState } from 'react';
+
+function ConditionalForm() {
+  const [showEmail, setShowEmail] = useState(false);
+  const emailRef = useRef(null);
+
+  const toggleEmailField = () => {
+    setShowEmail(prev => !prev);
+    if (showEmail) {
+      emailRef.current.focus();
+    }
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input type="text" placeholder="Name" /&gt;&lt;br /&gt;
+      {showEmail && &lt;input ref={emailRef} type="email" placeholder="Email" /&gt;}
+      &lt;br /&gt;
+      &lt;button onClick={toggleEmailField}&gt;Toggle Email Field&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default ConditionalForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q25: How can you handle focus switching between multiple input fields with useRef?</h2>
+    <p>By using multiple refs, you can switch focus between input fields programmatically.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function FocusSwitcher() {
+  const firstNameRef = useRef(null);
+  const lastNameRef = useRef(null);
+
+  const switchFocus = () => {
+    if (firstNameRef.current === document.activeElement) {
+      lastNameRef.current.focus();
+    } else {
+      firstNameRef.current.focus();
+    }
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={firstNameRef} placeholder="First Name" /&gt;&lt;br /&gt;
+      &lt;input ref={lastNameRef} placeholder="Last Name" /&gt;&lt;br /&gt;
+      &lt;button onClick={switchFocus}&gt;Switch Focus&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default FocusSwitcher;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q26: Can useRef be used to get form input values on form submission?</h2>
+    <p>Yes, useRef can retrieve values directly from form fields without state management.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function FormSubmission() {
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert(`Name: ${nameRef.current.value}, Email: ${emailRef.current.value}`);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input ref={nameRef} type="text" placeholder="Name" /&gt;&lt;br /&gt;
+      &lt;input ref={emailRef} type="email" placeholder="Email" /&gt;&lt;br /&gt;
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+
+export default FormSubmission;
+</code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>Q27: How to use useRef to programmatically reset form fields?</h2>
+    <p>useRef can be used to access form elements directly and reset their values programmatically.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function ResetForm() {
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
+
+  const handleReset = () => {
+    nameRef.current.value = '';
+    emailRef.current.value = '';
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={nameRef} type="text" placeholder="Name" /&gt;&lt;br /&gt;
+      &lt;input ref={emailRef} type="email" placeholder="Email" /&gt;&lt;br /&gt;
+      &lt;button onClick={handleReset}&gt;Reset Fields&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default ResetForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q28: How to trigger a focus event when form submission fails?</h2>
+    <p>useRef can be used to focus on a field when there is a validation failure after form submission.</p>
+    <pre><code>import React, { useRef, useState } from 'react';
+
+function FormWithFocus() {
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
+  const [error, setError] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!nameRef.current.value) {
+      setError('Name is required');
+      nameRef.current.focus();
+      return;
+    }
+
+    if (!emailRef.current.value) {
+      setError('Email is required');
+      emailRef.current.focus();
+      return;
+    }
+
+    setError('');
+    alert('Form submitted successfully!');
+  };
+
+  return (
+    &lt;div&gt;
+      {error && &lt;p style={{ color: 'red' }}&gt;{error}&lt;/p&gt;}
+      &lt;form onSubmit={handleSubmit}&gt;
+        &lt;input ref={nameRef} type="text" placeholder="Name" /&gt;&lt;br /&gt;
+        &lt;input ref={emailRef} type="email" placeholder="Email" /&gt;&lt;br /&gt;
+        &lt;button type="submit"&gt;Submit&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default FormWithFocus;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q29: How to maintain form focus even after component re-render?</h2>
+    <p>useRef can maintain the focus on an input field even after the component re-renders.</p>
+    <pre><code>import React, { useRef, useState } from 'react';
+
+function PersistentFocusForm() {
+  const inputRef = useRef(null);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input
+        ref={inputRef}
+        type="text"
+        placeholder="Focus stays here after re-render"
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        style={{ backgroundColor: isFocused ? 'lightyellow' : 'white' }}
+      /&gt;&lt;br /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default PersistentFocusForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q30: Can useRef store previous values of form inputs?</h2>
+    <p>Yes, useRef can be used to store the previous value of a form input even across re-renders.</p>
+    <pre><code>import React, { useState, useRef, useEffect } from 'react';
+
+function PreviousValueForm() {
+  const [inputValue, setInputValue] = useState('');
+  const prevValueRef = useRef('');
+
+  useEffect(() => {
+    prevValueRef.current = inputValue;
+  }, [inputValue]);
+
+  return (
+    &lt;div&gt;
+      &lt;input
+        type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        placeholder="Type something"
+      /&gt;&lt;br /&gt;
+      &lt;p&gt;Previous Value: {prevValueRef.current}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default PreviousValueForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q31: How to use useRef for dynamically focusing the first invalid field in a form?</h2>
+    <p>useRef can be used to focus on the first invalid form field dynamically after a validation error.</p>
+    <pre><code>import React, { useState, useRef } from 'react';
+
+function FocusFirstInvalidField() {
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
+  const [error, setError] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!nameRef.current.value) {
+      setError('Name is required');
+      nameRef.current.focus();
+      return;
+    }
+    if (!emailRef.current.value) {
+      setError('Email is required');
+      emailRef.current.focus();
+      return;
+    }
+    setError('');
+    alert('Form submitted successfully!');
+  };
+
+  return (
+    &lt;div&gt;
+      {error && &lt;p style={{ color: 'red' }}&gt;{error}&lt;/p&gt;}
+      &lt;form onSubmit={handleSubmit}&gt;
+        &lt;input ref={nameRef} type="text" placeholder="Name" /&gt;&lt;br /&gt;
+        &lt;input ref={emailRef} type="email" placeholder="Email" /&gt;&lt;br /&gt;
+        &lt;button type="submit"&gt;Submit&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default FocusFirstInvalidField;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q32: How to use useRef to manage focus across multiple forms in a single component?</h2>
+    <p>useRef can be used to manage focus across multiple forms, even within the same component.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function MultiFormFocus() {
+  const form1NameRef = useRef(null);
+  const form2NameRef = useRef(null);
+
+  const focusForm1 = () => {
+    form1NameRef.current.focus();
+  };
+
+  const focusForm2 = () => {
+    form2NameRef.current.focus();
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;form&gt;
+        &lt;input ref={form1NameRef} type="text" placeholder="Form 1 Name" /&gt;&lt;br /&gt;
+        &lt;button type="button" onClick={focusForm2}&gt;Focus Form 2&lt;/button&gt;
+      &lt;/form&gt;&lt;br /&gt;
+      &lt;form&gt;
+        &lt;input ref={form2NameRef} type="text" placeholder="Form 2 Name" /&gt;&lt;br /&gt;
+        &lt;button type="button" onClick={focusForm1}&gt;Focus Form 1&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default MultiFormFocus;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q33: How to focus the last form field after a form submission?</h2>
+    <p>useRef can focus on the last field after submitting the form successfully, guiding the user to the end of the form.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function FocusLastField() {
+  const lastNameRef = useRef(null);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    lastNameRef.current.focus();
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input type="text" placeholder="First Name" /&gt;&lt;br /&gt;
+      &lt;input ref={lastNameRef} type="text" placeholder="Last Name" /&gt;&lt;br /&gt;
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+
+export default FocusLastField;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q34: How to set a default value to a form input using useRef?</h2>
+    <p>useRef can set default values directly on form fields, without managing state.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function DefaultValueForm() {
+  const nameRef = useRef(null);
+
+  const setDefaultValue = () => {
+    nameRef.current.value = 'John Doe';
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={nameRef} type="text" placeholder="Enter Name" /&gt;&lt;br /&gt;
+      &lt;button type="button" onClick={setDefaultValue}&gt;Set Default Value&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default DefaultValueForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q35: How to use useRef with controlled form inputs?</h2>
+    <p>Although useRef is often used with uncontrolled components, it can be combined with controlled components to track previous values.</p>
+    <pre><code>import React, { useState, useRef } from 'react';
+
+function ControlledInputWithRef() {
+  const [value, setValue] = useState('');
+  const prevValueRef = useRef('');
+
+  const handleChange = (e) => {
+    prevValueRef.current = value;
+    setValue(e.target.value);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input
+        type="text"
+        value={value}
+        onChange={handleChange}
+        placeholder="Type something"
+      /&gt;&lt;br /&gt;
+      &lt;p&gt;Previous Value: {prevValueRef.current}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default ControlledInputWithRef;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q36: Can useRef track and manage form validation states?</h2>
+    <p>Yes, useRef can track validation states and manage error messages for form inputs.</p>
+    <pre><code>import React, { useState, useRef } from 'react';
+
+function ValidationForm() {
+  const nameRef = useRef(null);
+  const [error, setError] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!nameRef.current.value) {
+      setError('Name is required');
+      nameRef.current.focus();
+      return;
+    }
+    setError('');
+    alert('Form submitted successfully!');
+  };
+
+  return (
+    &lt;div&gt;
+      {error && &lt;p style={{ color: 'red' }}&gt;{error}&lt;/p&gt;}
+      &lt;form onSubmit={handleSubmit}&gt;
+        &lt;input ref={nameRef} type="text" placeholder="Name" /&gt;&lt;br /&gt;
+        &lt;button type="submit"&gt;Submit&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default ValidationForm;
+</code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>Q37: How can useRef be used to trigger form submission programmatically?</h2>
+    <p>useRef can be used to reference the form element and trigger a submission without requiring a submit button click.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function TriggerFormSubmit() {
+  const formRef = useRef(null);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert('Form Submitted');
+  };
+
+  const triggerSubmit = () => {
+    formRef.current.submit();
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;form ref={formRef} onSubmit={handleSubmit}&gt;
+        &lt;input type="text" placeholder="Your Name" /&gt;&lt;br /&gt;
+        &lt;button type="button" onClick={triggerSubmit}&gt;Trigger Submit&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default TriggerFormSubmit;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q38: How to handle focus management in a multi-step form using useRef?</h2>
+    <p>useRef can be used to manage focus across different steps of a multi-step form, ensuring that each step has proper focus.</p>
+    <pre><code>import React, { useRef, useState } from 'react';
+
+function MultiStepForm() {
+  const step1InputRef = useRef(null);
+  const step2InputRef = useRef(null);
+  const [currentStep, setCurrentStep] = useState(1);
+
+  const nextStep = () => {
+    setCurrentStep((prevStep) => prevStep + 1);
+    if (currentStep === 1) {
+      step2InputRef.current.focus();
+    }
+  };
+
+  const prevStep = () => {
+    setCurrentStep((prevStep) => prevStep - 1);
+    if (currentStep === 2) {
+      step1InputRef.current.focus();
+    }
+  };
+
+  return (
+    &lt;div&gt;
+      {currentStep === 1 && (
+        &lt;div&gt;
+          &lt;input ref={step1InputRef} type="text" placeholder="Step 1: Enter Name" /&gt;&lt;br /&gt;
+          &lt;button onClick={nextStep}&gt;Next&lt;/button&gt;
+        &lt;/div&gt;
+      )}
+      {currentStep === 2 && (
+        &lt;div&gt;
+          &lt;input ref={step2InputRef} type="email" placeholder="Step 2: Enter Email" /&gt;&lt;br /&gt;
+          &lt;button onClick={prevStep}&gt;Previous&lt;/button&gt;
+          &lt;button onClick={nextStep}&gt;Next&lt;/button&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+}
+
+export default MultiStepForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q39: How to use useRef to manage focus when switching between tabs in a form?</h2>
+    <p>useRef can help manage focus when switching between different tabs or sections in a form.</p>
+    <pre><code>import React, { useRef, useState } from 'react';
+
+function TabForm() {
+  const tab1Ref = useRef(null);
+  const tab2Ref = useRef(null);
+  const [currentTab, setCurrentTab] = useState(1);
+
+  const switchTab = (tabNumber) => {
+    setCurrentTab(tabNumber);
+    if (tabNumber === 1) {
+      tab1Ref.current.focus();
+    } else {
+      tab2Ref.current.focus();
+    }
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() => switchTab(1)}&gt;Go to Tab 1&lt;/button&gt;
+      &lt;button onClick={() => switchTab(2)}&gt;Go to Tab 2&lt;/button&gt;
+      {currentTab === 1 && (
+        &lt;div&gt;
+          &lt;input ref={tab1Ref} type="text" placeholder="Tab 1: Enter Name" /&gt;&lt;br /&gt;
+        &lt;/div&gt;
+      )}
+      {currentTab === 2 && (
+        &lt;div&gt;
+          &lt;input ref={tab2Ref} type="email" placeholder="Tab 2: Enter Email" /&gt;&lt;br /&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+}
+
+export default TabForm;
+</code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>Q40: How can useRef be used with a form input to implement a custom focus behavior?</h2>
+    <p>useRef can be used to create a custom focus behavior in form inputs by using the focus method.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function CustomFocusForm() {
+  const inputRef = useRef(null);
+
+  const handleFocus = () => {
+    inputRef.current.focus();
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={inputRef} type="text" placeholder="Click button to focus" /&gt;&lt;br /&gt;
+      &lt;button onClick={handleFocus}&gt;Focus Input&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default CustomFocusForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q41: How to reset form input values using useRef?</h2>
+    <p>useRef can be used to reset the values of form inputs directly without relying on state.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function ResetForm() {
+  const inputRef = useRef(null);
+
+  const handleReset = () => {
+    inputRef.current.value = '';
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={inputRef} type="text" placeholder="Type something" /&gt;&lt;br /&gt;
+      &lt;button onClick={handleReset}&gt;Reset Input&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default ResetForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q42: How can useRef be used to manage form field validation status?</h2>
+    <p>useRef can be used to manage the validation status of form fields, such as tracking error messages or focus on invalid fields.</p>
+    <pre><code>import React, { useState, useRef } from 'react';
+
+function ValidationStatusForm() {
+  const inputRef = useRef(null);
+  const [error, setError] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (inputRef.current.value === '') {
+      setError('This field is required');
+      inputRef.current.focus();
+    } else {
+      setError('');
+      alert('Form submitted successfully!');
+    }
+  };
+
+  return (
+    &lt;div&gt;
+      {error && &lt;p style={{ color: 'red' }}&gt;{error}&lt;/p&gt;}
+      &lt;form onSubmit={handleSubmit}&gt;
+        &lt;input ref={inputRef} type="text" placeholder="Enter something" /&gt;&lt;br /&gt;
+        &lt;button type="submit"&gt;Submit&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default ValidationStatusForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q43: How to programmatically focus the next input field using useRef?</h2>
+    <p>useRef can be used to focus on the next input element programmatically when needed, such as when one input field is completed.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function FocusNextFieldForm() {
+  const input1Ref = useRef(null);
+  const input2Ref = useRef(null);
+
+  const handleBlur = () => {
+    input2Ref.current.focus();
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={input1Ref} type="text" placeholder="Enter Name" onBlur={handleBlur} /&gt;&lt;br /&gt;
+      &lt;input ref={input2Ref} type="text" placeholder="Enter Email" /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default FocusNextFieldForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q44: Can useRef be used with radio buttons or checkboxes to track selection?</h2>
+    <p>Yes, useRef can be used to track whether a radio button or checkbox is selected without using state.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function SelectionForm() {
+  const radioRef = useRef(null);
+  const checkboxRef = useRef(null);
+
+  const handleSubmit = () => {
+    if (radioRef.current.checked) {
+      alert('Radio button selected');
+    }
+    if (checkboxRef.current.checked) {
+      alert('Checkbox checked');
+    }
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={radioRef} type="radio" name="selection" /&gt; Radio Button&lt;br /&gt;
+      &lt;input ref={checkboxRef} type="checkbox" /&gt; Checkbox&lt;br /&gt;
+      &lt;button onClick={handleSubmit}&gt;Submit&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default SelectionForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q45: How can useRef be used to focus on an input after an error occurs?</h2>
+    <p>useRef can be used to focus on the input field after an error is detected, improving the user experience.</p>
+    <pre><code>import React, { useRef, useState } from 'react';
+
+function FocusOnErrorForm() {
+  const inputRef = useRef(null);
+  const [error, setError] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (inputRef.current.value === '') {
+      setError('This field is required');
+      inputRef.current.focus();
+    } else {
+      setError('');
+      alert('Form submitted successfully!');
+    }
+  };
+
+  return (
+    &lt;div&gt;
+      {error && &lt;p style={{ color: 'red' }}&gt;{error}&lt;/p&gt;}
+      &lt;form onSubmit={handleSubmit}&gt;
+        &lt;input ref={inputRef} type="text" placeholder="Enter something" /&gt;&lt;br /&gt;
+        &lt;button type="submit"&gt;Submit&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default FocusOnErrorForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q46: How to use useRef to set the default value for an input field in React?</h2>
+    <p>useRef can be used to set the default value of an input field after the component renders.</p>
+    <pre><code>import React, { useRef, useEffect } from 'react';
+
+function DefaultInputValueForm() {
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current.value = 'Default Text';
+  }, []);
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={inputRef} type="text" /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default DefaultInputValueForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q47: Can useRef be used to handle dynamic form fields?</h2>
+    <p>Yes, useRef can manage dynamic form fields by referencing multiple fields in an array or object.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function DynamicForm() {
+  const inputRefs = useRef([]);
+
+  const handleAddField = () => {
+    inputRefs.current.push(React.createRef());
+    console.log(inputRefs.current);
+  };
+
+  return (
+    &lt;div&gt;
+      {inputRefs.current.map((inputRef, index) => (
+        &lt;input key={index} ref={inputRef} type="text" placeholder={`Field ${index + 1}`} /&gt;
+      ))}
+      &lt;button onClick={handleAddField}&gt;Add Field&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default DynamicForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q48: How to create a focus loop in a form using useRef?</h2>
+    <p>useRef can be used to create a focus loop in a form, allowing users to cycle through form fields using the tab key.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function FocusLoopForm() {
+  const inputRefs = [useRef(null), useRef(null), useRef(null)];
+
+  const handleFocusNext = (index) => {
+    if (index < inputRefs.length - 1) {
+      inputRefs[index + 1].current.focus();
+    }
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={inputRefs[0]} type="text" placeholder="Field 1" onFocus={() => handleFocusNext(0)} /&gt;&lt;br /&gt;
+      &lt;input ref={inputRefs[1]} type="text" placeholder="Field 2" onFocus={() => handleFocusNext(1)} /&gt;&lt;br /&gt;
+      &lt;input ref={inputRefs[2]} type="text" placeholder="Field 3" /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default FocusLoopForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q49: How to handle form submission when using useRef for multiple input fields?</h2>
+    <p>useRef can be used to access multiple form fields and handle the form submission process efficiently.</p>
+    <pre><code>import React, { useRef } from 'react';
+
+function MultipleInputsForm() {
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert(`Name: ${nameRef.current.value}, Email: ${emailRef.current.value}`);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;form onSubmit={handleSubmit}&gt;
+        &lt;input ref={nameRef} type="text" placeholder="Name" /&gt;&lt;br /&gt;
+        &lt;input ref={emailRef} type="email" placeholder="Email" /&gt;&lt;br /&gt;
+        &lt;button type="submit"&gt;Submit&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default MultipleInputsForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q50: How to implement a focus trap using useRef in React?</h2>
+    <p>useRef can be used to implement a focus trap that ensures focus stays within a particular area of the page (e.g., modal).</p>
+    <pre><code>import React, { useRef, useEffect } from 'react';
+
+function FocusTrap() {
+  const firstInputRef = useRef(null);
+  const lastInputRef = useRef(null);
+
+  useEffect(() => {
+    const handleTab = (e) => {
+      if (e.key === 'Tab') {
+        if (document.activeElement === lastInputRef.current) {
+          firstInputRef.current.focus();
+          e.preventDefault();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleTab);
+    return () => {
+      document.removeEventListener('keydown', handleTab);
+    };
+  }, []);
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={firstInputRef} type="text" placeholder="First Input" /&gt;&lt;br /&gt;
+      &lt;input type="text" placeholder="Second Input" /&gt;&lt;br /&gt;
+      &lt;input ref={lastInputRef} type="text" placeholder="Last Input" /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default FocusTrap;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q51: How to set focus on a specific field in a form using useRef in a dynamic form?</h2>
+    <p>useRef can dynamically focus on a specific input in a form based on certain conditions or user actions.</p>
+    <pre><code>import React, { useState, useRef } from 'react';
+
+function DynamicFocusForm() {
+  const inputRefs = useRef([]);
+  const [focusIndex, setFocusIndex] = useState(0);
+
+  const handleFocus = () => {
+    inputRefs.current[focusIndex].focus();
+  };
+
+  return (
+    &lt;div&gt;
+      {[...Array(3)].map((_, index) => (
+        &lt;input key={index} ref={(el) => inputRefs.current[index] = el} type="text" placeholder={`Field ${index + 1}`} /&gt;
+      ))}
+      &lt;button onClick={handleFocus}&gt;Focus on Field {focusIndex + 1}&lt;/button&gt;
+      &lt;button onClick={() => setFocusIndex((focusIndex + 1) % 3)}&gt;Next Field&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default DynamicFocusForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>Q52: How to use useRef to manage a focus state in a form?</h2>
+    <p>useRef can be used to handle the focus state of form inputs, ensuring the proper field is focused when needed.</p>
+    <pre><code>import React, { useRef, useState } from 'react';
+
+function FocusStateForm() {
+  const inputRef = useRef(null);
+  const [focused, setFocused] = useState(false);
+
+  const handleFocus = () => {
+    setFocused(true);
+    inputRef.current.focus();
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={handleFocus}&gt;Focus Input Field&lt;/button&gt;&lt;br /&gt;
+      {focused && &lt;p style={{ color: 'green' }}&gt;Input is focused&lt;/p&gt;}
+      &lt;input ref={inputRef} type="text" /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default FocusStateForm;
+</code></pre>
+  </div>
+  
+  
+</body>
+</html>
