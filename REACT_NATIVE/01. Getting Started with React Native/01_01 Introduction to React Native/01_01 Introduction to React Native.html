@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>React Native - 01_01 Introduction</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .question {
+      background: #fff;
+      border-left: 5px solid #3498db;
+      padding: 20px;
+      margin: 20px auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 900px;
+      border-radius: 8px;
+    }
+    .question h2 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>01_01 Introduction to React Native - Q&A Set 1</h1>
+
+  <div class="question">
+    <h2>1. What is React Native?</h2>
+    <p>React Native is an open-source framework developed by Facebook that allows developers to build mobile applications using JavaScript and React. Unlike traditional hybrid apps, React Native compiles to native app components, which enhances performance and user experience.</p>
+    <pre><code>// React Native combines the best parts of native development with React
+// You write components in JavaScript, but they render as native views on iOS and Android
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>2. How do you create a new React Native project?</h2>
+    <p>You can create a new project using <code>npx</code> and the React Native CLI:</p>
+    <pre><code>npx react-native init MyNewApp</code></pre>
+    <p>This will scaffold a new React Native project with default configurations.</p>
+  </div>
+
+  <div class="question">
+    <h2>3. What are the basic building blocks in React Native?</h2>
+    <p>Some of the core components in React Native include:</p>
+    <ul>
+      <li><code>View</code>: The fundamental building block for layout</li>
+      <li><code>Text</code>: For displaying text</li>
+      <li><code>Image</code>: For displaying images</li>
+      <li><code>ScrollView</code>: For scrollable content</li>
+      <li><code>TextInput</code>: For user input</li>
+    </ul>
+    <pre><code>import React from 'react';
+import { View, Text, Image, TextInput, ScrollView } from 'react-native';
+
+const App = () => (
+  &lt;ScrollView&gt;
+    &lt;View&gt;
+      &lt;Text&gt;Welcome to React Native!&lt;/Text&gt;
+      &lt;Image source={{ uri: 'https://example.com/image.png' }} style={{ width: 100, height: 100 }} /&gt;
+      &lt;TextInput placeholder="Enter text" style={{ borderWidth: 1 }} /&gt;
+    &lt;/View&gt;
+  &lt;/ScrollView&gt;
+);
+
+export default App;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>4. What is the difference between React and React Native?</h2>
+    <p>React is used for building web applications, while React Native is used for building mobile apps. React uses HTML and CSS, whereas React Native uses components that render to native views and uses <code>StyleSheet</code> for styling.</p>
+    <pre><code>// React (web)
+&lt;div style={{ color: 'red' }}&gt;Hello Web&lt;/div&gt;
+
+// React Native (mobile)
+&lt;Text style={{ color: 'red' }}&gt;Hello Mobile&lt;/Text&gt;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>5. How do you run a React Native app on an emulator?</h2>
+    <p>Once you have created your app with the CLI, you can run:</p>
+    <pre><code>npx react-native run-android
+npx react-native run-ios</code></pre>
+    <p>This will launch the Android emulator or iOS simulator (requires Xcode on macOS).</p>
+  </div>
+
+  <div class="question">
+    <h2>6. What is JSX and how is it used in React Native?</h2>
+    <p>JSX is a syntax extension that allows writing HTML-like code in JavaScript. In React Native, JSX is used to describe the UI.</p>
+    <pre><code>const App = () =&gt; (
+  &lt;View style={{ padding: 20 }}&gt;
+    &lt;Text&gt;Hello, React Native with JSX!&lt;/Text&gt;
+  &lt;/View&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>7. How do you style components in React Native?</h2>
+    <p>Use the <code>StyleSheet</code> API to define styles.</p>
+    <pre><code>import { StyleSheet, View, Text } from 'react-native';
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+    backgroundColor: '#eee'
+  },
+  text: {
+    fontSize: 18,
+    color: '#333'
+  }
+});
+
+const App = () =&gt; (
+  &lt;View style={styles.container}&gt;
+    &lt;Text style={styles.text}&gt;Styled Text&lt;/Text&gt;
+  &lt;/View&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>8. How do you handle user input in React Native?</h2>
+    <p>You can use <code>TextInput</code> and manage its value with state.</p>
+    <pre><code>import React, { useState } from 'react';
+import { View, TextInput, Text } from 'react-native';
+
+const App = () =&gt; {
+  const [value, setValue] = useState('');
+
+  return (
+    &lt;View style={{ padding: 20 }}&gt;
+      &lt;TextInput
+        style={{ borderWidth: 1, padding: 10 }}
+        placeholder="Type here"
+        value={value}
+        onChangeText={setValue}
+      /&gt;
+      &lt;Text&gt;You typed: {value}&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+};
+
+export default App;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>9. What is the purpose of the StatusBar component?</h2>
+    <p><code>StatusBar</code> is used to customize the status bar (time, battery, etc.) appearance.</p>
+    <pre><code>import { StatusBar } from 'react-native';
+
+const App = () =&gt; (
+  &lt;&gt;
+    &lt;StatusBar barStyle="dark-content" backgroundColor="#fff" /&gt;
+    &lt;View&gt;&lt;Text&gt;Hello&lt;/Text&gt;&lt;/View&gt;
+  &lt;/&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>10. How does navigation work in React Native?</h2>
+    <p>React Navigation is a popular library for routing and navigation in React Native apps.</p>
+    <pre><code>npm install @react-navigation/native</code></pre>
+    <p>Then set up navigation using <code>createStackNavigator</code>, <code>NavigationContainer</code>, etc.</p>
+  </div>
+
+  <div class="question">
+    <h2>11. How to use a button in React Native?</h2>
+    <p>Use the built-in <code>Button</code> component:</p>
+    <pre><code>import { Button, View } from 'react-native';
+
+const App = () =&gt; (
+  &lt;View&gt;
+    &lt;Button title="Press me" onPress={() =&gt; alert('Pressed!')} /&gt;
+  &lt;/View&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>12. What are platform-specific components in React Native?</h2>
+    <p>You can use <code>Platform</code> module to conditionally render based on the OS.</p>
+    <pre><code>import { Platform, Text } from 'react-native';
+
+const App = () =&gt; (
+  &lt;Text&gt;{Platform.OS === 'ios' ? 'iOS Device' : 'Android Device'}&lt;/Text&gt;
+);</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>13. How to debug a React Native application?</h2>
+    <p>You can shake your device or emulator and select “Debug” or use Chrome Developer Tools for debugging.</p>
+    <pre><code>// For Android Emulator:
+Cmd + M or Ctrl + M
+
+// For iOS Simulator:
+Cmd + D</code></pre>
+  </div>
+  
+  <div class="question">
+  <h2>14. How do you use ScrollView in React Native?</h2>
+  <p><code>ScrollView</code> is a component that allows scrolling content vertically or horizontally. It should be used for smaller content that fits within memory.</p>
+  <pre><code>import React from 'react';
+import { ScrollView, Text } from 'react-native';
+
+const App = () =&gt; (
+  &lt;ScrollView&gt;
+    {Array.from({ length: 20 }).map((_, i) =&gt; (
+      &lt;Text key={i}&gt;Item {i + 1}&lt;/Text&gt;
+    ))}
+  &lt;/ScrollView&gt;
+);</code></pre>
+</div>
+
+<div class="question">
+  <h2>15. What is FlatList and when should you use it?</h2>
+  <p><code>FlatList</code> is optimized for long lists of scrollable data, rendering items lazily for better performance.</p>
+  <pre><code>import React from 'react';
+import { FlatList, Text, View } from 'react-native';
+
+const DATA = Array.from({ length: 100 }, (_, i) =&gt; ({ id: i.toString(), title: `Item ${i}` }));
+
+const App = () =&gt; (
+  &lt;FlatList
+    data={DATA}
+    keyExtractor={item =&gt; item.id}
+    renderItem={({ item }) =&gt; (
+      &lt;View&gt;
+        &lt;Text&gt;{item.title}&lt;/Text&gt;
+      &lt;/View&gt;
+    )}
+  /&gt;
+);</code></pre>
+</div>
+
+<div class="question">
+  <h2>16. How to use images in React Native?</h2>
+  <p>You can display images using the <code>Image</code> component and specify a URI or require a local image.</p>
+  <pre><code>import { Image } from 'react-native';
+
+&lt;Image
+  source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }}
+  style={{ width: 100, height: 100 }}
+/&gt;
+
+// For local image:
+// &lt;Image source={require('./assets/logo.png')} style={{ width: 100, height: 100 }} /&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>17. What is the use of Touchable components?</h2>
+  <p>Touchable components handle press gestures. Common ones are <code>TouchableOpacity</code>, <code>TouchableHighlight</code>, and <code>Pressable</code>.</p>
+  <pre><code>import { TouchableOpacity, Text, Alert } from 'react-native';
+
+&lt;TouchableOpacity onPress={() =&gt; Alert.alert('Pressed!')} style={{ padding: 10, backgroundColor: 'skyblue' }}&gt;
+  &lt;Text&gt;Press Me&lt;/Text&gt;
+&lt;/TouchableOpacity&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>18. How do you use useState in React Native?</h2>
+  <p><code>useState</code> is a hook to manage local component state.</p>
+  <pre><code>import React, { useState } from 'react';
+import { View, Text, Button } from 'react-native';
+
+const App = () =&gt; {
+  const [count, setCount] = useState(0);
+
+  return (
+    &lt;View&gt;
+      &lt;Text&gt;Count: {count}&lt;/Text&gt;
+      &lt;Button title="Increment" onPress={() =&gt; setCount(count + 1)} /&gt;
+    &lt;/View&gt;
+  );
+};</code></pre>
+</div>
+
+<div class="question">
+  <h2>19. How do you use useEffect in React Native?</h2>
+  <p><code>useEffect</code> lets you run side effects in functional components.</p>
+  <pre><code>import React, { useState, useEffect } from 'react';
+import { View, Text } from 'react-native';
+
+const App = () =&gt; {
+  const [time, setTime] = useState(new Date().toLocaleTimeString());
+
+  useEffect(() =&gt; {
+    const interval = setInterval(() =&gt; {
+      setTime(new Date().toLocaleTimeString());
+    }, 1000);
+    return () =&gt; clearInterval(interval); // Cleanup on unmount
+  }, []);
+
+  return &lt;Text&gt;Time: {time}&lt;/Text&gt;;
+};</code></pre>
+</div>
+
+<div class="question">
+  <h2>20. What are props in React Native?</h2>
+  <p>Props are inputs to components that allow dynamic data passing from parent to child.</p>
+  <pre><code>const Greeting = ({ name }) =&gt; &lt;Text&gt;Hello, {name}!&lt;/Text&gt;;
+
+const App = () =&gt; &lt;Greeting name="Manuela" /&gt;;</code></pre>
+</div>
+
+<div class="question">
+  <h2>21. How do you create a custom component in React Native?</h2>
+  <p>You can create a reusable component by exporting a function or class.</p>
+  <pre><code>import React from 'react';
+import { View, Text } from 'react-native';
+
+const Card = ({ title, children }) =&gt; (
+  &lt;View style={{ padding: 20, borderWidth: 1, marginBottom: 10 }}&gt;
+    &lt;Text style={{ fontWeight: 'bold' }}&gt;{title}&lt;/Text&gt;
+    {children}
+  &lt;/View&gt;
+);
+
+const App = () =&gt; (
+  &lt;View&gt;
+    &lt;Card title="Card Title"&gt;&lt;Text&gt;This is inside the card.&lt;/Text&gt;&lt;/Card&gt;
+  &lt;/View&gt;
+);</code></pre>
+</div>
+
+<div class="question">
+  <h2>22. How do you apply conditional styling in React Native?</h2>
+  <p>You can use ternary operators or expressions to apply different styles based on conditions.</p>
+  <pre><code>const isDark = true;
+
+&lt;View style={{ backgroundColor: isDark ? '#000' : '#fff' }}&gt;
+  &lt;Text style={{ color: isDark ? '#fff' : '#000' }}&gt;Theme&lt;/Text&gt;
+&lt;/View&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>23. How to show alerts and popups?</h2>
+  <p>You can use the built-in <code>Alert</code> module from React Native.</p>
+  <pre><code>import { Alert, Button } from 'react-native';
+
+&lt;Button title="Show Alert" onPress={() =&gt; Alert.alert('Title', 'This is a message')} /&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>24. How to fetch data in React Native?</h2>
+  <p>Use <code>fetch()</code> inside <code>useEffect</code> and store the result in state.</p>
+  <pre><code>import React, { useEffect, useState } from 'react';
+import { View, Text } from 'react-native';
+
+const App = () =&gt; {
+  const [data, setData] = useState(null);
+
+  useEffect(() =&gt; {
+    fetch('https://jsonplaceholder.typicode.com/posts/1')
+      .then(res =&gt; res.json())
+      .then(json =&gt; setData(json));
+  }, []);
+
+  return &lt;View&gt;&lt;Text&gt;{data?.title}&lt;/Text&gt;&lt;/View&gt;;
+};</code></pre>
+</div>
+
+<div class="question">
+  <h2>25. How do you use icons in React Native?</h2>
+  <p>Install and use vector icons via the <code>react-native-vector-icons</code> package.</p>
+  <pre><code>npm install react-native-vector-icons
+
+// Then in your component:
+import Icon from 'react-native-vector-icons/Ionicons';
+
+&lt;Icon name="home" size={30} color="#4F8EF7" /&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>26. What is the role of AppRegistry?</h2>
+  <p><code>AppRegistry</code> is the entry point to run all React Native apps. It tells React Native which component is the root of the application.</p>
+  <pre><code>import { AppRegistry } from 'react-native';
+import App from './App';
+import { name as appName } from './app.json';
+
+AppRegistry.registerComponent(appName, () =&gt; App);</code></pre>
+</div>
+
+<div class="question">
+  <h2>27. What is the difference between React and React Native?</h2>
+  <p>React is a JavaScript library for building web UIs. React Native uses the same principles but renders to native platform components instead of HTML.</p>
+  <pre><code>// React renders to DOM
+&lt;div&gt;Hello World&lt;/div&gt;
+
+// React Native renders to native components
+&lt;Text&gt;Hello World&lt;/Text&gt;</code></pre>
+</div>
+
+<div class="question">
+  <h2>28. What are the navigation options in React Native?</h2>
+  <p>You can use libraries like <code>react-navigation</code> for screen-to-screen navigation.</p>
+  <pre><code>npm install @react-navigation/native
+npm install react-native-screens react-native-safe-area-context react-native-gesture-handler
+
+// Then in App.js:
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+const Stack = createStackNavigator();
+
+const App = () =&gt; (
+  &lt;NavigationContainer&gt;
+    &lt;Stack.Navigator&gt;
+      &lt;Stack.Screen name="Home" component={HomeScreen} /&gt;
+      &lt;Stack.Screen name="Details" component={DetailsScreen} /&gt;
+    &lt;/Stack.Navigator&gt;
+  &lt;/NavigationContainer&gt;
+);</code></pre>
+</div>
+
+<div class="question">
+  <h2>29. How do you pass data between screens in React Native?</h2>
+  <p>Pass params using navigation props, and access them in the receiving component via <code>route.params</code>.</p>
+  <pre><code>// From HomeScreen
+navigation.navigate('Details', { itemId: 42 });
+
+// In DetailsScreen
+const { itemId } = route.params;
+&lt;Text&gt;Item ID: {itemId}&lt;/Text&gt;</code></pre>
+</div>
+
+<div class="question">
+  <h2>30. What are gestures and how are they handled in React Native?</h2>
+  <p>Use libraries like <code>react-native-gesture-handler</code> for complex gestures like swipes and pinches.</p>
+  <pre><code>import { GestureHandlerRootView, TapGestureHandler } from 'react-native-gesture-handler';
+
+&lt;GestureHandlerRootView style={{ flex: 1 }}&gt;
+  &lt;TapGestureHandler onActivated={() =&gt; alert('Tapped!')}&gt;
+    &lt;Text&gt;Tap me&lt;/Text&gt;
+  &lt;/TapGestureHandler&gt;
+&lt;/GestureHandlerRootView&gt;</code></pre>
+</div>
+
+<div class="question">
+  <h2>31. How can you debug React Native apps?</h2>
+  <p>You can use Chrome DevTools, React Developer Tools, or Flipper to inspect logs, state, props, and network requests.</p>
+  <pre><code>// In development, shake the device or press 'd' in Metro to open dev menu
+// Choose "Debug with Chrome" or "Enable Flipper Debugging"</code></pre>
+</div>
+
+<div class="question">
+  <h2>32. How do you handle platform-specific code?</h2>
+  <p>You can use the <code>Platform</code> module or platform-specific files like <code>.ios.js</code> and <code>.android.js</code>.</p>
+  <pre><code>import { Platform } from 'react-native';
+
+const padding = Platform.OS === 'ios' ? 20 : 0;
+
+&lt;View style={{ paddingTop: padding }} /&gt;</code></pre>
+</div>
+
+<div class="question">
+  <h2>33. What is the difference between View and ScrollView?</h2>
+  <p><code>View</code> is a container without scroll. <code>ScrollView</code> enables scrolling when content overflows the screen.</p>
+  <pre><code>&lt;View&gt;
+  &lt;Text&gt;Static content&lt;/Text&gt;
+&lt;/View&gt;
+
+&lt;ScrollView&gt;
+  &lt;Text&gt;Scrollable content&lt;/Text&gt;
+&lt;/ScrollView&gt;</code></pre>
+</div>
+
+<div class="question">
+  <h2>34. How do you use SafeAreaView in React Native?</h2>
+  <p>It ensures your content is not hidden behind notches or system UI elements (iOS and Android).</p>
+  <pre><code>import { SafeAreaView } from 'react-native';
+
+&lt;SafeAreaView style={{ flex: 1 }}&gt;
+  &lt;Text&gt;Inside Safe Area&lt;/Text&gt;
+&lt;/SafeAreaView&gt;</code></pre>
+</div>
+
+<div class="question">
+  <h2>35. How do you style components conditionally?</h2>
+  <p>Use ternary operators or logical expressions to apply different styles dynamically.</p>
+  <pre><code>const isEnabled = true;
+const textStyle = { color: isEnabled ? 'green' : 'red' };
+
+&lt;Text style={textStyle}&gt;Status&lt;/Text&gt;</code></pre>
+</div>
+
+<div class="question">
+  <h2>36. How to make a network request in React Native using Axios?</h2>
+  <p>Install Axios and make requests inside <code>useEffect</code> or on events like button clicks.</p>
+  <pre><code>npm install axios
+
+import axios from 'axios';
+
+useEffect(() =&gt; {
+  axios.get('https://jsonplaceholder.typicode.com/posts/1')
+    .then(response =&gt; setData(response.data));
+}, []);</code></pre>
+</div>
+
+<div class="question">
+  <h2>37. How do you store local data in React Native?</h2>
+  <p>Use <code>AsyncStorage</code> for simple key-value storage.</p>
+  <pre><code>import AsyncStorage from '@react-native-async-storage/async-storage';
+
+await AsyncStorage.setItem('user', JSON.stringify({ name: 'Manuela' }));
+const user = await AsyncStorage.getItem('user');
+console.log(JSON.parse(user));</code></pre>
+</div>
+
+<div class="question">
+  <h2>38. How do you create a reusable button component?</h2>
+  <p>Create a functional component with customizable props.</p>
+  <pre><code>const MyButton = ({ title, onPress }) =&gt; (
+  &lt;TouchableOpacity onPress={onPress} style={{ padding: 10, backgroundColor: 'blue' }}&gt;
+    &lt;Text style={{ color: 'white' }}&gt;{title}&lt;/Text&gt;
+  &lt;/TouchableOpacity&gt;
+);
+
+// Usage:
+&lt;MyButton title="Click Me" onPress={() =&gt; alert('Clicked')} /&gt;</code></pre>
+</div>
+
+<div class="question">
+  <h2>39. How do you show a loading indicator in React Native?</h2>
+  <p>Use the built-in <code>ActivityIndicator</code> component.</p>
+  <pre><code>import { ActivityIndicator, View } from 'react-native';
+
+&lt;View&gt;
+  &lt;ActivityIndicator size="large" color="#0000ff" /&gt;
+&lt;/View&gt;</code></pre>
+</div>
+
+<div class="question">
+  <h2>40. How do you use Modal in React Native?</h2>
+  <p><code>Modal</code> is used to present content above an enclosing view.</p>
+  <pre><code>import { Modal, View, Button, Text } from 'react-native';
+
+const [visible, setVisible] = useState(false);
+
+&lt;&gt;
+  &lt;Button title="Show Modal" onPress={() =&gt; setVisible(true)} /&gt;
+  &lt;Modal visible={visible} animationType="slide"&gt;
+    &lt;View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}&gt;
+      &lt;Text&gt;Hello from Modal!&lt;/Text&gt;
+      &lt;Button title="Close" onPress={() =&gt; setVisible(false)} /&gt;
+    &lt;/View&gt;
+  &lt;/Modal&gt;
+&lt;/&gt;</code></pre>
+</div>
+
+<div class="question">
+  <h2>41. How do you use FlatList in React Native?</h2>
+  <p><code>FlatList</code> efficiently renders large lists of items using lazy loading.</p>
+  <pre><code>import { FlatList, Text } from 'react-native';
+
+const data = [{ key: '1', name: 'Item 1' }, { key: '2', name: 'Item 2' }];
+
+&lt;FlatList
+  data={data}
+  renderItem={({ item }) =&gt; &lt;Text&gt;{item.name}&lt;/Text&gt;}
+  keyExtractor={(item) =&gt; item.key}
+/&gt;</code></pre>
+</div>
+
+<div class="question">
+  <h2>42. What is the difference between FlatList and ScrollView?</h2>
+  <p><code>FlatList</code> is optimized for long lists using lazy rendering, while <code>ScrollView</code> renders all content at once.</p>
+  <pre><code>// Use FlatList for performance
+// Use ScrollView for short content where all elements are visible</code></pre>
+</div>
+
+<div class="question">
+  <h2>43. How do you implement a Splash Screen?</h2>
+  <p>You can use <code>react-native-splash-screen</code> or native configuration for iOS/Android splash images.</p>
+  <pre><code>// Example using expo-splash-screen (Expo)
+import * as SplashScreen from 'expo-splash-screen';
+SplashScreen.preventAutoHideAsync();
+
+// Later, hide manually
+SplashScreen.hideAsync();</code></pre>
+</div>
+
+<div class="question">
+  <h2>44. How to animate components in React Native?</h2>
+  <p>Use the <code>Animated</code> API to animate properties like opacity, position, scale, etc.</p>
+  <pre><code>import { Animated } from 'react-native';
+
+const fadeAnim = useRef(new Animated.Value(0)).current;
+
+useEffect(() =&gt; {
+  Animated.timing(fadeAnim, {
+    toValue: 1,
+    duration: 2000,
+    useNativeDriver: true,
+  }).start();
+}, []);
+
+&lt;Animated.View style={{ opacity: fadeAnim }}&gt;
+  &lt;Text&gt;Fades In&lt;/Text&gt;
+&lt;/Animated.View&gt;</code></pre>
+</div>
+
+<div class="question">
+  <h2>45. How do you use icons in React Native?</h2>
+  <p>Install <code>react-native-vector-icons</code> or use <code>@expo/vector-icons</code> in Expo.</p>
+  <pre><code>import { Ionicons } from '@expo/vector-icons';
+
+&lt;Ionicons name="ios-home" size={32} color="blue" /&gt;</code></pre>
+</div>
+
+<div class="question">
+  <h2>46. How do you use custom fonts?</h2>
+  <p>Use Expo or link fonts manually in native projects.</p>
+  <pre><code>// Example with Expo
+import * as Font from 'expo-font';
+await Font.loadAsync({
+  'Poppins-Regular': require('./assets/fonts/Poppins-Regular.ttf'),
+});
+
+&lt;Text style={{ fontFamily: 'Poppins-Regular' }}&gt;Custom Font&lt;/Text&gt;</code></pre>
+</div>
+
+<div class="question">
+  <h2>47. How do you work with forms in React Native?</h2>
+  <p>You can use <code>TextInput</code> along with form state management libraries like <code>Formik</code> or <code>React Hook Form</code>.</p>
+  <pre><code>import { TextInput, Button } from 'react-native';
+
+const [name, setName] = useState('');
+
+&lt;&gt;
+  &lt;TextInput placeholder="Enter name" value={name} onChangeText={setName} /&gt;
+  &lt;Button title="Submit" onPress={() =&gt; alert(name)} /&gt;
+&lt;/&gt;</code></pre>
+</div>
+
+<div class="question">
+  <h2>48. How do you display images in React Native?</h2>
+  <p>Use the <code>Image</code> component with either local or remote URIs.</p>
+  <pre><code>import { Image } from 'react-native';
+
+&lt;Image
+  source={{ uri: 'https://via.placeholder.com/150' }}
+  style={{ width: 150, height: 150 }}
+/&gt;</code></pre>
+</div>
+
+<div class="question">
+  <h2>49. How do you add themes to a React Native app?</h2>
+  <p>You can use <code>Context API</code> or <code>react-native-paper</code> for theming support.</p>
+  <pre><code>// Example using Context
+const ThemeContext = createContext('light');
+const theme = useContext(ThemeContext);
+
+&lt;View style={{ backgroundColor: theme === 'dark' ? '#000' : '#fff' }} /&gt;</code></pre>
+</div>
+
+<div class="question">
+  <h2>50. How do you handle screen orientation?</h2>
+  <p>Use <code>expo-screen-orientation</code> or native APIs to lock or listen for orientation changes.</p>
+  <pre><code>// Example using Expo
+import * as ScreenOrientation from 'expo-screen-orientation';
+
+await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+
+// Listen to orientation change
+ScreenOrientation.addOrientationChangeListener(({ orientationInfo }) =&gt; {
+  console.log(orientationInfo.orientation);
+});</code></pre>
+</div>
+
+<div class="question">
+  <h2>51. How do you use Toast messages in React Native?</h2>
+  <p>Use <code>react-native-toast-message</code> or <code>ToastAndroid</code> on Android.</p>
+  <pre><code>// Android only
+import { ToastAndroid } from 'react-native';
+
+ToastAndroid.show('Hello Toast', ToastAndroid.SHORT);</code></pre>
+</div>
+
+<div class="question">
+  <h2>52. What are the common performance optimization techniques?</h2>
+  <p>Use FlatList instead of ScrollView, avoid inline functions, use memoization (<code>React.memo</code>, <code>useCallback</code>), and reduce unnecessary re-renders.</p>
+  <pre><code>const MyComponent = React.memo(({ value }) =&gt; {
+  return &lt;Text&gt;{value}&lt;/Text&gt;;
+});
+
+const memoizedCallback = useCallback(() =&gt; {
+  // some action
+}, []);</code></pre>
+</div>
+
+
+</body>
+</html>
