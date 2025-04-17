@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>React Dynamic Routing Q&A Set 1</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .question {
+      background: #fff;
+      border-left: 5px solid #3498db;
+      padding: 20px;
+      margin: 20px auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 900px;
+      border-radius: 8px;
+    }
+    .question h2 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>05_03 React Dynamic Routing - Q&A Set 1</h1>
+
+  <div class="question">
+    <h2>1. What is dynamic routing in React?</h2>
+    <p>Dynamic routing allows React applications to render different components based on route parameters, such as IDs or slugs, at runtime. It's useful for pages like user profiles or blog posts.</p>
+    <pre><code>// Example using React Router v6
+import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
+
+function User() {
+  const { id } = useParams(); // Get dynamic ID from URL
+  return &lt;h2&gt;User ID: {id}&lt;/h2&gt;;
+}
+
+function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/user/:id" element={<User />} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+
+export default App;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>2. How do you access URL parameters using React Router?</h2>
+    <p>Use the <code>useParams</code> hook to extract parameters defined in the route path.</p>
+    <pre><code>import { useParams } from 'react-router-dom';
+
+function Product() {
+  const { productId } = useParams(); // productId is defined in the path
+  return &lt;div&gt;Product ID: {productId}&lt;/div&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>3. How to handle unknown routes (404) with dynamic routing?</h2>
+    <p>React Router v6 uses a wildcard <code>*</code> path to catch all unmatched routes.</p>
+    <pre><code>function NotFound() {
+  return &lt;h2&gt;Page not found&lt;/h2&gt;;
+}
+
+function App() {
+  return (
+    &lt;Routes&gt;
+      &lt;Route path="/product/:id" element={<Product />} /&gt;
+      &lt;Route path="*" element={<NotFound />} /&gt; {/* Catch-all */}
+    &lt;/Routes&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>4. How can you validate route parameters?</h2>
+    <p>You can validate parameters manually inside the component using JavaScript or use optional chaining and default values.</p>
+    <pre><code>function Profile() {
+  const { username } = useParams();
+  if (!username || username.length &lt; 3) {
+    return &lt;p&gt;Invalid username&lt;/p&gt;;
+  }
+  return &lt;h2&gt;Welcome, {username}&lt;/h2&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>5. How do you create nested dynamic routes?</h2>
+    <p>Combine parent and child route paths with nested <code>&lt;Route&gt;</code> components.</p>
+    <pre><code>function Comment() {
+  const { postId, commentId } = useParams();
+  return &lt;p&gt;Post: {postId}, Comment: {commentId}&lt;/p&gt;;
+}
+
+function App() {
+  return (
+    &lt;Routes&gt;
+      &lt;Route path="/post/:postId/comment/:commentId" element={<Comment />} /&gt;
+    &lt;/Routes&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>6. How to navigate programmatically to a dynamic route?</h2>
+    <p>Use the <code>useNavigate</code> hook from React Router v6.</p>
+    <pre><code>import { useNavigate } from 'react-router-dom';
+
+function GoToUserButton() {
+  const navigate = useNavigate();
+  return (
+    &lt;button onClick={() =&gt; navigate('/user/123')}&gt;
+      Go to User 123
+    &lt;/button&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>7. How to extract query parameters along with route params?</h2>
+    <p>Use <code>useSearchParams</code> for query strings.</p>
+    <pre><code>import { useSearchParams } from 'react-router-dom';
+
+function Page() {
+  const [searchParams] = useSearchParams();
+  const lang = searchParams.get('lang');
+  return &lt;p&gt;Language: {lang || 'not specified'}&lt;/p&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>8. Can dynamic routing support optional parameters?</h2>
+    <p>Yes, using wildcard and conditional rendering.</p>
+    <pre><code>function Article() {
+  const { id } = useParams();
+  return id
+    ? &lt;p&gt;Reading Article ID: {id}&lt;/p&gt;
+    : &lt;p&gt;Please select an article&lt;/p&gt;;
+}
+
+function App() {
+  return (
+    &lt;Routes&gt;
+      &lt;Route path="/article" element={<Article />} /&gt;
+      &lt;Route path="/article/:id" element={<Article />} /&gt;
+    &lt;/Routes&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>9. How to create dynamic routes based on data (e.g., from API)?</h2>
+    <p>Map over data and generate <code>Link</code>s dynamically.</p>
+    <pre><code>const users = [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }];
+
+function UserList() {
+  return (
+    &lt;ul&gt;
+      {users.map(user =&gt; (
+        &lt;li key={user.id}&gt;
+          &lt;Link to={`/user/${user.id}`}&gt;{user.name}&lt;/Link&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>10. What is the difference between static and dynamic routing?</h2>
+    <p>Static routes are predefined and don't change. Dynamic routes accept parameters and can serve different content depending on those params.</p>
+  </div>
+
+  <div class="question">
+    <h2>11. How do you handle dynamic routes with authentication?</h2>
+    <p>Protect dynamic routes using conditional rendering or wrapper components.</p>
+    <pre><code>function ProtectedRoute({ children }) {
+  const isAuthenticated = true; // Replace with real logic
+  return isAuthenticated ? children : &lt;p&gt;Access Denied&lt;/p&gt;;
+}
+
+&lt;Route path="/dashboard/:section" element={
+  &lt;ProtectedRoute&gt;&lt;Dashboard /&gt;&lt;/ProtectedRoute&gt;
+} /&gt;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>12. How can you reload a component when route param changes?</h2>
+    <p>Use <code>useEffect</code> and set param as dependency.</p>
+    <pre><code>function Post() {
+  const { id } = useParams();
+  const [post, setPost] = useState(null);
+
+  useEffect(() =&gt; {
+    fetch(`/api/posts/${id}`)
+      .then(res =&gt; res.json())
+      .then(data =&gt; setPost(data));
+  }, [id]); // re-fetch when ID changes
+
+  return post ? &lt;div&gt;{post.title}&lt;/div&gt; : &lt;p&gt;Loading...&lt;/p&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>13. Can you use dynamic routes with nested layout components?</h2>
+    <p>Yes, by nesting routes inside layout routes and using <code>&lt;Outlet /&gt;</code>.</p>
+    <pre><code>function DashboardLayout() {
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Dashboard&lt;/h2&gt;
+      &lt;Outlet /&gt;
+    &lt;/div&gt;
+  );
+}
+
+function App() {
+  return (
+    &lt;Routes&gt;
+      &lt;Route path="/dashboard" element={<DashboardLayout />}&gt;
+        &lt;Route path="user/:id" element={<User />} /&gt;
+      &lt;/Route&gt;
+    &lt;/Routes&gt;
+  );
+}
+</code></pre>
+  </div>
+  <!-- React Dynamic Routing - Q&A Set 2 -->
+<div class="question">
+  <h2>14. How can you highlight active dynamic links?</h2>
+  <p>Use the <code>NavLink</code> component which adds styling based on the current route.</p>
+  <pre><code>import { NavLink } from 'react-router-dom';
+
+&lt;NavLink 
+  to="/user/1"
+  style={({ isActive }) =&gt; ({ color: isActive ? 'red' : 'blue' })}
+&gt;
+  User 1
+&lt;/NavLink&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>15. How to structure a component to support multiple dynamic routes?</h2>
+  <p>You can use a single component and adapt its logic using <code>useParams</code> or <code>useLocation</code>.</p>
+  <pre><code>function DynamicPage() {
+  const { type, id } = useParams();
+  return &lt;div&gt;{type} page with ID: {id}&lt;/div&gt;;
+}
+
+&lt;Route path="/:type/:id" element={<DynamicPage />} /&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>16. How can you prevent access to invalid dynamic routes?</h2>
+  <p>Validate param existence against allowed values or API data.</p>
+  <pre><code>function Category() {
+  const { category } = useParams();
+  const valid = ['books', 'movies'].includes(category);
+  return valid ? &lt;p&gt;Category: {category}&lt;/p&gt; : &lt;p&gt;Invalid Category&lt;/p&gt;;
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>17. Can you lazy-load components in dynamic routes?</h2>
+  <p>Yes. Use <code>React.lazy</code> and <code>Suspense</code>.</p>
+  <pre><code>const User = React.lazy(() =&gt; import('./User'));
+
+&lt;Suspense fallback={&lt;div&gt;Loading...&lt;/div&gt;}&gt;
+  &lt;Routes&gt;
+    &lt;Route path="/user/:id" element={<User />} /&gt;
+  &lt;/Routes&gt;
+&lt;/Suspense&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>18. How to handle dynamic routes in a sidebar navigation?</h2>
+  <p>Map route configurations dynamically.</p>
+  <pre><code>const links = [
+  { label: 'User 1', path: '/user/1' },
+  { label: 'User 2', path: '/user/2' },
+];
+
+function Sidebar() {
+  return (
+    &lt;ul&gt;
+      {links.map(link =&gt; (
+        &lt;li key={link.path}&gt;
+          &lt;Link to={link.path}&gt;{link.label}&lt;/Link&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>19. How to set dynamic document titles based on route params?</h2>
+  <p>Use <code>useEffect</code> to update <code>document.title</code>.</p>
+  <pre><code>function BlogPost() {
+  const { slug } = useParams();
+  useEffect(() =&gt; {
+    document.title = `Reading: ${slug}`;
+  }, [slug]);
+
+  return &lt;h1&gt;Post: {slug}&lt;/h1&gt;;
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>20. How can you structure routes to support admin vs user dynamic routes?</h2>
+  <p>Use nested routes and layout wrappers for each role.</p>
+  <pre><code>&lt;Route path="/admin" element={<AdminLayout />} &gt;
+  &lt;Route path="user/:id" element={<AdminUserView />} /&gt;
+&lt;/Route&gt;
+
+&lt;Route path="/user/:id" element={<UserView />} /&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>21. Can route params be numbers or slugs?</h2>
+  <p>Yes. Parameters can be anything and are read as strings.</p>
+  <pre><code>// /post/hello-world or /post/123
+&lt;Route path="/post/:id" element={<Post />} /&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>22. How do you use route params in API requests?</h2>
+  <p>Extract the param and include it in the API call URL.</p>
+  <pre><code>function Product() {
+  const { id } = useParams();
+  useEffect(() =&gt; {
+    fetch(`/api/products/${id}`)
+      .then(res =&gt; res.json())
+      .then(data =&gt; console.log(data));
+  }, [id]);
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>23. How to reload the same route with a different param?</h2>
+  <p>Use <code>useNavigate</code> to go to the same route with a different value.</p>
+  <pre><code>const navigate = useNavigate();
+&lt;button onClick={() =&gt; navigate('/user/456')}&gt;
+  Go to User 456
+&lt;/button&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>24. How to manage scroll position with dynamic routes?</h2>
+  <p>Use <code>useEffect</code> to scroll to top when route param changes.</p>
+  <pre><code>function Post() {
+  const { id } = useParams();
+  useEffect(() =&gt; {
+    window.scrollTo(0, 0);
+  }, [id]);
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>25. Can dynamic routing work with modals?</h2>
+  <p>Yes, by showing a modal based on a dynamic route.</p>
+  <pre><code>function App() {
+  return (
+    &lt;Routes location={backgroundLocation || location}&gt;
+      &lt;Route path="/user/:id" element={<UserModal />} /&gt;
+    &lt;/Routes&gt;
+  );
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>26. Can dynamic routing be used in SSR (e.g. Next.js)?</h2>
+  <p>Yes, frameworks like Next.js use dynamic routing with filenames.</p>
+  <pre><code>// File: pages/post/[id].js
+import { useRouter } from 'next/router';
+
+export default function Post() {
+  const router = useRouter();
+  const { id } = router.query;
+
+  return &lt;p&gt;Post ID: {id}&lt;/p&gt;;
+}
+</code></pre>
+</div>
+
+<!-- React Dynamic Routing - Q&A Set 3 -->
+<div class="question">
+  <h2>27. How to get route parameters in a class component?</h2>
+  <p>Use a wrapper with <code>useParams</code> and pass it as props to the class component.</p>
+  <pre><code>import { useParams } from 'react-router-dom';
+
+function withParams(Component) {
+  return props =&gt; &lt;Component {...props} params={useParams()} /&gt;;
+}
+
+class User extends React.Component {
+  render() {
+    const { id } = this.props.params;
+    return &lt;h1&gt;User ID: {id}&lt;/h1&gt;;
+  }
+}
+
+export default withParams(User);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>28. How to generate dynamic breadcrumbs?</h2>
+  <p>Use <code>useLocation</code> and split the pathname into parts.</p>
+  <pre><code>function Breadcrumbs() {
+  const location = useLocation();
+  const paths = location.pathname.split('/').filter(p =&gt; p);
+
+  return (
+    &lt;nav&gt;
+      {paths.map((segment, idx) =&gt; {
+        const url = '/' + paths.slice(0, idx + 1).join('/');
+        return &lt;Link key={url} to={url}&gt;{segment}&lt;/Link&gt;;
+      })}
+    &lt;/nav&gt;
+  );
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>29. How to navigate to a dynamic route after form submission?</h2>
+  <p>Use <code>useNavigate</code> with the submitted value.</p>
+  <pre><code>function SearchForm() {
+  const navigate = useNavigate();
+  const [query, setQuery] = useState('');
+
+  const handleSubmit = e =&gt; {
+    e.preventDefault();
+    navigate(`/search/${query}`);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input onChange={e =&gt; setQuery(e.target.value)} /&gt;
+      &lt;button type="submit"&gt;Search&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>30. How to combine query strings with dynamic routing?</h2>
+  <p>Use <code>useSearchParams</code> from React Router.</p>
+  <pre><code>function Product() {
+  const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const color = searchParams.get('color');
+
+  return &lt;div&gt;Product {id} - Color: {color}&lt;/div&gt;;
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>31. How to programmatically build dynamic route paths?</h2>
+  <p>Create route strings using template literals.</p>
+  <pre><code>const userId = 42;
+navigate(`/user/${userId}`);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>32. How to preload data for dynamic routes?</h2>
+  <p>Fetch data in <code>useEffect</code> based on route param.</p>
+  <pre><code>function Post() {
+  const { id } = useParams();
+  const [post, setPost] = useState(null);
+
+  useEffect(() =&gt; {
+    fetch(`/api/posts/${id}`)
+      .then(res =&gt; res.json())
+      .then(setPost);
+  }, [id]);
+
+  if (!post) return &lt;p&gt;Loading...&lt;/p&gt;;
+  return &lt;h2&gt;{post.title}&lt;/h2&gt;;
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>33. Can you animate transitions between dynamic routes?</h2>
+  <p>Yes. Use libraries like <code>Framer Motion</code> or custom CSS transitions.</p>
+  <pre><code>import { motion } from 'framer-motion';
+
+function AnimatedPage({ children }) {
+  return (
+    &lt;motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}&gt;
+      {children}
+    &lt;/motion.div&gt;
+  );
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>34. How to test dynamic routing with React Testing Library?</h2>
+  <p>Wrap with <code>MemoryRouter</code> and set initial entries.</p>
+  <pre><code>render(
+  &lt;MemoryRouter initialEntries={['/user/123']}&gt;
+    &lt;Routes&gt;
+      &lt;Route path="/user/:id" element={<User />} /&gt;
+    &lt;/Routes&gt;
+  &lt;/MemoryRouter&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>35. How to use dynamic routing with tab navigation?</h2>
+  <p>Each tab can be a dynamic route segment.</p>
+  <pre><code>// /user/1/profile or /user/1/settings
+&lt;Route path="/user/:id/profile" element={<Profile />} /&gt;
+&lt;Route path="/user/:id/settings" element={<Settings />} /&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>36. How to reset component state on route param change?</h2>
+  <p>Use a key on the component that changes with param.</p>
+  <pre><code>&lt;Route 
+  path="/user/:id" 
+  element={<User key={useParams().id} />} 
+/&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>37. Can dynamic routes be SEO friendly?</h2>
+  <p>Only in SSR frameworks like Next.js. Client-side apps need metadata handling with tools like <code>react-helmet</code>.</p>
+  <pre><code>import { Helmet } from 'react-helmet';
+
+function Post({ title }) {
+  return (
+    &lt;&gt;
+      &lt;Helmet&gt;
+        &lt;title&gt;{title} | MyBlog&lt;/title&gt;
+      &lt;/Helmet&gt;
+      &lt;h1&gt;{title}&lt;/h1&gt;
+    &lt;/&gt;
+  );
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>38. How to build dynamic routes from API data?</h2>
+  <p>Fetch data and render <code>&lt;Link&gt;</code> elements accordingly.</p>
+  <pre><code>useEffect(() =&gt; {
+  fetch('/api/posts')
+    .then(res =&gt; res.json())
+    .then(data =&gt; setPosts(data));
+}, []);
+
+{posts.map(post =&gt; (
+  &lt;Link key={post.id} to={`/post/${post.id}`}&gt;{post.title}&lt;/Link&gt;
+))}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>39. How to show a 404 page for unknown dynamic paths?</h2>
+  <p>Catch unmatched routes with <code>*</code> or validate dynamic data.</p>
+  <pre><code>&lt;Route path="/user/:id" element={<User />} /&gt;
+&lt;Route path="*" element={<NotFound />} /&gt;
+</code></pre>
+</div>
+
+<!-- React Dynamic Routing - Q&A Set 4 -->
+<div class="question">
+  <h2>40. How to redirect dynamically based on a route param?</h2>
+  <p>Use <code>useEffect</code> with <code>navigate</code> and <code>useParams</code> to perform the redirection.</p>
+  <pre><code>function RedirectUser() {
+  const { role } = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() =&gt; {
+    if (role === 'admin') navigate('/admin/dashboard');
+    else if (role === 'user') navigate('/user/home');
+    else navigate('/notfound');
+  }, [role]);
+
+  return &lt;p&gt;Redirecting...&lt;/p&gt;;
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>41. How to extract multiple parameters from a dynamic route?</h2>
+  <p>Define multiple placeholders and extract them using <code>useParams</code>.</p>
+  <pre><code>&lt;Route path="/order/:orderId/item/:itemId" element={<OrderItem />} /&gt;
+
+function OrderItem() {
+  const { orderId, itemId } = useParams();
+  return &lt;p&gt;Order: {orderId}, Item: {itemId}&lt;/p&gt;;
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>42. How to validate a route parameter before rendering the component?</h2>
+  <p>Use a conditional inside the component or wrap it in a guard component.</p>
+  <pre><code>function UserPage() {
+  const { id } = useParams();
+  const isValid = /^\d+$/.test(id);
+
+  if (!isValid) return &lt;Navigate to="/notfound" /&gt;;
+  return &lt;p&gt;User ID: {id}&lt;/p&gt;;
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>43. How to prevent re-renders on route param changes?</h2>
+  <p>Use <code>React.memo</code> or move non-changing logic outside the component body.</p>
+  <pre><code>const UserDetail = React.memo(({ id }) =&gt; {
+  return &lt;p&gt;User: {id}&lt;/p&gt;;
+});
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>44. How to sync route parameters with global state (e.g., Redux)?</h2>
+  <p>Dispatch actions inside <code>useEffect</code> based on <code>useParams</code>.</p>
+  <pre><code>function ProductDetail() {
+  const { id } = useParams();
+  const dispatch = useDispatch();
+
+  useEffect(() =&gt; {
+    dispatch(fetchProduct(id));
+  }, [id]);
+
+  return &lt;div&gt;...&lt;/div&gt;;
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>45. How to use wildcard parameters for slugs?</h2>
+  <p>Use <code>:slug*</code> and handle arrays from <code>useParams</code>.</p>
+  <pre><code>&lt;Route path="/docs/:slug*" element={<Docs />} /&gt;
+
+function Docs() {
+  const { slug } = useParams();
+  return &lt;p&gt;You’re reading: {slug}&lt;/p&gt;;
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>46. Can dynamic segments have default values?</h2>
+  <p>Not natively. Simulate with conditional redirects or state.</p>
+  <pre><code>&lt;Route path="/profile/:tab" element={<Profile />} /&gt;
+
+function Profile() {
+  const { tab } = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() =&gt; {
+    if (!tab) navigate('/profile/overview');
+  }, [tab]);
+
+  return &lt;div&gt;Active Tab: {tab}&lt;/div&gt;;
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>47. How to match dynamic routes case-insensitively?</h2>
+  <p>React Router doesn't support case-insensitive routes out of the box. Normalize input manually.</p>
+  <pre><code>const { name } = useParams();
+const normalized = name.toLowerCase();
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>48. How to guard dynamic routes based on user roles?</h2>
+  <p>Use a wrapper or inline logic with authentication checks.</p>
+  <pre><code>function AdminRoute({ children }) {
+  const { user } = useAuth();
+  return user?.role === 'admin' ? children : &lt;Navigate to="/unauthorized" /&gt;;
+}
+
+&lt;Route path="/admin/:section" element={
+  &lt;AdminRoute&gt;&lt;AdminDashboard /&gt;&lt;/AdminRoute&gt;
+} /&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>49. How to use dynamic routes with layout routes?</h2>
+  <p>Place dynamic children inside a layout route structure.</p>
+  <pre><code>&lt;Route path="/user" element={<UserLayout />} &gt;
+  &lt;Route path=":id" element={<UserPage />} /&gt;
+&lt;/Route&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>50. How to lazy-load components for dynamic routes?</h2>
+  <p>Use <code>React.lazy</code> and <code>Suspense</code>.</p>
+  <pre><code>const Post = React.lazy(() =&gt; import('./Post'));
+
+&lt;Route path="/post/:id" element={
+  &lt;Suspense fallback={&lt;p&gt;Loading...&lt;/p&gt;}&gt;
+    &lt;Post /&gt;
+  &lt;/Suspense&gt;
+} /&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>51. How to dynamically change the route base path?</h2>
+  <p>Use <code>basename</code> prop in <code>BrowserRouter</code>.</p>
+  <pre><code>&lt;BrowserRouter basename="/app/v2"&gt;
+  ...
+&lt;/BrowserRouter&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>52. How to create localized dynamic routes (i18n)?</h2>
+  <p>Combine locale prefixes with dynamic segments.</p>
+  <pre><code>&lt;Route path="/:lang/product/:id" element={<Product />} /&gt;
+
+function Product() {
+  const { lang, id } = useParams();
+  return &lt;div&gt;Language: {lang}, Product: {id}&lt;/div&gt;;
+}
+</code></pre>
+</div>
+
+  
+</body>
+</html>
