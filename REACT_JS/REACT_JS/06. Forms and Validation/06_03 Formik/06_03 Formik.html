@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>06_03 Formik - Q&A Set 1</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .question {
+      background: #fff;
+      border-left: 5px solid #3498db;
+      padding: 20px;
+      margin: 20px auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 900px;
+      border-radius: 8px;
+    }
+    .question h2 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+<h1>06_03 Formik - React Q&A Set 1</h1>
+
+<div class="question">
+  <h2>1. What is Formik and why is it used in React?</h2>
+  <p>Formik is a popular React library used for building and managing forms with minimal code. It provides robust support for form state management, validation, and submission handling.</p>
+  <p><strong>Key Features:</strong></p>
+  <ul>
+    <li>Manages form state automatically</li>
+    <li>Handles validation with Yup or custom logic</li>
+    <li>Reduces boilerplate</li>
+  </ul>
+  <pre><code>// Example: Basic Formik Setup
+import React from 'react';
+import { Formik, Form, Field } from 'formik';
+
+const SignupForm = () =&gt; (
+  &lt;Formik
+    initialValues={{ name: '' }}
+    onSubmit={(values) =&gt; {
+      alert(JSON.stringify(values, null, 2)); // Handle form data
+    }}
+  &gt;
+    &lt;Form&gt;
+      &lt;label htmlFor="name"&gt;Name:&lt;/label&gt;
+      &lt;Field id="name" name="name" placeholder="Enter your name" /&gt;
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/Form&gt;
+  &lt;/Formik&gt;
+);
+
+export default SignupForm;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>2. How to initialize a form using Formik?</h2>
+  <p>You initialize a form using the <code>Formik</code> component with the <code>initialValues</code> prop. This defines the default values for the fields in the form.</p>
+  <pre><code>import React from 'react';
+import { Formik, Form, Field } from 'formik';
+
+const InitialForm = () =&gt; (
+  &lt;Formik
+    initialValues={{
+      email: '',
+      password: ''
+    }}
+    onSubmit={(values) =&gt; console.log(values)}
+  &gt;
+    &lt;Form&gt;
+      &lt;Field name="email" type="email" placeholder="Email" /&gt;
+      &lt;Field name="password" type="password" placeholder="Password" /&gt;
+      &lt;button type="submit"&gt;Login&lt;/button&gt;
+    &lt;/Form&gt;
+  &lt;/Formik&gt;
+);
+
+export default InitialForm;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>3. How to validate Formik forms using Yup schema?</h2>
+  <p>Formik integrates with Yup for schema-based validation. You provide a Yup schema to the <code>validationSchema</code> prop in the <code>Formik</code> component.</p>
+  <pre><code>import React from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+
+const schema = Yup.object({
+  email: Yup.string().email('Invalid email').required('Required'),
+  password: Yup.string().min(6, 'Min 6 characters').required('Required')
+});
+
+const ValidatedForm = () =&gt; (
+  &lt;Formik
+    initialValues={{ email: '', password: '' }}
+    validationSchema={schema}
+    onSubmit={(values) =&gt; console.log(values)}
+  &gt;
+    &lt;Form&gt;
+      &lt;Field name="email" type="email" /&gt;
+      &lt;ErrorMessage name="email" component="div" /&gt;
+
+      &lt;Field name="password" type="password" /&gt;
+      &lt;ErrorMessage name="password" component="div" /&gt;
+
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/Form&gt;
+  &lt;/Formik&gt;
+);
+
+export default ValidatedForm;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>4. What is the difference between Field and useField in Formik?</h2>
+  <p><code>Field</code> is a higher-level component for binding input elements, whereas <code>useField</code> is a custom hook providing access to field props and meta for custom input components.</p>
+  <pre><code>// Example using useField
+import React from 'react';
+import { useField, Formik, Form } from 'formik';
+
+const CustomInput = ({ label, ...props }) =&gt; {
+  const [field, meta] = useField(props);
+  return (
+    &lt;div&gt;
+      &lt;label&gt;{label}&lt;/label&gt;
+      &lt;input {...field} {...props} /&gt;
+      {meta.touched &amp;&amp; meta.error ? &lt;div&gt;{meta.error}&lt;/div&gt; : null}
+    &lt;/div&gt;
+  );
+};
+
+const App = () =&gt; (
+  &lt;Formik initialValues={{ name: '' }} onSubmit={console.log}&gt;
+    &lt;Form&gt;
+      &lt;CustomInput name="name" type="text" label="Name" /&gt;
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/Form&gt;
+  &lt;/Formik&gt;
+);
+
+export default App;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>5. How to handle form submission in Formik?</h2>
+  <p>You handle submission by passing a function to the <code>onSubmit</code> prop. This function receives form values and a Formik bag for side effects like resetting or navigating.</p>
+  <pre><code>const handleSubmit = (values, actions) =&gt; {
+  console.log(values); // Submitted values
+  actions.setSubmitting(false); // Stop spinner
+  actions.resetForm(); // Reset form fields
+};
+
+&lt;Formik initialValues={{ name: '' }} onSubmit={handleSubmit}&gt;
+  {/* Form goes here */}
+&lt;/Formik&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>6. How to show validation error messages in Formik?</h2>
+  <p>Use the <code>ErrorMessage</code> component to display validation errors tied to each field.</p>
+  <pre><code>&lt;Field name="email" type="email" /&gt;
+&lt;ErrorMessage name="email" component="div" className="error" /&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>7. How to dynamically set form values in Formik?</h2>
+  <p>You can use the <code>setFieldValue</code> method provided in Formik’s props or the useFormik hook to update fields programmatically.</p>
+  <pre><code>import { Formik } from 'formik';
+
+&lt;Formik
+  initialValues={{ country: '' }}
+  onSubmit={console.log}
+&gt;
+  {({ values, setFieldValue }) =&gt; (
+    &lt;Form&gt;
+      &lt;button type="button" onClick={() =&gt; setFieldValue('country', 'USA')}&gt;
+        Set USA
+      &lt;/button&gt;
+      &lt;Field name="country" /&gt;
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/Form&gt;
+  )}
+&lt;/Formik&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>8. How to reset a Formik form?</h2>
+  <p>Use the <code>resetForm</code> method from Formik bag inside the submit handler or from the render props to reset the entire form.</p>
+  <pre><code>onSubmit={(values, actions) =&gt; {
+  // Submit logic here
+  actions.resetForm(); // Reset the form
+}};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>9. How to use checkboxes in Formik?</h2>
+  <p>Formik handles checkboxes via the <code>type="checkbox"</code> input and stores the boolean in the form values.</p>
+  <pre><code>&lt;Field name="subscribe" type="checkbox" /&gt;
+Subscribe to newsletter
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>10. How to use radio buttons with Formik?</h2>
+  <p>Radio buttons share the same <code>name</code> and different <code>value</code>s to work in Formik.</p>
+  <pre><code>&lt;label&gt;
+  &lt;Field type="radio" name="gender" value="male" /&gt; Male
+&lt;/label&gt;
+&lt;label&gt;
+  &lt;Field type="radio" name="gender" value="female" /&gt; Female
+&lt;/label&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>11. How to disable the submit button while submitting in Formik?</h2>
+  <p>Formik provides an <code>isSubmitting</code> flag which can be used to disable the button during submission.</p>
+  <pre><code>&lt;button type="submit" disabled={isSubmitting}&gt;
+  Submit
+&lt;/button&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>12. How to handle asynchronous validation in Formik?</h2>
+  <p>Formik supports <code>validate</code> function returning a promise. You can write custom async validation logic here.</p>
+  <pre><code>const validateUsername = async (value) =&gt; {
+  const isTaken = await api.checkUsername(value);
+  return isTaken ? 'Username is taken' : undefined;
+};
+
+&lt;Field name="username" validate={validateUsername} /&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>13. How to validate on blur or change in Formik?</h2>
+  <p>You can control this behavior using <code>validateOnChange</code> and <code>validateOnBlur</code> props on Formik.</p>
+  <pre><code>&lt;Formik
+  initialValues={{ name: '' }}
+  validate={...}
+  validateOnBlur={true}
+  validateOnChange={false}
+&gt;
+  {/* Form here */}
+&lt;/Formik&gt;
+  </code></pre>
+</div>
+
+<!-- Continued from previous file -->
+
+<div class="question">
+  <h2>14. How to use select dropdowns with Formik?</h2>
+  <p>You can use a native <code>select</code> element inside a <code>Field</code> component to render dropdowns.</p>
+  <pre><code>&lt;Field name="country" as="select"&gt;
+  &lt;option value=""&gt;Select a country&lt;/option&gt;
+  &lt;option value="usa"&gt;USA&lt;/option&gt;
+  &lt;option value="canada"&gt;Canada&lt;/option&gt;
+&lt;/Field&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>15. How to use Formik with custom components?</h2>
+  <p>Use <code>useField</code> hook to integrate Formik into custom input components and maintain connection with the form state.</p>
+  <pre><code>const MyTextInput = ({ label, ...props }) =&gt; {
+  const [field, meta] = useField(props);
+  return (
+    &lt;div&gt;
+      &lt;label&gt;{label}&lt;/label&gt;
+      &lt;input {...field} {...props} /&gt;
+      {meta.touched &amp;&amp; meta.error &amp;&amp; &lt;div&gt;{meta.error}&lt;/div&gt;}
+    &lt;/div&gt;
+  );
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>16. How to handle nested form values in Formik?</h2>
+  <p>You can handle nested objects by naming the fields using dot notation like <code>user.email</code>.</p>
+  <pre><code>&lt;Field name="user.email" type="email" /&gt;
+&lt;ErrorMessage name="user.email" component="div" /&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>17. How to integrate Formik with Yup for nested objects?</h2>
+  <p>Use Yup's <code>object().shape()</code> to validate nested structures matching the Formik field structure.</p>
+  <pre><code>const schema = Yup.object({
+  user: Yup.object({
+    email: Yup.string().email().required()
+  })
+});
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>18. How to render dynamic fields using Formik?</h2>
+  <p>You can dynamically render fields by mapping through an array and binding each field using <code>Field</code>.</p>
+  <pre><code>{fields.map((field, idx) =&gt; (
+  &lt;Field key={idx} name={`dynamic[${idx}]`} /&gt;
+))}
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>19. How to use FieldArray in Formik?</h2>
+  <p><code>FieldArray</code> is used to handle form fields as arrays, including adding/removing dynamically.</p>
+  <pre><code>&lt;FieldArray name="friends"&gt;
+  {({ insert, remove, push }) =&gt; (
+    &lt;div&gt;
+      {values.friends.map((_, index) =&gt; (
+        &lt;div key={index}&gt;
+          &lt;Field name={`friends.${index}`} /&gt;
+          &lt;button type="button" onClick={() =&gt; remove(index)}&gt;Remove&lt;/button&gt;
+        &lt;/div&gt;
+      ))}
+      &lt;button type="button" onClick={() =&gt; push('')}&gt;Add Friend&lt;/button&gt;
+    &lt;/div&gt;
+  )}
+&lt;/FieldArray&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>20. How to handle initialValues update after API call in Formik?</h2>
+  <p>Use <code>enableReinitialize</code> prop if your <code>initialValues</code> change after data fetching.</p>
+  <pre><code>&lt;Formik
+  enableReinitialize
+  initialValues={data}
+  onSubmit={handleSubmit}
+&gt;
+  {/* Form code */}
+&lt;/Formik&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>21. How to disable fields conditionally in Formik?</h2>
+  <p>You can disable any field using the <code>disabled</code> attribute based on values or props.</p>
+  <pre><code>&lt;Field name="email"&gt;
+  {({ field, form }) =&gt; (
+    &lt;input {...field} disabled={form.values.role !== 'admin'} /&gt;
+  )}
+&lt;/Field&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>22. How to integrate Formik with Material-UI?</h2>
+  <p>Use <code>useField</code> to bind Formik logic to MUI components like <code>&lt;TextField /&gt;</code>.</p>
+  <pre><code>import { TextField } from '@mui/material';
+
+const FormikMUIText = ({ label, ...props }) =&gt; {
+  const [field, meta] = useField(props);
+  return (
+    &lt;TextField
+      {...field}
+      label={label}
+      error={!!meta.error &amp;&amp; meta.touched}
+      helperText={meta.touched &amp;&amp; meta.error}
+    /&gt;
+  );
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>23. How to integrate Formik with React Bootstrap?</h2>
+  <p>Use <code>Field</code> or <code>useField</code> with Bootstrap inputs. Ensure feedback and validation states are shown manually.</p>
+  <pre><code>import { Form as BForm } from 'react-bootstrap';
+
+const BootstrapInput = ({ label, ...props }) =&gt; {
+  const [field, meta] = useField(props);
+  return (
+    &lt;BForm.Group&gt;
+      &lt;BForm.Label&gt;{label}&lt;/BForm.Label&gt;
+      &lt;BForm.Control {...field} isInvalid={meta.touched &amp;&amp; meta.error} /&gt;
+      &lt;BForm.Control.Feedback type="invalid"&gt;
+        {meta.error}
+      &lt;/BForm.Control.Feedback&gt;
+    &lt;/BForm.Group&gt;
+  );
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>24. How to use Formik with FormData for file upload?</h2>
+  <p>Formik doesn’t handle <code>FormData</code> by default. You need to use native input and extract the file manually.</p>
+  <pre><code>&lt;input
+  name="file"
+  type="file"
+  onChange={(event) =&gt; {
+    setFieldValue("file", event.currentTarget.files[0]);
+  }}
+/&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>25. How to set error manually in Formik?</h2>
+  <p>You can use the <code>setErrors</code> method from the Formik bag to programmatically set errors.</p>
+  <pre><code>onSubmit={(values, { setErrors }) =&gt; {
+  if (!values.email.includes('@')) {
+    setErrors({ email: 'Invalid email format' });
+  }
+}};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>26. How to track touched fields in Formik?</h2>
+  <p>The <code>touched</code> object tracks which fields were focused and blurred. You can also set touched manually.</p>
+  <pre><code>setTouched({ email: true });
+console.log(formik.touched.email); // true if blurred
+  </code></pre>
+</div>
+
+
+<!-- Continued from previous file -->
+
+<div class="question">
+  <h2>27. How to reset the form manually in Formik?</h2>
+  <p>You can use <code>resetForm()</code> to reset the form to its initial values.</p>
+  <pre><code>onClick={() =&gt; resetForm()}  // resets to initialValues
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>28. How to validate a single field manually?</h2>
+  <p>Formik provides <code>validateField</code> to manually trigger validation on specific fields.</p>
+  <pre><code>validateField('email');  // will validate only the email field
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>29. How to handle form submission errors from an API?</h2>
+  <p>Use <code>setErrors</code> or <code>setStatus</code> to show API errors after submission.</p>
+  <pre><code>onSubmit={async (values, { setErrors, setStatus }) =&gt; {
+  const res = await submitForm(values);
+  if (res.error) {
+    setErrors({ email: 'Server error: ' + res.message });
+  }
+}};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>30. How to persist Formik form state in localStorage?</h2>
+  <p>Use <code>useEffect</code> to store and retrieve form values.</p>
+  <pre><code>useEffect(() =&gt; {
+  localStorage.setItem('formData', JSON.stringify(values));
+}, [values]);
+
+// Set initialValues using localStorage
+initialValues={JSON.parse(localStorage.getItem('formData')) || { name: '' }}
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>31. How to access Formik context outside the &lt;Formik&gt; tag?</h2>
+  <p>Use the <code>useFormikContext</code> hook to access form state/functions in any child component.</p>
+  <pre><code>import { useFormikContext } from 'formik';
+
+const SubmitWatcher = () =&gt; {
+  const { isSubmitting } = useFormikContext();
+  useEffect(() =&gt; {
+    if (isSubmitting) console.log('Submitting...');
+  }, [isSubmitting]);
+  return null;
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>32. How to validate a field onChange and onBlur?</h2>
+  <p>Formik validates fields onBlur by default. Use <code>validateOnChange</code> or <code>validateOnBlur</code> to control behavior.</p>
+  <pre><code>&lt;Formik
+  initialValues={{ email: '' }}
+  validate={validateEmail}
+  validateOnChange={true}
+  validateOnBlur={true}
+/&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>33. How to use Formik for a multi-step form?</h2>
+  <p>Use state to track the current step and conditionally render form fields based on the step.</p>
+  <pre><code>const [step, setStep] = useState(0);
+
+{step === 0 &amp;&amp; (
+  &lt;Field name="firstName" /&gt;
+)}
+{step === 1 &amp;&amp; (
+  &lt;Field name="email" /&gt;
+)}
+
+&lt;button onClick={() =&gt; setStep(step + 1)}&gt;Next&lt;/button&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>34. How to disable the submit button until the form is valid?</h2>
+  <p>Use Formik’s <code>isValid</code> and <code>dirty</code> flags.</p>
+  <pre><code>&lt;button type="submit" disabled={!(isValid &amp;&amp; dirty)}&gt;
+  Submit
+&lt;/button&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>35. How to integrate Formik with a modal form?</h2>
+  <p>Just wrap the form inside the modal and ensure it mounts when visible.</p>
+  <pre><code>&lt;Modal show={showModal}&gt;
+  &lt;Formik initialValues={{ name: '' }} onSubmit={...}&gt;
+    &lt;Form&gt;
+      &lt;Field name="name" /&gt;
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/Form&gt;
+  &lt;/Formik&gt;
+&lt;/Modal&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>36. How to disable validation entirely?</h2>
+  <p>Set <code>validateOnChange</code> and <code>validateOnBlur</code> to false and do not provide a validation function/schema.</p>
+  <pre><code>&lt;Formik
+  initialValues={{ email: '' }}
+  validateOnChange={false}
+  validateOnBlur={false}
+  onSubmit={...}
+/&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>37. How to implement debounce for Formik validation?</h2>
+  <p>Wrap validation with a debounce function using lodash or similar libraries.</p>
+  <pre><code>import debounce from 'lodash.debounce';
+
+const debouncedValidation = debounce((values) =&gt; {
+  const errors = {};
+  if (!values.email.includes('@')) errors.email = 'Invalid';
+  return errors;
+}, 300);
+
+&lt;Formik validate={debouncedValidation} /&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>38. How to show a loading spinner on form submission?</h2>
+  <p>Use the <code>isSubmitting</code> flag to conditionally render a spinner.</p>
+  <pre><code>&lt;button type="submit"&gt;
+  {isSubmitting ? 'Loading...' : 'Submit'}
+&lt;/button&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>39. How to integrate Formik with toast notifications?</h2>
+  <p>Use a toast library (like react-toastify) inside the <code>onSubmit</code> method.</p>
+  <pre><code>onSubmit={(values, actions) =&gt; {
+  toast.success("Submitted!");
+  actions.setSubmitting(false);
+}};
+  </code></pre>
+</div>
+
+<!-- Continued from previous file -->
+
+<div class="question">
+  <h2>40. How to create a custom reusable input component with Formik?</h2>
+  <p>Use <code>useField</code> hook to connect a custom component to Formik.</p>
+  <pre><code>import { useField } from 'formik';
+
+const MyTextInput = ({ label, ...props }) =&gt; {
+  const [field, meta] = useField(props);
+  return (
+    &lt;div&gt;
+      &lt;label&gt;{label}&lt;/label&gt;
+      &lt;input {...field} {...props} /&gt;
+      {meta.touched &amp;&amp; meta.error ? &lt;div&gt;{meta.error}&lt;/div&gt; : null}
+    &lt;/div&gt;
+  );
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>41. How to handle multiple checkboxes in Formik?</h2>
+  <p>Manage an array of selected values using Formik's field array pattern.</p>
+  <pre><code>&lt;Field type="checkbox" name="colors" value="red" /&gt;
+&lt;Field type="checkbox" name="colors" value="blue" /&gt;
+
+// Initial values:
+{ colors: [] }
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>42. How to handle multiple selects in Formik?</h2>
+  <p>Bind a <code>select</code> field with <code>multiple</code> attribute.</p>
+  <pre><code>&lt;Field as="select" name="colors" multiple&gt;
+  &lt;option value="red"&gt;Red&lt;/option&gt;
+  &lt;option value="blue"&gt;Blue&lt;/option&gt;
+&lt;/Field&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>43. How to trigger form submission programmatically?</h2>
+  <p>Use Formik's <code>submitForm</code> function programmatically inside your code.</p>
+  <pre><code>const { submitForm } = useFormikContext();
+&lt;button onClick={() =&gt; submitForm()}&gt;Trigger Submit&lt;/button&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>44. How to show field-specific error messages?</h2>
+  <p>Use the <code>&lt;ErrorMessage&gt;</code> component provided by Formik.</p>
+  <pre><code>&lt;ErrorMessage name="email" component="div" className="error" /&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>45. How to handle server-side validation errors after submit?</h2>
+  <p>Use <code>setErrors</code> function to set specific errors after an API call.</p>
+  <pre><code>const handleSubmit = async (values, { setErrors }) =&gt; {
+  const res = await apiCall(values);
+  if (!res.success) {
+    setErrors({ email: res.errorMessage });
+  }
+};
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>46. How to integrate Formik with third-party input libraries like React Select?</h2>
+  <p>Manually bind the value and onChange to Formik using <code>setFieldValue</code>.</p>
+  <pre><code>&lt;Select
+  name="color"
+  options={colorOptions}
+  onChange={(option) =&gt; setFieldValue('color', option.value)}
+/&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>47. How to dynamically add and remove fields using Formik?</h2>
+  <p>Use Formik's <code>&lt;FieldArray&gt;</code> component to handle dynamic fields.</p>
+  <pre><code>&lt;FieldArray name="friends"&gt;
+  {({ push, remove }) =&gt; (
+    &lt;div&gt;
+      {values.friends.map((friend, index) =&gt; (
+        &lt;div key={index}&gt;
+          &lt;Field name={`friends.${index}`} /&gt;
+          &lt;button onClick={() =&gt; remove(index)}&gt;Remove&lt;/button&gt;
+        &lt;/div&gt;
+      ))}
+      &lt;button onClick={() =&gt; push('')}&gt;Add Friend&lt;/button&gt;
+    &lt;/div&gt;
+  )}
+&lt;/FieldArray&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>48. How to transform values before submitting?</h2>
+  <p>Manually adjust the <code>values</code> inside <code>onSubmit</code> before sending to the server.</p>
+  <pre><code>onSubmit={(values) =&gt; {
+  const payload = { ...values, email: values.email.toLowerCase() };
+  submitToServer(payload);
+}}
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>49. How to reset only specific fields and keep others unchanged?</h2>
+  <p>Use <code>setFieldValue</code> individually instead of <code>resetForm</code>.</p>
+  <pre><code>setFieldValue('email', '');
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>50. How to prevent submitting an unchanged form?</h2>
+  <p>Use <code>dirty</code> flag to detect if the form has changed from initial values.</p>
+  <pre><code>&lt;button type="submit" disabled={!dirty}&gt;Submit&lt;/button&gt;
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>51. How to automatically focus on the first error field?</h2>
+  <p>Use <code>formik.errors</code> and <code>formik.touched</code> to detect and scroll/focus to the first invalid input.</p>
+  <pre><code>useEffect(() =&gt; {
+  if (Object.keys(errors).length &gt; 0) {
+    const firstErrorField = Object.keys(errors)[0];
+    document.querySelector(`[name="${firstErrorField}"]`).focus();
+  }
+}, [errors]);
+  </code></pre>
+</div>
+
+<div class="question">
+  <h2>52. How to integrate Formik with Yup dynamically based on user input?</h2>
+  <p>Create different Yup schemas based on current form values.</p>
+  <pre><code>const validationSchema = useMemo(() =&gt; {
+  if (values.role === 'admin') {
+    return Yup.object({
+      email: Yup.string().email().required(),
+      adminCode: Yup.string().required(),
+    });
+  } else {
+    return Yup.object({
+      email: Yup.string().email().required(),
+    });
+  }
+}, [values.role]);
+
+&lt;Formik
+  validationSchema={validationSchema}
+/&gt;
+  </code></pre>
+</div>
+
+
+
+</body>
+</html>
