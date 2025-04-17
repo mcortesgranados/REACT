@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>05_04 Navigation Guards & Redirects - Set 1</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .question {
+      background: #fff;
+      border-left: 5px solid #3498db;
+      padding: 20px;
+      margin: 20px auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 900px;
+      border-radius: 8px;
+    }
+    .question h2 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>05_04 Navigation Guards & Redirects in React (Set 1 of 4)</h1>
+
+  <div class="question">
+    <h2>1. What are navigation guards in React Router?</h2>
+    <p>Navigation guards are patterns or logic you apply in React Router to control access to certain routes based on conditions like authentication, user roles, etc. This is commonly done using wrapper components, such as a <code>&lt;PrivateRoute /&gt;</code>.</p>
+    <pre><code>// src/components/PrivateRoute.js
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+
+const PrivateRoute = ({ children }) =&gt; {
+  const isAuthenticated = localStorage.getItem('auth') === 'true';
+
+  if (!isAuthenticated) {
+    // Redirect to login if not authenticated
+    return &lt;Navigate to="/login" replace /&gt;;
+  }
+
+  // Allow access if authenticated
+  return children;
+};
+
+export default PrivateRoute;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>2. How do you apply a PrivateRoute to protect specific pages?</h2>
+    <p>You wrap the protected component with <code>PrivateRoute</code> in your routing configuration.</p>
+    <pre><code>// src/App.js
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import PrivateRoute from './components/PrivateRoute';
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+
+function App() {
+  return (
+    &lt;Router&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/login" element={&lt;Login /&gt;} /&gt;
+        &lt;Route path="/dashboard" element={
+          &lt;PrivateRoute&gt;
+            &lt;Dashboard /&gt;
+          &lt;/PrivateRoute&gt;
+        } /&gt;
+      &lt;/Routes&gt;
+    &lt;/Router&gt;
+  );
+}
+
+export default App;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>3. How to redirect users after successful login?</h2>
+    <p>Use the <code>useNavigate()</code> hook to programmatically navigate after login.</p>
+    <pre><code>// src/pages/Login.js
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
+function Login() {
+  const navigate = useNavigate();
+
+  const handleLogin = () =&gt; {
+    // Simulate login
+    localStorage.setItem('auth', 'true');
+    // Redirect to dashboard
+    navigate('/dashboard');
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Login Page&lt;/h2&gt;
+      &lt;button onClick={handleLogin}&gt;Login&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Login;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>4. How can we redirect to login if the user is not authenticated on page refresh?</h2>
+    <p>Persist auth state (e.g., using localStorage) and use it in <code>PrivateRoute</code>.</p>
+    <pre><code>// PrivateRoute logic (already shown) reads from localStorage
+// and ensures on reload, user must still be authenticated.
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>5. How to redirect from the root path `/` to `/home`?</h2>
+    <pre><code>// src/App.js
+&lt;Route path="/" element={&lt;Navigate to="/home" replace /&gt;} /&gt;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>6. How to implement role-based access using route guards?</h2>
+    <pre><code>// src/components/RoleBasedRoute.js
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+
+const RoleBasedRoute = ({ children, role }) =&gt; {
+  const user = JSON.parse(localStorage.getItem('user'));
+  const userRole = user?.role;
+
+  if (userRole !== role) {
+    return &lt;Navigate to="/unauthorized" /&gt;;
+  }
+
+  return children;
+};
+
+export default RoleBasedRoute;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>7. Example of RoleBasedRoute in routing config</h2>
+    <pre><code>// src/App.js
+&lt;Route path="/admin" element={
+  &lt;RoleBasedRoute role="admin"&gt;
+    &lt;AdminPage /&gt;
+  &lt;/RoleBasedRoute&gt;
+} /&gt;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>8. How to redirect after logout?</h2>
+    <pre><code>// src/components/Logout.js
+import { useNavigate } from 'react-router-dom';
+
+function Logout() {
+  const navigate = useNavigate();
+
+  const handleLogout = () =&gt; {
+    localStorage.removeItem('auth');
+    navigate('/login');
+  };
+
+  return &lt;button onClick={handleLogout}&gt;Logout&lt;/button&gt;;
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>9. What is the difference between <code>replace</code> and without it in Navigate?</h2>
+    <p><code>replace</code> replaces the current entry in the history stack instead of adding a new one.</p>
+    <pre><code>&lt;Navigate to="/login" replace /&gt; // Cannot press back to return</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>10. How to handle 404 Not Found routes?</h2>
+    <pre><code>// src/App.js
+&lt;Route path="*" element={&lt;NotFound /&gt;} /&gt;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>11. How to guard multiple routes under a common parent route?</h2>
+    <pre><code>// src/App.js
+&lt;Route path="/dashboard" element={
+  &lt;PrivateRoute&gt;
+    &lt;DashboardLayout /&gt;
+  &lt;/PrivateRoute&gt;
+}&gt;
+  &lt;Route index element={&lt;HomePage /&gt;} /&gt;
+  &lt;Route path="profile" element={&lt;Profile /&gt;} /&gt;
+&lt;/Route&gt;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>12. How to use a guard that checks multiple conditions (auth + subscription)?</h2>
+    <pre><code>// src/components/FullGuard.js
+const FullGuard = ({ children }) =&gt; {
+  const auth = localStorage.getItem('auth') === 'true';
+  const hasSub = localStorage.getItem('sub') === 'true';
+
+  if (!auth || !hasSub) {
+    return &lt;Navigate to="/upgrade" /&gt;;
+  }
+
+  return children;
+};
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>13. How to perform redirection inside <code>useEffect</code> after data fetch?</h2>
+    <pre><code>import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+function CheckUser() {
+  const navigate = useNavigate();
+
+  useEffect(() =&gt; {
+    fetch('/api/user')
+      .then(res =&gt; res.json())
+      .then(data =&gt; {
+        if (!data.ok) navigate('/login');
+      });
+  }, [navigate]);
+
+  return &lt;p&gt;Checking user...&lt;/p&gt;;
+}
+</code></pre>
+  </div>
+  
+  <div class="question">
+  <h2>14. How to conditionally redirect based on a user’s profile completion?</h2>
+  <p>You can use a route guard to check a profile field and redirect if it's incomplete.</p>
+  <pre><code>// src/components/ProfileGuard.js
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+
+const ProfileGuard = ({ children }) =&gt; {
+  const user = JSON.parse(localStorage.getItem('user'));
+  const profileComplete = user?.profileComplete;
+
+  if (!profileComplete) {
+    return &lt;Navigate to="/complete-profile" replace /&gt;;
+  }
+
+  return children;
+};
+
+export default ProfileGuard;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>15. How to guard nested child routes within a layout?</h2>
+  <pre><code>// src/App.js
+&lt;Route path="/account" element={
+  &lt;PrivateRoute&gt;
+    &lt;AccountLayout /&gt;
+  &lt;/PrivateRoute&gt;
+}&gt;
+  &lt;Route path="settings" element={&lt;SettingsPage /&gt;} /&gt;
+  &lt;Route path="orders" element={&lt;OrdersPage /&gt;} /&gt;
+&lt;/Route&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>16. How to redirect to a dynamic route after login?</h2>
+  <pre><code>// src/pages/Login.js
+const navigate = useNavigate();
+
+const handleLogin = () =&gt; {
+  localStorage.setItem('auth', 'true');
+  const user = { name: 'Alice', id: 42 };
+  localStorage.setItem('user', JSON.stringify(user));
+  navigate(`/profile/${user.id}`);
+};
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>17. How to access navigation state on redirect?</h2>
+  <p>You can pass state through the <code>navigate()</code> function and access it via <code>useLocation()</code>.</p>
+  <pre><code>// Redirect with state
+navigate('/home', { state: { from: '/login' } });
+
+// Read state in target
+const location = useLocation();
+console.log(location.state?.from);</code></pre>
+</div>
+
+<div class="question">
+  <h2>18. How to redirect based on query params?</h2>
+  <pre><code>// src/components/RedirectFromQuery.js
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+
+const RedirectFromQuery = () =&gt; {
+  const [params] = useSearchParams();
+  const navigate = useNavigate();
+
+  useEffect(() =&gt; {
+    const page = params.get('page');
+    if (page) {
+      navigate(`/${page}`);
+    }
+  }, [params, navigate]);
+
+  return &lt;p&gt;Redirecting...&lt;/p&gt;;
+};
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>19. How to create a guard that requires multiple roles?</h2>
+  <pre><code>// src/components/MultiRoleGuard.js
+const MultiRoleGuard = ({ children, roles }) =&gt; {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (!roles.includes(user?.role)) {
+    return &lt;Navigate to="/unauthorized" /&gt;;
+  }
+  return children;
+};
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>20. How to guard routes with asynchronous user verification?</h2>
+  <pre><code>// src/components/AsyncGuard.js
+import { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
+
+const AsyncGuard = ({ children }) =&gt; {
+  const [loading, setLoading] = useState(true);
+  const [allowed, setAllowed] = useState(false);
+
+  useEffect(() =&gt; {
+    fetch('/api/verify')
+      .then(res =&gt; res.json())
+      .then(data =&gt; {
+        setAllowed(data.allowed);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return &lt;p&gt;Checking access...&lt;/p&gt;;
+  if (!allowed) return &lt;Navigate to="/unauthorized" /&gt;;
+  return children;
+};
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>21. How to redirect user if email is not verified?</h2>
+  <pre><code>// src/components/EmailGuard.js
+const EmailGuard = ({ children }) =&gt; {
+  const user = JSON.parse(localStorage.getItem('user'));
+  const verified = user?.emailVerified;
+
+  if (!verified) {
+    return &lt;Navigate to="/verify-email" /&gt;;
+  }
+
+  return children;
+};
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>22. How to redirect using <code>Navigate</code> inside JSX?</h2>
+  <p>This is useful when you want to conditionally render the redirection.</p>
+  <pre><code>if (!isAuthenticated) {
+  return &lt;Navigate to="/login" /&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>23. How to pass additional route info when redirecting?</h2>
+  <pre><code>// With state
+navigate('/dashboard', {
+  state: {
+    welcome: true
+  }
+});
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>24. How to implement a Logout page with automatic redirect?</h2>
+  <pre><code>// src/pages/Logout.js
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+const Logout = () =&gt; {
+  const navigate = useNavigate();
+
+  useEffect(() =&gt; {
+    localStorage.removeItem('auth');
+    setTimeout(() =&gt; navigate('/login'), 1000);
+  }, [navigate]);
+
+  return &lt;p&gt;Logging out...&lt;/p&gt;;
+};
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>25. How to chain redirects with conditions?</h2>
+  <p>You can nest logic in guards or combine them into a single redirect logic block.</p>
+  <pre><code>if (!isAuthenticated) return &lt;Navigate to="/login" /&gt;;
+if (!hasAcceptedTerms) return &lt;Navigate to="/terms" /&gt;;</code></pre>
+</div>
+
+<div class="question">
+  <h2>26. How to redirect based on the current hour?</h2>
+  <p>Example: redirect to night mode version of a page after 6pm.</p>
+  <pre><code>const hour = new Date().getHours();
+if (hour &gt;= 18) return &lt;Navigate to="/night-mode" /&gt;;</code></pre>
+</div>
+
+<div class="question">
+  <h2>27. How to guard routes using a custom hook?</h2>
+  <p>Create a custom hook to encapsulate the authentication logic and use it in your guard component.</p>
+  <pre><code>// src/hooks/useAuth.js
+export const useAuth = () =&gt; {
+  const user = JSON.parse(localStorage.getItem('user'));
+  return {
+    isAuthenticated: !!user,
+    user,
+  };
+};
+
+// src/components/CustomHookGuard.js
+import { useAuth } from '../hooks/useAuth';
+import { Navigate } from 'react-router-dom';
+
+const CustomHookGuard = ({ children }) =&gt; {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? children : &lt;Navigate to="/login" /&gt;;
+};
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>28. How to show a loading spinner while verifying access?</h2>
+  <pre><code>const [loading, setLoading] = useState(true);
+
+useEffect(() =&gt; {
+  // Simulate async check
+  setTimeout(() =&gt; setLoading(false), 1000);
+}, []);
+
+if (loading) return &lt;Spinner /&gt;;</code></pre>
+</div>
+
+<div class="question">
+  <h2>29. How to prevent navigation with a confirm prompt?</h2>
+  <p>Use the <code>useBeforeUnload</code> and <code>usePrompt</code> pattern.</p>
+  <pre><code>// src/hooks/useConfirmLeave.js
+import { useEffect } from 'react';
+
+export const useConfirmLeave = (shouldBlock) =&gt; {
+  useEffect(() =&gt; {
+    const handler = (e) =&gt; {
+      if (shouldBlock) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handler);
+    return () =&gt; window.removeEventListener('beforeunload', handler);
+  }, [shouldBlock]);
+};</code></pre>
+</div>
+
+<div class="question">
+  <h2>30. How to guard routes with Firebase Auth?</h2>
+  <p>Use the current user from Firebase and redirect if unauthenticated.</p>
+  <pre><code>// src/components/FirebaseGuard.js
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '../firebase';
+import { Navigate } from 'react-router-dom';
+
+const FirebaseGuard = ({ children }) =&gt; {
+  const [user, loading] = useAuthState(auth);
+  if (loading) return &lt;p&gt;Loading...&lt;/p&gt;;
+  if (!user) return &lt;Navigate to="/login" /&gt;;
+  return children;
+};</code></pre>
+</div>
+
+<div class="question">
+  <h2>31. How to redirect a user based on form validation?</h2>
+  <p>After form submit, check validity before redirecting.</p>
+  <pre><code>const handleSubmit = () =&gt; {
+  if (formValid) {
+    navigate('/success');
+  } else {
+    alert('Please fix errors');
+  }
+};</code></pre>
+</div>
+
+<div class="question">
+  <h2>32. How to prevent route access after logout?</h2>
+  <pre><code>// Remove user info
+localStorage.removeItem('auth');
+
+// PrivateRoute should redirect based on this change
+if (!localStorage.getItem('auth')) {
+  return &lt;Navigate to="/login" /&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>33. How to redirect users based on A/B test variant?</h2>
+  <pre><code>const variant = localStorage.getItem('variant');
+if (variant === 'A') {
+  navigate('/variant-a');
+} else {
+  navigate('/variant-b');
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>34. How to guard a dashboard based on subscription status?</h2>
+  <pre><code>const DashboardGuard = ({ children }) =&gt; {
+  const user = JSON.parse(localStorage.getItem('user'));
+  return user?.subscribed ? children : &lt;Navigate to="/subscribe" /&gt;;
+};</code></pre>
+</div>
+
+<div class="question">
+  <h2>35. How to guard admin routes?</h2>
+  <pre><code>const AdminRoute = ({ children }) =&gt; {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (user?.role !== 'admin') {
+    return &lt;Navigate to="/unauthorized" /&gt;;
+  }
+  return children;
+};</code></pre>
+</div>
+
+<div class="question">
+  <h2>36. How to redirect first-time visitors to onboarding?</h2>
+  <pre><code>const isFirstVisit = localStorage.getItem('firstVisit') === null;
+if (isFirstVisit) {
+  localStorage.setItem('firstVisit', 'false');
+  navigate('/onboarding');
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>37. How to redirect users from an expired link?</h2>
+  <p>Check token expiry on load and redirect accordingly.</p>
+  <pre><code>useEffect(() =&gt; {
+  const expired = isTokenExpired();
+  if (expired) {
+    navigate('/link-expired');
+  }
+}, []);</code></pre>
+</div>
+
+<div class="question">
+  <h2>38. How to protect a page using a password?</h2>
+  <pre><code>const PasswordGuard = ({ children }) =&gt; {
+  const hasAccess = sessionStorage.getItem('access') === 'true';
+  return hasAccess ? children : &lt;Navigate to="/enter-password" /&gt;;
+};</code></pre>
+</div>
+
+<div class="question">
+  <h2>39. How to redirect users away from deprecated pages?</h2>
+  <p>Use a catch route or redirect inside the page component.</p>
+  <pre><code>useEffect(() =&gt; {
+  navigate('/new-page');
+}, []);</code></pre>
+</div>
+
+<div class="question">
+  <h2>40. How to conditionally protect nested routes?</h2>
+  <p>Wrap only the nested route element with a guard component.</p>
+  <pre><code>// AppRoutes.jsx
+&lt;Route path="/dashboard" element={&lt;DashboardLayout /&gt;}&gt;
+  &lt;Route path="admin" element={
+    &lt;AdminGuard&gt;
+      &lt;AdminPanel /&gt;
+    &lt;/AdminGuard&gt;
+  } /&gt;
+&lt;/Route&gt;</code></pre>
+</div>
+
+<div class="question">
+  <h2>41. How to create reusable redirect logic for unauthenticated users?</h2>
+  <pre><code>// src/components/RequireLogin.js
+const RequireLogin = ({ children }) =&gt; {
+  const isLoggedIn = !!localStorage.getItem('token');
+  return isLoggedIn ? children : &lt;Navigate to="/login" replace /&gt;;
+};</code></pre>
+</div>
+
+<div class="question">
+  <h2>42. How to delay a redirect for a few seconds?</h2>
+  <pre><code>useEffect(() =&gt; {
+  const timer = setTimeout(() =&gt; {
+    navigate('/home');
+  }, 3000);
+  return () =&gt; clearTimeout(timer);
+}, []);</code></pre>
+</div>
+
+<div class="question">
+  <h2>43. How to restrict a route by device type (mobile vs desktop)?</h2>
+  <pre><code>const isMobile = /iPhone|Android/.test(navigator.userAgent);
+if (!isMobile) {
+  navigate('/desktop-only');
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>44. How to redirect users based on referrer URL?</h2>
+  <pre><code>const referrer = document.referrer;
+if (referrer.includes('partner-site.com')) {
+  navigate('/partner-offer');
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>45. How to show a warning before navigation if form is dirty?</h2>
+  <pre><code>// useDirtyFormGuard.js
+import { useEffect } from 'react';
+
+export const useDirtyFormGuard = (isDirty) =&gt; {
+  useEffect(() =&gt; {
+    const handler = (e) =&gt; {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handler);
+    return () =&gt; window.removeEventListener('beforeunload', handler);
+  }, [isDirty]);
+};</code></pre>
+</div>
+
+<div class="question">
+  <h2>46. How to redirect after completing onboarding?</h2>
+  <pre><code>const completeOnboarding = () =&gt; {
+  localStorage.setItem('onboarded', 'true');
+  navigate('/dashboard');
+};</code></pre>
+</div>
+
+<div class="question">
+  <h2>47. How to log unauthorized access attempts?</h2>
+  <pre><code>const logAccessAttempt = () =&gt; {
+  fetch('/api/log-unauthorized', {
+    method: 'POST',
+    body: JSON.stringify({ timestamp: Date.now() }),
+    headers: { 'Content-Type': 'application/json' }
+  });
+};
+
+if (!isAuthorized) {
+  logAccessAttempt();
+  navigate('/unauthorized');
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>48. How to implement route guard based on feature flags?</h2>
+  <pre><code>const FeatureGuard = ({ featureKey, children }) =&gt; {
+  const flags = JSON.parse(localStorage.getItem('features') || '{}');
+  return flags[featureKey] ? children : &lt;Navigate to="/not-available" /&gt;;
+};</code></pre>
+</div>
+
+<div class="question">
+  <h2>49. How to prevent redirect loop?</h2>
+  <pre><code>// Avoid redirecting to the same route
+if (location.pathname !== '/login') {
+  navigate('/login');
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>50. How to block route access during maintenance mode?</h2>
+  <pre><code>// src/components/MaintenanceGuard.js
+const MaintenanceGuard = ({ children }) =&gt; {
+  const isMaintenance = localStorage.getItem('maintenance') === 'true';
+  return isMaintenance ? &lt;Navigate to="/maintenance" /&gt; : children;
+};</code></pre>
+</div>
+
+<div class="question">
+  <h2>51. How to redirect user to original route after login?</h2>
+  <pre><code>// Login.js
+const location = useLocation();
+const from = location.state?.from?.pathname || '/';
+
+const onLoginSuccess = () =&gt; {
+  navigate(from, { replace: true });
+};
+
+// ProtectedRoute.js
+if (!auth) {
+  return &lt;Navigate to="/login" state={{ from: location }} replace /&gt;;
+}</code></pre>
+</div>
+
+<div class="question">
+  <h2>52. How to restrict routes based on custom claim in JWT?</h2>
+  <pre><code>const token = JSON.parse(localStorage.getItem('token'));
+const decoded = parseJwt(token); // custom function
+if (decoded.claims.canAccessAdmin) {
+  return &lt;AdminPanel /&gt;;
+} else {
+  return &lt;Navigate to="/unauthorized" /&gt;;
+}</code></pre>
+</div>
+
+
+  
+</body>
+
+</html>
