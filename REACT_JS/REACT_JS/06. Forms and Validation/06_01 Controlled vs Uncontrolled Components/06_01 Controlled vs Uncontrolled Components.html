@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>06_01 Controlled vs Uncontrolled Components - Set 1</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .question {
+      background: #fff;
+      border-left: 5px solid #3498db;
+      padding: 20px;
+      margin: 20px auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 900px;
+      border-radius: 8px;
+    }
+    .question h2 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>06_01 Controlled vs Uncontrolled Components - React Q&A (1-13)</h1>
+
+  <div class="question">
+    <h2>1. What is a controlled component in React?</h2>
+    <p>A controlled component is a form element (like input, textarea, select) that derives its value from React state, making React the single source of truth.</p>
+    <pre><code>// Controlled component example
+import React, { useState } from 'react';
+
+function ControlledInput() {
+  const [value, setValue] = useState(''); // React controls the input's value
+
+  const handleChange = (e) => {
+    setValue(e.target.value); // Update state on every keystroke
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h3&gt;Controlled Input&lt;/h3&gt;
+      &lt;input type="text" value={value} onChange={handleChange} /&gt;
+      &lt;p&gt;Current Value: {value}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default ControlledInput;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>2. What is an uncontrolled component in React?</h2>
+    <p>An uncontrolled component manages its own state internally through the DOM, using refs to access current values when needed.</p>
+    <pre><code>// Uncontrolled component example
+import React, { useRef } from 'react';
+
+function UncontrolledInput() {
+  const inputRef = useRef(); // Direct access to the input DOM element
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert('Input Value: ' + inputRef.current.value); // DOM-driven value access
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;h3&gt;Uncontrolled Input&lt;/h3&gt;
+      &lt;input type="text" ref={inputRef} /&gt;
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+
+export default UncontrolledInput;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>3. When should I use controlled components?</h2>
+    <p>Use controlled components when you need to:</p>
+    <ul>
+      <li>Validate input on every change</li>
+      <li>Conditionally enable/disable buttons or inputs</li>
+      <li>Instantly reflect changes across components</li>
+      <li>Keep a single source of truth</li>
+    </ul>
+    <pre><code>// Controlled input with validation logic
+import React, { useState } from 'react';
+
+function EmailForm() {
+  const [email, setEmail] = useState('');
+  const isValid = email.includes('@');
+
+  return (
+    &lt;div&gt;
+      &lt;input
+        type="email"
+        value={email}
+        onChange={(e) =&gt; setEmail(e.target.value)}
+        placeholder="Enter email"
+      /&gt;
+      &lt;button disabled={!isValid}&gt;Submit&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>4. When should I use uncontrolled components?</h2>
+    <p>Use uncontrolled components when:</p>
+    <ul>
+      <li>You want to quickly prototype without much logic</li>
+      <li>You're integrating with non-React libraries</li>
+      <li>Form values don’t need to be synced to state continuously</li>
+    </ul>
+    <pre><code>// Uncontrolled file input (common use case)
+import React, { useRef } from 'react';
+
+
+function FileUploader() {
+  const fileInputRef = useRef();
+
+  const handleUpload = () => {
+    const file = fileInputRef.current.files[0];
+    alert('Selected file: ' + file.name);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input type="file" ref={fileInputRef} /&gt;
+      &lt;button onClick={handleUpload}&gt;Upload&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>5. What are the benefits of controlled components?</h2>
+    <ul>
+      <li>Easier validation and formatting</li>
+      <li>State synchronization across UI</li>
+      <li>Better integration with form libraries</li>
+    </ul>
+    <pre><code>// Controlled textarea with live character count
+import React, { useState } from 'react';
+
+function TextAreaWithCount() {
+  const [text, setText] = useState('');
+
+  return (
+    &lt;div&gt;
+      &lt;textarea value={text} onChange={(e) =&gt; setText(e.target.value)} /&gt;
+      &lt;p&gt;Characters: {text.length}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>6. What are the downsides of controlled components?</h2>
+    <p>
+      Controlled components can become verbose and impact performance when managing large or complex forms, since every keystroke triggers a re-render.
+    </p>
+    <pre><code>// Controlled component updating on every keystroke
+import React, { useState } from 'react';
+
+function LargeFormField() {
+  const [input, setInput] = useState('');
+
+  return (
+    &lt;input
+      type="text"
+      value={input}
+      onChange={(e) =&gt; setInput(e.target.value)}
+    /&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>7. What are the benefits of uncontrolled components?</h2>
+    <p>
+      Less boilerplate, simpler for quick use cases, and slightly more performant when state sync isn’t needed constantly.
+    </p>
+    <pre><code>// Simple uncontrolled form for fast prototyping
+import React, { useRef } from 'react';
+
+function SimpleForm() {
+  const nameRef = useRef();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert('Name: ' + nameRef.current.value);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input type="text" ref={nameRef} placeholder="Enter your name" /&gt;
+      &lt;button&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>8. How to convert an uncontrolled input to a controlled one?</h2>
+    <p>Introduce state and an onChange handler, and set the input's value from state.</p>
+    <pre><code>// Start as uncontrolled
+&lt;input type="text" defaultValue="Hi!" /&gt;
+
+// Convert to controlled
+import React, { useState } from 'react';
+
+function ConvertedInput() {
+  const [value, setValue] = useState('Hi!');
+
+  return (
+    &lt;input
+      type="text"
+      value={value}
+      onChange={(e) =&gt; setValue(e.target.value)}
+    /&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>9. Can an input be both controlled and uncontrolled?</h2>
+    <p>No, React warns against mixing the two approaches. You must choose either controlled (value + onChange) or uncontrolled (defaultValue + ref).</p>
+    <pre><code>// Invalid: mixed usage
+&lt;input type="text" value="Hello" defaultValue="Hi" /&gt; // Warning in console
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>10. What is defaultValue in uncontrolled components?</h2>
+    <p>
+      It sets the initial value of an input without binding it to state.
+    </p>
+    <pre><code>&lt;input type="text" defaultValue="Hello there!" /&gt;</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>11. How to access the value of an uncontrolled input?</h2>
+    <p>
+      Use a ref and access <code>.current.value</code>.
+    </p>
+    <pre><code>
+import React, { useRef } from 'react';
+
+function RefForm() {
+  const emailRef = useRef();
+
+  const handleCheck = () => {
+    alert(emailRef.current.value);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input type="email" ref={emailRef} /&gt;
+      &lt;button onClick={handleCheck}&gt;Check&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>12. How to clear a controlled input?</h2>
+    <p>
+      Set the state value to an empty string.
+    </p>
+    <pre><code>
+import React, { useState } from 'react';
+
+function ClearInput() {
+  const [name, setName] = useState('John');
+
+  return (
+    &lt;div&gt;
+      &lt;input value={name} onChange={(e) =&gt; setName(e.target.value)} /&gt;
+      &lt;button onClick={() =&gt; setName('')}&gt;Clear&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>13. How to clear an uncontrolled input?</h2>
+    <p>
+      Set the <code>.value</code> property of the input using a ref.
+    </p>
+    <pre><code>
+import React, { useRef } from 'react';
+
+function ClearUncontrolled() {
+  const inputRef = useRef();
+
+  const handleClear = () =&gt; {
+    inputRef.current.value = '';
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={inputRef} defaultValue="Clear me!" /&gt;
+      &lt;button onClick={handleClear}&gt;Clear&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+  </div>
+  
+  <!-- CONTINUATION: 06_01 Controlled vs Uncontrolled Components - Set 2 (Q14–Q26) -->
+<div class="question">
+  <h2>14. How to initialize a controlled input with a value?</h2>
+  <p>Use the <code>useState</code> hook to set the initial value and bind it with <code>value</code> prop.</p>
+  <pre><code>
+import React, { useState } from 'react';
+
+function InitializedInput() {
+  const [username, setUsername] = useState('Manuela');
+
+  return (
+    &lt;input
+      type="text"
+      value={username}
+      onChange={(e) =&gt; setUsername(e.target.value)}
+    /&gt;
+  );
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>15. How to initialize an uncontrolled input with a value?</h2>
+  <p>Use the <code>defaultValue</code> attribute.</p>
+  <pre><code>&lt;input type="text" defaultValue="Manuela" /&gt;</code></pre>
+</div>
+
+<div class="question">
+  <h2>16. Are controlled components more secure?</h2>
+  <p>They allow you to sanitize and validate input in real time, reducing injection risk, but security should always be enforced on the backend as well.</p>
+</div>
+
+<div class="question">
+  <h2>17. Can you mix controlled and uncontrolled components in one form?</h2>
+  <p>Yes, but avoid doing so for the same field. You can use a mix across different inputs if needed.</p>
+  <pre><code>
+&lt;form&gt;
+  &lt;input value={controlled} onChange={...} /&gt;
+  &lt;input defaultValue="static" /&gt;
+&lt;/form&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>18. How to handle form submission with controlled components?</h2>
+  <p>Read all values directly from React state during submit.</p>
+  <pre><code>
+function SubmitControlledForm() {
+  const [name, setName] = useState('');
+
+  const handleSubmit = (e) =&gt; {
+    e.preventDefault();
+    alert('Name: ' + name);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input value={name} onChange={(e) =&gt; setName(e.target.value)} /&gt;
+      &lt;button&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>19. How to handle form submission with uncontrolled components?</h2>
+  <p>Use refs to access values during submit.</p>
+  <pre><code>
+function SubmitUncontrolledForm() {
+  const nameRef = useRef();
+
+  const handleSubmit = (e) =&gt; {
+    e.preventDefault();
+    alert('Name: ' + nameRef.current.value);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input ref={nameRef} /&gt;
+      &lt;button&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>20. Which is better for large forms: controlled or uncontrolled?</h2>
+  <p>
+    Uncontrolled components may be more performant for large forms with minimal dynamic interaction, but controlled ones are better for full validation and dynamic UI.
+  </p>
+</div>
+
+<div class="question">
+  <h2>21. What happens if you forget <code>onChange</code> in a controlled input?</h2>
+  <p>The input becomes read-only and React will log a warning.</p>
+  <pre><code>&lt;input type="text" value="Hi" /&gt; // Warning: missing onChange handler</code></pre>
+</div>
+
+<div class="question">
+  <h2>22. How to use React Hook Form with uncontrolled components?</h2>
+  <p>Use <code>register</code> with ref forwarding. React Hook Form is optimized for uncontrolled usage.</p>
+  <pre><code>
+import { useForm } from 'react-hook-form';
+
+function MyForm() {
+  const { register, handleSubmit } = useForm();
+
+  const onSubmit = (data) =&gt; {
+    console.log(data);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+      &lt;input {...register('email')} /&gt;
+      &lt;button&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>23. Can I change a component from uncontrolled to controlled at runtime?</h2>
+  <p>React will warn about changing from uncontrolled to controlled dynamically. It's better to decide the approach upfront.</p>
+  <pre><code>
+// Warning: A component is changing an uncontrolled input to be controlled
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>24. How to use <code>useRef</code> with uncontrolled components?</h2>
+  <p>Attach the ref to the DOM element and read <code>.current.value</code>.</p>
+  <pre><code>
+function RefInput() {
+  const inputRef = useRef();
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={inputRef} /&gt;
+      &lt;button onClick={() =&gt; alert(inputRef.current.value)}&gt;Get Value&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>25. Can a controlled input use <code>ref</code>?</h2>
+  <p>Yes, but it's not common. Controlled components should rely on state instead of reading DOM values directly.</p>
+</div>
+
+<div class="question">
+  <h2>26. Which approach is more "React way" – controlled or uncontrolled?</h2>
+  <p>Controlled components are generally preferred in React because they align with the unidirectional data flow and state management philosophy.</p>
+</div>
+
+<!-- CONTINUATION: 06_01 Controlled vs Uncontrolled Components - Set 3 (Q27–Q39) -->
+<div class="question">
+  <h2>27. How to dynamically add controlled inputs in a form?</h2>
+  <p>Store the dynamic inputs in an array of state objects and map over them to render input fields.</p>
+  <pre><code>
+import React, { useState } from 'react';
+
+function DynamicControlledForm() {
+  const [fields, setFields] = useState([{ value: '' }]);
+
+  const handleChange = (index, newValue) =&gt; {
+    const updated = [...fields];
+    updated[index].value = newValue;
+    setFields(updated);
+  };
+
+  const addField = () =&gt; {
+    setFields([...fields, { value: '' }]);
+  };
+
+  return (
+    &lt;div&gt;
+      {fields.map((field, index) =&gt; (
+        &lt;input
+          key={index}
+          value={field.value}
+          onChange={(e) =&gt; handleChange(index, e.target.value)}
+        /&gt;
+      ))}
+      &lt;button onClick={addField}&gt;Add Field&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>28. How to dynamically add uncontrolled inputs in a form?</h2>
+  <p>Store refs in an array to reference multiple dynamic uncontrolled inputs.</p>
+  <pre><code>
+import React, { useRef, useState } from 'react';
+
+function DynamicUncontrolledForm() {
+  const [count, setCount] = useState(1);
+  const refs = useRef([]);
+
+  const addField = () =&gt; {
+    setCount(count + 1);
+  };
+
+  const handleSubmit = () =&gt; {
+    refs.current.forEach((ref) =&gt; {
+      console.log(ref.value);
+    });
+  };
+
+  return (
+    &lt;div&gt;
+      {[...Array(count)].map((_, i) =&gt; (
+        &lt;input
+          key={i}
+          ref={(el) =&gt; (refs.current[i] = el)}
+        /&gt;
+      ))}
+      &lt;button onClick={addField}&gt;Add Field&lt;/button&gt;
+      &lt;button onClick={handleSubmit}&gt;Submit&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>29. How does React detect controlled vs uncontrolled components?</h2>
+  <p>React checks whether the <code>value</code> or <code>checked</code> props are passed along with <code>onChange</code>. If only <code>defaultValue</code> is present, it's uncontrolled.</p>
+</div>
+
+<div class="question">
+  <h2>30. What are common issues when switching between controlled and uncontrolled?</h2>
+  <ul>
+    <li>Initial render is uncontrolled, later becomes controlled (React throws warning).</li>
+    <li>Missing <code>onChange</code> with <code>value</code>.</li>
+  </ul>
+  <pre><code>Warning: A component is changing an uncontrolled input to be controlled.</code></pre>
+</div>
+
+<div class="question">
+  <h2>31. How to reset a controlled form?</h2>
+  <p>Reset all related state values manually.</p>
+  <pre><code>
+function ControlledResetForm() {
+  const [name, setName] = useState('');
+
+  const reset = () =&gt; setName('');
+
+  return (
+    &lt;div&gt;
+      &lt;input value={name} onChange={(e) =&gt; setName(e.target.value)} /&gt;
+      &lt;button onClick={reset}&gt;Reset&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>32. How to reset an uncontrolled form?</h2>
+  <p>Use a <code>ref</code> and call <code>.reset()</code> on the form element.</p>
+  <pre><code>
+function UncontrolledResetForm() {
+  const formRef = useRef();
+
+  return (
+    &lt;form ref={formRef}&gt;
+      &lt;input name="name" defaultValue="Manuela" /&gt;
+      &lt;button type="button" onClick={() =&gt; formRef.current.reset()}&gt;Reset&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>33. How do radio buttons work in controlled vs uncontrolled mode?</h2>
+  <p>Controlled radios use <code>checked</code> and <code>onChange</code>. Uncontrolled ones use <code>defaultChecked</code>.</p>
+  <pre><code>
+// Controlled
+&lt;input
+  type="radio"
+  checked={selected === 'option1'}
+  onChange={() =&gt; setSelected('option1')}
+/&gt;
+
+// Uncontrolled
+&lt;input type="radio" defaultChecked /&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>34. How do checkboxes behave in both approaches?</h2>
+  <p>Same pattern: controlled uses <code>checked</code>, uncontrolled uses <code>defaultChecked</code>.</p>
+  <pre><code>
+// Controlled checkbox
+&lt;input
+  type="checkbox"
+  checked={isChecked}
+  onChange={(e) =&gt; setChecked(e.target.checked)}
+/&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>35. What is the impact of uncontrolled inputs on accessibility?</h2>
+  <p>
+    Uncontrolled inputs can be accessible, but controlled ones offer more consistent support for validation, focus management, and screen reader feedback.
+  </p>
+</div>
+
+<div class="question">
+  <h2>36. Can I use React DevTools to inspect controlled values?</h2>
+  <p>Yes. Since values are stored in state, you can inspect and track them with React DevTools easily.</p>
+</div>
+
+<div class="question">
+  <h2>37. Do uncontrolled components update on state changes?</h2>
+  <p>No. Uncontrolled components do not react to state changes after their initial render unless you manipulate the DOM manually via refs.</p>
+</div>
+
+<div class="question">
+  <h2>38. Can I validate fields in real-time with uncontrolled inputs?</h2>
+  <p>It's possible but harder. You need to manually read values with <code>ref</code> on each interaction, unlike state-based validation in controlled components.</p>
+</div>
+
+<div class="question">
+  <h2>39. When is <code>useRef</code> preferred over <code>useState</code>?</h2>
+  <p>
+    Use <code>useRef</code> for accessing DOM elements or when you don’t need re-renders on value change. Use <code>useState</code> when you want React to re-render based on input changes.
+  </p>
+</div>
+
+<!-- CONTINUATION: 06_01 Controlled vs Uncontrolled Components - Final Set (Q40–Q52) -->
+<div class="question">
+  <h2>40. How do you implement file upload using uncontrolled components?</h2>
+  <p>Use <code>useRef</code> to access the file input directly.</p>
+  <pre><code>
+import React, { useRef } from 'react';
+
+function UncontrolledFileUpload() {
+  const fileInputRef = useRef();
+
+  const handleUpload = () =&gt; {
+    const file = fileInputRef.current.files[0];
+    console.log(file.name);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input type="file" ref={fileInputRef} /&gt;
+      &lt;button onClick={handleUpload}&gt;Upload&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>41. Can controlled components be used in custom reusable components?</h2>
+  <p>Yes. Pass value and onChange as props to make the child fully controlled from the parent.</p>
+  <pre><code>
+function CustomInput({ value, onChange }) {
+  return &lt;input value={value} onChange={onChange} /&gt;;
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>42. How to debounce input updates in controlled components?</h2>
+  <p>Use a timer to delay updates and reduce re-renders or API calls.</p>
+  <pre><code>
+import React, { useState, useEffect } from 'react';
+
+function DebouncedInput() {
+  const [input, setInput] = useState('');
+  const [debounced, setDebounced] = useState('');
+
+  useEffect(() =&gt; {
+    const timer = setTimeout(() =&gt; {
+      setDebounced(input);
+    }, 500);
+    return () =&gt; clearTimeout(timer);
+  }, [input]);
+
+  return (
+    &lt;&gt;
+      &lt;input value={input} onChange={(e) =&gt; setInput(e.target.value)} /&gt;
+      &lt;p&gt;Debounced: {debounced}&lt;/p&gt;
+    &lt;/&gt;
+  );
+}
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>43. How do you use defaultValue with controlled components?</h2>
+  <p><code>defaultValue</code> is ignored when using <code>value</code> in a controlled component.</p>
+  <pre><code>
+// Not needed:
+&lt;input value={value} defaultValue="test" /&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>44. Can a select element be controlled?</h2>
+  <p>Yes, using the <code>value</code> prop.</p>
+  <pre><code>
+&lt;select value={selected} onChange={(e) =&gt; setSelected(e.target.value)}&gt;
+  &lt;option value="A"&gt;A&lt;/option&gt;
+  &lt;option value="B"&gt;B&lt;/option&gt;
+&lt;/select&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>45. How to build an uncontrolled select dropdown?</h2>
+  <pre><code>
+const ref = useRef();
+&lt;select ref={ref}&gt;
+  &lt;option value="X"&gt;X&lt;/option&gt;
+&lt;/select&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>46. How do textareas behave as controlled components?</h2>
+  <p>Same as inputs: use <code>value</code> and <code>onChange</code>.</p>
+  <pre><code>
+&lt;textarea value={text} onChange={(e) =&gt; setText(e.target.value)} /&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>47. How to clear an uncontrolled input?</h2>
+  <p>Set the value directly on the ref.</p>
+  <pre><code>
+inputRef.current.value = '';
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>48. Can a component be partially controlled?</h2>
+  <p>Technically yes, but it’s not recommended due to unpredictable behavior.</p>
+</div>
+
+<div class="question">
+  <h2>49. Are controlled components always synchronous?</h2>
+  <p>Yes, because React synchronously updates the state based on input events.</p>
+</div>
+
+<div class="question">
+  <h2>50. How to integrate Formik with controlled inputs?</h2>
+  <p>Formik handles form state internally and exposes value and onChange props.</p>
+  <pre><code>
+&lt;Field name="email"&gt;
+  {({ field }) =&gt; (
+    &lt;input {...field} /&gt;
+  )}
+&lt;/Field&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>51. How to use uncontrolled form libraries like React Hook Form?</h2>
+  <p>Use <code>register</code> to register uncontrolled fields.</p>
+  <pre><code>
+import { useForm } from 'react-hook-form';
+
+const { register, handleSubmit } = useForm();
+&lt;form onSubmit={handleSubmit(data =&gt; console.log(data))}&gt;
+  &lt;input {...register('username')} /&gt;
+&lt;/form&gt;
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>52. Final tip: When to use controlled vs uncontrolled?</h2>
+  <p>
+    Use controlled components for complex forms, validation, and dynamic behavior. Use uncontrolled components when simplicity or integration with non-React code is preferred.
+  </p>
+</div>
+
+
+  
+</body>
+</html>
