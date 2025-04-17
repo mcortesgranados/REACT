@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>06_04 React Hook Form - Set 1</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .question {
+      background: #fff;
+      border-left: 5px solid #3498db;
+      padding: 20px;
+      margin: 20px auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 900px;
+      border-radius: 8px;
+    }
+    .question h2 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>06_04 React Hook Form – Q&A Set 1 (1–13)</h1>
+
+  <div class="question">
+    <h2>1. What is React Hook Form and why is it useful?</h2>
+    <p>React Hook Form is a library that makes working with forms in React easier by managing form state, validation, and submission using React hooks. It provides better performance by reducing re-renders and is simple to integrate with UI libraries and schema validators like Yup or Zod.</p>
+    <pre><code>// Installation
+npm install react-hook-form
+
+// Basic setup in a component
+import React from 'react';
+import { useForm } from 'react-hook-form';
+
+function SimpleForm() {
+  const { register, handleSubmit } = useForm();
+
+  const onSubmit = (data) => {
+    console.log('Form Data:', data);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+      &lt;input {...register("firstName")} placeholder="First Name" /&gt;
+      &lt;input type="submit" /&gt;
+    &lt;/form&gt;
+  );
+}
+
+export default SimpleForm;
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>2. How do you register input fields using React Hook Form?</h2>
+    <p>You use the <code>register</code> function returned by <code>useForm()</code> to connect input fields to the form state.</p>
+    <pre><code>import { useForm } from 'react-hook-form';
+
+function RegisterExample() {
+  const { register, handleSubmit } = useForm();
+
+  const onSubmit = (data) => console.log(data);
+
+  return (
+    &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+      &lt;input {...register('email')} placeholder="Email" /&gt;
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>3. How do you apply simple validation rules using React Hook Form?</h2>
+    <p>You can pass validation rules directly to the <code>register</code> function.</p>
+    <pre><code>import { useForm } from 'react-hook-form';
+
+function ValidationExample() {
+  const { register, handleSubmit, formState: { errors } } = useForm();
+
+  const onSubmit = (data) => console.log(data);
+
+  return (
+    &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+      &lt;input
+        {...register("username", { required: true })}
+        placeholder="Username"
+      /&gt;
+      {errors.username && &lt;span>This field is required&lt;/span&gt;}
+      &lt;input type="submit" /&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>4. How do you show error messages for each input?</h2>
+    <p>Access <code>formState.errors</code> and conditionally render messages for each field.</p>
+    <pre><code>function ErrorMessagesExample() {
+  const { register, handleSubmit, formState: { errors } } = useForm();
+
+  return (
+    &lt;form onSubmit={handleSubmit(data => console.log(data))}&gt;
+      &lt;input
+        {...register("email", { required: "Email is required" })}
+        placeholder="Email"
+      /&gt;
+      {errors.email && &lt;p&gt;{errors.email.message}&lt;/p&gt;}
+      &lt;input type="submit" /&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>5. How can I integrate a controlled component like Material-UI TextField?</h2>
+    <p>Use <code>Controller</code> from React Hook Form to wrap controlled inputs.</p>
+    <pre><code>import { useForm, Controller } from 'react-hook-form';
+import TextField from '@mui/material/TextField';
+
+function ControlledComponentExample() {
+  const { control, handleSubmit } = useForm();
+
+  return (
+    &lt;form onSubmit={handleSubmit(console.log)}&gt;
+      &lt;Controller
+        name="firstName"
+        control={control}
+        defaultValue=""
+        render={({ field }) =&gt; &lt;TextField label="First Name" {...field} /&gt;}
+      /&gt;
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>6. How to implement default values for fields?</h2>
+    <p>Pass a <code>defaultValues</code> object to <code>useForm</code>.</p>
+    <pre><code>const { register, handleSubmit } = useForm({
+  defaultValues: {
+    firstName: 'John',
+    lastName: 'Doe'
+  }
+});
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>7. How to reset the form after submission?</h2>
+    <p>Use the <code>reset()</code> method from React Hook Form.</p>
+    <pre><code>const { register, handleSubmit, reset } = useForm();
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+  reset(); // Clear the form
+};
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>8. How to watch form values in real time?</h2>
+    <p>Use the <code>watch()</code> method.</p>
+    <pre><code>const { register, watch } = useForm();
+
+const email = watch('email'); // Watch specific field
+
+// or watch entire form: watch()
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>9. How to manually set values?</h2>
+    <p>Use <code>setValue()</code> provided by React Hook Form.</p>
+    <pre><code>const { setValue } = useForm();
+
+setValue('email', 'test@example.com');</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>10. How to handle form submission with custom validation?</h2>
+    <p>You can create a validation schema using Yup or custom logic inside the submit handler.</p>
+    <pre><code>const onSubmit = (data) =&gt; {
+  if (!data.email.includes('@')) {
+    alert('Invalid email');
+    return;
+  }
+  console.log('Valid data', data);
+};
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>11. How to trigger validation manually?</h2>
+    <p>Use <code>trigger()</code> method to manually invoke validation.</p>
+    <pre><code>const { trigger } = useForm();
+
+const validateEmail = async () =&gt; {
+  const isValid = await trigger('email');
+  if (!isValid) {
+    console.log('Email is invalid');
+  }
+};
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>12. How to use onBlur validation instead of onChange?</h2>
+    <p>Pass <code>mode: "onBlur"</code> to <code>useForm</code>.</p>
+    <pre><code>const { register, handleSubmit } = useForm({
+  mode: 'onBlur'
+});
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>13. How to validate multiple fields together?</h2>
+    <p>You can use a custom validation rule that compares fields together inside the <code>handleSubmit</code>.</p>
+    <pre><code>function PasswordValidationForm() {
+  const { register, handleSubmit, watch } = useForm();
+
+  const onSubmit = (data) =&gt; {
+    if (data.password !== data.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+    console.log("Success", data);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+      &lt;input {...register("password")} placeholder="Password" /&gt;
+      &lt;input {...register("confirmPassword")} placeholder="Confirm Password" /&gt;
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+  </div>
+  
+    <div class="question">
+    <h2>14. How do you handle dynamic form fields with React Hook Form?</h2>
+    <p>Use the <code>useFieldArray</code> hook to manage dynamic form fields. This is useful when you need to allow users to add/remove fields dynamically.</p>
+    <pre><code>import { useForm, useFieldArray } from 'react-hook-form';
+
+function DynamicForm() {
+  const { control, register, handleSubmit } = useForm();
+  const { fields, append, remove } = useFieldArray({ control, name: "friends" });
+
+  const onSubmit = (data) => console.log(data);
+
+  return (
+    &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+      {fields.map((item, index) =&gt; (
+        &lt;div key={item.id}&gt;
+          &lt;input {...register(`friends[${index}].name`)} placeholder="Friend's Name" /&gt;
+          &lt;button type="button" onClick={() =&gt; remove(index)}&gt;Remove&lt;/button&gt;
+        &lt;/div&gt;
+      ))}
+      &lt;button type="button" onClick={() =&gt; append({ name: "" })}&gt;Add Friend&lt;/button&gt;
+      &lt;input type="submit" /&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>15. How do you handle conditional validation in React Hook Form?</h2>
+    <p>You can apply conditional validation by using a function in the <code>validate</code> property or within the <code>useEffect</code> hook.</p>
+    <pre><code>const { register, handleSubmit, watch } = useForm();
+const isEmailRequired = watch('isEmailRequired');
+
+const onSubmit = (data) => {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input {...register("name")} placeholder="Name" /&gt;
+    &lt;input
+      {...register("email", {
+        required: isEmailRequired ? "Email is required" : false,
+      })}
+      placeholder="Email"
+    /&gt;
+    &lt;label&gt;
+      &lt;input type="checkbox" {...register('isEmailRequired')} /&gt; Require email?
+    &lt;/label&gt;
+    &lt;input type="submit" /&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>16. How can I apply custom error messages with React Hook Form?</h2>
+    <p>You can customize error messages by providing a custom message in the validation rules.</p>
+    <pre><code>const { register, handleSubmit, formState: { errors } } = useForm();
+
+return (
+  &lt;form onSubmit={handleSubmit((data) =&gt; console.log(data))}&gt;
+    &lt;input
+      {...register("email", {
+        required: "Email is mandatory!",
+        pattern: {
+          value: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
+          message: "Invalid email format",
+        },
+      })}
+      placeholder="Email"
+    /&gt;
+    {errors.email && &lt;p&gt;{errors.email.message}&lt;/p&gt;}
+    &lt;input type="submit" /&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>17. How do I focus on an input after validation failure?</h2>
+    <p>React Hook Form automatically focuses on the first invalid field when validation fails. You can also manually focus on an element using <code>focus()</code>.</p>
+    <pre><code>import { useForm } from 'react-hook-form';
+
+function FocusOnErrorExample() {
+  const { register, handleSubmit, formState: { errors }, setFocus } = useForm();
+
+  const onSubmit = (data) =&gt; console.log(data);
+
+  return (
+    &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+      &lt;input
+        {...register("username", { required: "Username is required" })}
+        placeholder="Username"
+      /&gt;
+      {errors.username && setFocus('username')}
+      &lt;input type="submit" /&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>18. How do you reset specific form fields?</h2>
+    <p>Use the <code>resetField()</code> method to reset a specific field.</p>
+    <pre><code>const { resetField } = useForm();
+
+const resetEmail = () =&gt; {
+  resetField('email');
+};
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>19. How can I use React Hook Form with controlled components from third-party libraries?</h2>
+    <p>Wrap third-party controlled components in a <code>Controller</code> component to integrate with React Hook Form.</p>
+    <pre><code>import { Controller, useForm } from 'react-hook-form';
+import DatePicker from 'react-datepicker';
+
+function DatePickerExample() {
+  const { control, handleSubmit } = useForm();
+
+  return (
+    &lt;form onSubmit={handleSubmit(console.log)}&gt;
+      &lt;Controller
+        name="date"
+        control={control}
+        render={({ field }) =&gt; (
+          &lt;DatePicker
+            {...field}
+            selected={field.value}
+            onChange={(date) =&gt; field.onChange(date)}
+          /&gt;
+        )}
+      /&gt;
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>20. How to submit the form programmatically?</h2>
+    <p>Use the <code>submit()</code> method provided by React Hook Form to submit the form programmatically.</p>
+    <pre><code>const { handleSubmit, formState: { isSubmitting } } = useForm();
+
+const onSubmit = () =&gt; {
+  console.log('Form submitted!');
+};
+
+const submitForm = () =&gt; {
+  handleSubmit(onSubmit)();
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input type="submit" value="Submit" /&gt;
+    &lt;button type="button" onClick={submitForm}&gt;Submit Programmatically&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>21. How to display loading state during form submission?</h2>
+    <p>Use the <code>isSubmitting</code> state from React Hook Form to handle loading states.</p>
+    <pre><code>const { handleSubmit, formState: { isSubmitting } } = useForm();
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    {isSubmitting &amp;&amp; &lt;p&gt;Submitting...&lt;/p&gt;}
+    &lt;input type="submit" value="Submit" /&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>22. How do you handle multi-step forms with React Hook Form?</h2>
+    <p>Store form data in the state or context and use conditional rendering to display each step of the form.</p>
+    <pre><code>import { useForm } from 'react-hook-form';
+
+function MultiStepForm() {
+  const { register, handleSubmit, formState: { errors } } = useForm();
+  const [step, setStep] = useState(1);
+
+  const onSubmit = (data) =&gt; {
+    if (step === 1) {
+      setStep(2);
+    } else {
+      console.log('Form Data:', data);
+    }
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+      {step === 1 &amp;&amp; (
+        &lt;div&gt;
+          &lt;input
+            {...register("firstName", { required: "First Name is required" })}
+            placeholder="First Name"
+          /&gt;
+          {errors.firstName && &lt;p&gt;{errors.firstName.message}&lt;/p&gt;}
+        &lt;/div&gt;
+      )}
+      {step === 2 &amp;&amp; (
+        &lt;div&gt;
+          &lt;input
+            {...register("lastName", { required: "Last Name is required" })}
+            placeholder="Last Name"
+          /&gt;
+          {errors.lastName && &lt;p&gt;{errors.lastName.message}&lt;/p&gt;}
+        &lt;/div&gt;
+      )}
+      &lt;input type="submit" value={step === 1 ? "Next" : "Submit"} /&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>23. How can you handle form submission errors?</h2>
+    <p>Handle errors by catching them in a <code>try...catch</code> block and displaying custom error messages to the user.</p>
+    <pre><code>const onSubmit = async (data) =&gt; {
+  try {
+    await submitFormData(data); // Simulating async form submission
+  } catch (error) {
+    console.log('Submission failed', error);
+  }
+};
+</code></pre>
+  </div>
+
+  <div class="question">
+    <h2>24. How can I trigger an external function during form submission?</h2>
+    <p>Use the <code>onSubmit</code> handler to call an external function when the form is submitted.</p>
+    <pre><code>const externalFunction = (data) =&gt; {
+  console.log('External function triggered:', data);
+};
+
+const onSubmit = (data) =&gt; {
+  externalFunction(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input type="submit" /&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+  </div>
+  
+  <div class="question">
+  <h2>25. How do you reset the entire form with React Hook Form?</h2>
+  <p>You can reset the entire form using the <code>reset()</code> method. This will reset all values and clear any validation errors.</p>
+  <pre><code>const { reset, handleSubmit, register } = useForm();
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+  reset(); // Resetting the entire form
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input {...register("username")} placeholder="Username" /&gt;
+    &lt;input {...register("email")} placeholder="Email" /&gt;
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>26. How do I apply default values to the form using React Hook Form?</h2>
+  <p>Use the <code>defaultValues</code> option when calling the <code>useForm</code> hook to set default values for your form fields.</p>
+  <pre><code>const { register, handleSubmit } = useForm({
+  defaultValues: {
+    username: "JohnDoe",
+    email: "john@example.com"
+  }
+});
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input {...register("username")} placeholder="Username" /&gt;
+    &lt;input {...register("email")} placeholder="Email" /&gt;
+    &lt;input type="submit" /&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+<div class="question">
+  <h2>27. How do you handle validation with React Hook Form?</h2>
+  <p>React Hook Form allows you to define validations using the <code>register()</code> method or with a schema validation library like Yup. You can set required fields, pattern matching, and other custom validations.</p>
+  <pre><code>import { useForm } from "react-hook-form";
+
+const { register, handleSubmit, formState: { errors } } = useForm();
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input
+      {...register("username", { required: "Username is required" })}
+      placeholder="Username"
+    /&gt;
+    {errors.username && &lt;p&gt;{errors.username.message}&lt;/p&gt;}
+    
+    &lt;input
+      {...register("email", { 
+        required: "Email is required", 
+        pattern: {
+          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+          message: "Invalid email address"
+        }
+      })}
+      placeholder="Email"
+    /&gt;
+    {errors.email && &lt;p&gt;{errors.email.message}&lt;/p&gt;}
+    
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>28. How can I integrate React Hook Form with a custom input component?</h2>
+  <p>You can integrate React Hook Form with custom input components by using the <code>Controller</code> component. This component allows you to control the value of the custom input field.</p>
+  <pre><code>import { useForm, Controller } from "react-hook-form";
+
+const CustomInput = ({ value, onChange }) =&gt; (
+  &lt;input value={value} onChange={(e) =&gt; onChange(e.target.value)} /&gt;
+);
+
+const { control, handleSubmit } = useForm();
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;Controller
+      name="customField"
+      control={control}
+      defaultValue=""
+      render={({ field }) =&gt; (
+        &lt;CustomInput {...field} /&gt;
+      )}
+    /&gt;
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>29. How do you use conditional validation with React Hook Form?</h2>
+  <p>You can apply conditional validation by using the <code>when</code> method inside a validation schema or by using the <code>setValue</code> method to conditionally register or update values based on user interaction.</p>
+  <pre><code>const { register, handleSubmit, formState: { errors } } = useForm();
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input
+      {...register("username", { 
+        required: "Username is required",
+        validate: value =&gt; value.length &gt; 3 || "Username must be at least 4 characters long"
+      })}
+      placeholder="Username"
+    /&gt;
+    {errors.username && &lt;p&gt;{errors.username.message}&lt;/p&gt;}
+    
+    &lt;input
+      {...register("email", { 
+        required: "Email is required", 
+        pattern: {
+          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+          message: "Invalid email address"
+        }
+      })}
+      placeholder="Email"
+    /&gt;
+    {errors.email && &lt;p&gt;{errors.email.message}&lt;/p&gt;}
+    
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>30. How do you watch and track specific form fields with React Hook Form?</h2>
+  <p>To watch form field values, you can use the <code>watch()</code> function. It allows you to observe the value of one or more fields in the form.</p>
+  <pre><code>const { register, handleSubmit, watch } = useForm();
+const watchAllFields = watch(); // Watch all fields
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input
+      {...register("username")}
+      placeholder="Username"
+    /&gt;
+    &lt;input
+      {...register("email")}
+      placeholder="Email"
+    /&gt;
+    &lt;p&gt;Current Username: {watchAllFields.username}&lt;/p&gt;
+    &lt;p&gt;Current Email: {watchAllFields.email}&lt;/p&gt;
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>31. How can I trigger a form submission programmatically with React Hook Form?</h2>
+  <p>You can trigger form submission programmatically using the <code>submit()</code> method provided by the <code>handleSubmit</code> function.</p>
+  <pre><code>const { register, handleSubmit, formState: { errors }, setValue } = useForm();
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+// Programmatically trigger form submission
+const triggerSubmit = () =&gt; {
+  handleSubmit(onSubmit)();
+};
+
+return (
+  &lt;form&gt;
+    &lt;input
+      {...register("username", { required: "Username is required" })}
+      placeholder="Username"
+    /&gt;
+    {errors.username && &lt;p&gt;{errors.username.message}&lt;/p&gt;}
+    &lt;button type="button" onClick={triggerSubmit}&gt;Trigger Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>32. How do you set custom errors in React Hook Form?</h2>
+  <p>You can manually set custom validation errors using the <code>setError</code> method provided by the <code>useForm</code> hook.</p>
+  <pre><code>const { register, handleSubmit, formState: { errors }, setError } = useForm();
+
+const onSubmit = (data) =&gt; {
+  if (data.username === "admin") {
+    setError("username", {
+      type: "manual",
+      message: "Username 'admin' is not allowed"
+    });
+  } else {
+    console.log(data);
+  }
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input
+      {...register("username", { required: "Username is required" })}
+      placeholder="Username"
+    /&gt;
+    {errors.username && &lt;p&gt;{errors.username.message}&lt;/p&gt;}
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>33. How do you validate a form with an external validation schema like Yup?</h2>
+  <p>React Hook Form integrates seamlessly with Yup. You can pass a validation schema to the <code>useForm</code> hook to automatically validate your form fields based on the rules defined in Yup.</p>
+  <pre><code>import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+const schema = Yup.object({
+  username: Yup.string().required("Username is required"),
+  email: Yup.string().email("Invalid email").required("Email is required")
+});
+
+const { register, handleSubmit, formState: { errors } } = useForm({
+  resolver: yupResolver(schema)
+});
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input
+      {...register("username")}
+      placeholder="Username"
+    /&gt;
+    {errors.username && &lt;p&gt;{errors.username.message}&lt;/p&gt;}
+    
+    &lt;input
+      {...register("email")}
+      placeholder="Email"
+    /&gt;
+    {errors.email && &lt;p&gt;{errors.email.message}&lt;/p&gt;}
+    
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>34. How do you handle dynamic fields (fields added/removed) in React Hook Form?</h2>
+  <p>You can manage dynamic fields using <code>useFieldArray</code> hook. This allows you to add, remove, or manipulate fields dynamically while maintaining form state.</p>
+  <pre><code>import { useForm, useFieldArray } from "react-hook-form";
+
+const { register, control, handleSubmit } = useForm();
+const { fields, append, remove } = useFieldArray({
+  control,
+  name: "users" // Name of the field array
+});
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    {fields.map((item, index) =&gt; (
+      &lt;div key={item.id}&gt;
+        &lt;input
+          {...register(`users[${index}].name`)}
+          placeholder="Name"
+        /&gt;
+        &lt;button type="button" onClick={() =&gt; remove(index)}&gt;Remove&lt;/button&gt;
+      &lt;/div&gt;
+    ))}
+    &lt;button type="button" onClick={() =&gt; append({ name: "" })}&gt;Add User&lt;/button&gt;
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>35. How do you handle default values when working with dynamic fields in React Hook Form?</h2>
+  <p>You can set default values for dynamic fields in React Hook Form by passing a <code>defaultValue</code> to the <code>useFieldArray</code> hook.</p>
+  <pre><code>const { register, control, handleSubmit } = useForm({
+  defaultValues: {
+    users: [{ name: "John Doe" }] // Set default values for dynamic fields
+  }
+});
+
+const { fields, append, remove } = useFieldArray({
+  control,
+  name: "users"
+});
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    {fields.map((item, index) =&gt; (
+      &lt;div key={item.id}&gt;
+        &lt;input
+          {...register(`users[${index}].name`)}
+          placeholder="Name"
+        /&gt;
+        &lt;button type="button" onClick={() =&gt; remove(index)}&gt;Remove&lt;/button&gt;
+      &lt;/div&gt;
+    ))}
+    &lt;button type="button" onClick={() =&gt; append({ name: "" })}&gt;Add User&lt;/button&gt;
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>36. How do you handle form submission with React Hook Form if validation fails?</h2>
+  <p>If validation fails, the form will not submit, and errors will be shown next to the fields. You can prevent form submission from proceeding by ensuring that all validation rules pass before submission.</p>
+  <pre><code>const { register, handleSubmit, formState: { errors } } = useForm();
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input
+      {...register("username", { required: "Username is required" })}
+      placeholder="Username"
+    /&gt;
+    {errors.username && &lt;p&gt;{errors.username.message}&lt;/p&gt;}
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>37. How do you show error messages dynamically with React Hook Form?</h2>
+  <p>You can dynamically display error messages based on validation results. The error object provides access to specific error messages for each field.</p>
+  <pre><code>const { register, handleSubmit, formState: { errors } } = useForm();
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input
+      {...register("username", { required: "Username is required" })}
+      placeholder="Username"
+    /&gt;
+    {errors.username && &lt;p&gt;{errors.username.message}&lt;/p&gt;}
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>38. How do you handle uncontrolled components with React Hook Form?</h2>
+  <p>React Hook Form makes it easy to handle uncontrolled components by using <code>defaultValue</code> or <code>defaultChecked</code> to manage form input values.</p>
+  <pre><code>const { register, handleSubmit } = useForm();
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input
+      {...register("username")}
+      placeholder="Username"
+      defaultValue="John Doe"
+    /&gt;
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>39. How can I optimize performance in large forms with React Hook Form?</h2>
+  <p>You can optimize performance in large forms by using the <code>useForm</code> hook in combination with <code>useMemo</code> for large form values or dynamic fields to prevent unnecessary re-renders.</p>
+  <pre><code>import { useForm } from "react-hook-form";
+import { useMemo } from "react";
+
+const { register, handleSubmit } = useForm();
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input
+      {...register("username")}
+      placeholder="Username"
+    /&gt;
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>40. How do you handle conditional rendering of form fields with React Hook Form?</h2>
+  <p>You can handle conditional rendering of form fields by using conditional logic in your JSX based on the form state or other external conditions. React Hook Form’s <code>watch()</code> function helps track form values dynamically.</p>
+  <pre><code>const { register, handleSubmit, watch } = useForm();
+const isUsernameRequired = watch("isRequired");
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input
+      {...register("isRequired")}
+      type="checkbox"
+    /&gt;
+    {isUsernameRequired && (
+      &lt;input
+        {...register("username", { required: "Username is required" })}
+        placeholder="Username"
+      /&gt;
+    )}
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>41. Can I use React Hook Form with Material-UI components?</h2>
+  <p>Yes, you can use React Hook Form with Material-UI components by using the <code>Controller</code> component to integrate custom form elements such as <code>TextField</code> with React Hook Form.</p>
+  <pre><code>import { TextField } from "@mui/material";
+import { useForm, Controller } from "react-hook-form";
+
+const { control, handleSubmit } = useForm();
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;Controller
+      name="username"
+      control={control}
+      render={({ field }) =&gt;
+        &lt;TextField {...field} label="Username" variant="outlined" /&gt;
+      }
+    /&gt;
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>42. How do you set the focus on a specific field in React Hook Form?</h2>
+  <p>You can set the focus on a specific field by using the <code>setFocus()</code> method. This method allows you to programmatically set focus on an input field after form initialization or validation.</p>
+  <pre><code>const { register, handleSubmit, setFocus } = useForm();
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+// Set focus programmatically after form is rendered
+useEffect(() =&gt; {
+  setFocus("username");
+}, [setFocus]);
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input
+      {...register("username", { required: "Username is required" })}
+      placeholder="Username"
+    /&gt;
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>43. How can I clear form fields programmatically with React Hook Form?</h2>
+  <p>You can clear form fields programmatically using the <code>reset()</code> method. This resets the form values to their default state.</p>
+  <pre><code>const { register, handleSubmit, reset } = useForm();
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+  // Reset form fields after submission
+  reset();
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input
+      {...register("username", { required: "Username is required" })}
+      placeholder="Username"
+    /&gt;
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>44. How do you handle multi-step forms with React Hook Form?</h2>
+  <p>For multi-step forms, you can use React Hook Form with separate form components. Each form step can manage its own set of inputs, and you can pass form data between steps using state management or context.</p>
+  <pre><code>const { register, handleSubmit, control, formState: { errors } } = useForm();
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;div&gt;Step 1: Personal Info&lt;/div&gt;
+    &lt;input
+      {...register("name", { required: "Name is required" })}
+      placeholder="Name"
+    /&gt;
+    {errors.name && &lt;p&gt;{errors.name.message}&lt;/p&gt;}
+    &lt;button type="submit"&gt;Next&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>45. How can I prefill a form using React Hook Form?</h2>
+  <p>You can prefill a form with default values by using the <code>defaultValues</code> property in the <code>useForm()</code> hook. You can also use the <code>reset()</code> method to update the values once the form is initialized.</p>
+  <pre><code>const { register, handleSubmit, reset } = useForm({
+  defaultValues: {
+    username: "JohnDoe",
+    email: "john.doe@example.com"
+  }
+});
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input
+      {...register("username")}
+      placeholder="Username"
+    /&gt;
+    &lt;input
+      {...register("email")}
+      placeholder="Email"
+    /&gt;
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>46. How do I handle asynchronous form validation in React Hook Form?</h2>
+  <p>React Hook Form supports asynchronous validation by using <code>async</code> functions for the validation rules. You can define asynchronous validations such as API calls or server-side checks inside the validation function.</p>
+  <pre><code>const { register, handleSubmit, formState: { errors } } = useForm();
+
+const validateUsername = async (value) =&gt; {
+  const response = await fetch(`/api/validate-username?username=${value}`);
+  const data = await response.json();
+  return data.isValid ? true : "Username is already taken";
+};
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input
+      {...register("username", { 
+        required: "Username is required", 
+        validate: validateUsername 
+      })}
+      placeholder="Username"
+    /&gt;
+    {errors.username && &lt;p&gt;{errors.username.message}&lt;/p&gt;}
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>47. Can I use React Hook Form with custom input components that are controlled?</h2>
+  <p>Yes, React Hook Form can be used with controlled components by using the <code>Controller</code> component. This allows you to handle the state of controlled inputs while integrating with React Hook Form’s validation and submission.</p>
+  <pre><code>import { Controller, useForm } from "react-hook-form";
+
+const { control, handleSubmit } = useForm();
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;Controller
+      name="username"
+      control={control}
+      render={({ field }) =&gt; (
+        &lt;input {...field} placeholder="Username" /&gt;
+      )}
+    /&gt;
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>48. How do you handle error handling and displaying messages in React Hook Form?</h2>
+  <p>You can handle error messages using the <code>errors</code> object, which stores validation errors for each field. You can access and display the error message accordingly.</p>
+  <pre><code>const { register, handleSubmit, formState: { errors } } = useForm();
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input
+      {...register("username", { required: "Username is required" })}
+      placeholder="Username"
+    /&gt;
+    {errors.username && &lt;p&gt;{errors.username.message}&lt;/p&gt;}
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>49. Can I use React Hook Form with multiple checkboxes?</h2>
+  <p>Yes, React Hook Form can manage multiple checkboxes by registering each checkbox separately. You can also use the <code>Controller</code> component for custom checkbox groups.</p>
+  <pre><code>const { register, handleSubmit } = useForm();
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;label&gt;
+      &lt;input type="checkbox" {...register("checkbox1")} /&gt;
+      Option 1
+    &lt;/label&gt;
+    &lt;label&gt;
+      &lt;input type="checkbox" {...register("checkbox2")} /&gt;
+      Option 2
+    &lt;/label&gt;
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>50. How do I handle dynamic form fields with React Hook Form?</h2>
+  <p>For dynamic form fields, you can add or remove fields using state or dynamic component rendering. React Hook Form works well with arrays and objects, which can be dynamically added to the form.</p>
+  <pre><code>const { register, handleSubmit, control, fields, append, remove } = useFieldArray({
+  name: "dynamicFields"
+});
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    {fields.map((field, index) =&gt; (
+      &lt;div key={field.id}&gt;
+        &lt;input {...register(`dynamicFields[${index}].name`)} placeholder="Name" /&gt;
+        &lt;button type="button" onClick={() =&gt; remove(index)}&gt;Remove&lt;/button&gt;
+      &lt;/div&gt;
+    ))}
+    &lt;button type="button" onClick={() =&gt; append({ name: "" })&gt;Add Field&lt;/button&gt;
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>51. How do I use React Hook Form with custom validation functions?</h2>
+  <p>Custom validation functions can be used directly in the <code>validate</code> property within <code>register()</code>. These functions can handle custom logic and return either <code>true</code> or an error message.</p>
+  <pre><code>const { register, handleSubmit, formState: { errors } } = useForm();
+
+const validateEmail = (value) =&gt; {
+  return value.includes("@") ? true : "Invalid email format";
+};
+
+const onSubmit = (data) =&gt; {
+  console.log(data);
+};
+
+return (
+  &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+    &lt;input
+      {...register("email", { validate: validateEmail })}
+      placeholder="Email"
+    /&gt;
+    {errors.email && &lt;p&gt;{errors.email.message}&lt;/p&gt;}
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+);
+</code></pre>
+</div>
+
+<div class="question">
+  <h2>52. How do I handle multiple form submissions in React Hook Form?</h2>
+  <p>React Hook Form supports multiple form submissions by handling each form separately, where each <code>useForm()</code> hook manages its own state.</p>
+  <pre><code>const { register, handleSubmit } = useForm();
+
+const onSubmitForm1 = (data) =&gt; {
+  console.log("Form 1 Data:", data);
+};
+
+const onSubmitForm2 = (data) =&gt; {
+  console.log("Form 2 Data:", data);
+};
+
+return (
+  &lt;div&gt;
+    &lt;form onSubmit={handleSubmit(onSubmitForm1)}&gt;
+      &lt;input
+        {...register("field1")}
+        placeholder="Field 1"
+      /&gt;
+      &lt;button type="submit"&gt;Submit Form 1&lt;/button&gt;
+    &lt;/form&gt;
+    &lt;form onSubmit={handleSubmit(onSubmitForm2)}&gt;
+      &lt;input
+        {...register("field2")}
+        placeholder="Field 2"
+      /&gt;
+      &lt;button type="submit"&gt;Submit Form 2&lt;/button&gt;
+    &lt;/form&gt;
+  &lt;/div&gt;
+);
+</code></pre>
+</div>
+
+
+
+</body>
+</html>
